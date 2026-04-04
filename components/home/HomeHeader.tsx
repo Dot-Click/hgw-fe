@@ -60,6 +60,7 @@ const HomeHeader = () => {
         {/* Cta Buttons */}
         <div className="flex flex-col md:flex-row items-center gap-4 mt-2">
           <Button
+            onPress={() => router.push("/leaderboard")}
             id="explore-leaderboard-btn"
             className="w-full md:w-auto px-8 py-7 bg-[#00CCFF] text-[#0B0B0F] font-[700] rounded-[12px] flex items-center gap-3 orbitron text-[14px] md:text-[16px] shadow-[0_0_25px_rgba(0,204,255,0.3)] hover:bg-[#00B8E6] transition-all"
           >

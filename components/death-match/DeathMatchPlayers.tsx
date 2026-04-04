@@ -1,7 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import DeathMatchCard from "./DeathMatchCard";
+import { motion } from "framer-motion";
+
+import { PlayerSelection } from "./DeathMatchContainer";
+
+interface DeathMatchPlayersProps {
+  onSelect: (player: PlayerSelection) => void;
+  player1Id?: number;
+  player2Id?: number;
+  activeSlot: 1 | 2;
+}
 
 const players = [
   {
@@ -78,9 +88,7 @@ const players = [
   },
 ];
 
-const DeathMatchPlayers = () => {
-  const [selectedId, setSelectedId] = useState<number>(1);
-
+const DeathMatchPlayers = ({ onSelect, player1Id, player2Id, activeSlot }: DeathMatchPlayersProps) => {
   return (
     <section className="w-full max-w-6xl mx-auto px-6 py-16 flex flex-col items-center">
       {/* Headers */}
@@ -88,24 +96,45 @@ const DeathMatchPlayers = () => {
         <h2 className="text-[28px] md:text-[36px] orbitron font-[900] text-white tracking-wide uppercase">
           Choose <span className="text-[#00CCFF] drop-shadow-[0_0_15px_rgba(0,204,255,0.5)]">Legends</span>
         </h2>
-        <p className="text-[#7B899D] outfit text-[14px] md:text-[16px] mt-2">
-          Select <span className="text-[#00CCFF] font-medium">Player 1</span> from the roster below
-        </p>
+        <motion.p 
+          key={activeSlot}
+          initial={{ opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-[#7B899D] outfit text-[14px] md:text-[16px] mt-2"
+        >
+          Select <span className="text-[#00CCFF] font-medium uppercase tracking-widest">Player {activeSlot}</span> from the roster below
+        </motion.p>
       </div>
 
       {/* Grid */}
       <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-        {players.map((player) => (
-          <DeathMatchCard
-            key={player.id}
-            {...player}
-            isSelected={selectedId === player.id}
-            onSelect={() => setSelectedId(player.id)}
-          />
-        ))}
+        {players.map((player, index) => {
+          const isSelected = player1Id === player.id || player2Id === player.id;
+          const isCurrentlySelecting = (activeSlot === 1 && player1Id === player.id) || (activeSlot === 2 && player2Id === player.id);
+          
+          return (
+            <motion.div
+              key={player.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              viewport={{ once: true }}
+            >
+              <DeathMatchCard
+                {...player}
+                isSelected={isCurrentlySelecting}
+                onSelect={() => {
+                  if (isSelected && !isCurrentlySelecting) return; // Prevent selecting already selected player in other slot
+                  onSelect(player);
+                }}
+              />
+            </motion.div>
+          );
+        })}
       </div>
     </section>
   );
 };
 
 export default DeathMatchPlayers;
+

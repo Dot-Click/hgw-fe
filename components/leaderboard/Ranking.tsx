@@ -1,6 +1,7 @@
-import LeaderboardLegendList from "@/components/common/LeaderboardLegendList";
+"use client";
 
-import { MdArrowForwardIos } from "react-icons/md";
+import React from "react";
+import LeaderboardLegendList from "@/components/common/LeaderboardLegendList";
 
 const player3 = "/assets/player3.png";
 const player4 = "/assets/player4.png";
@@ -67,25 +68,15 @@ const leaderboardData = [
     },
 ];
 
-const GlobalLeaderboard = () => {
+const Ranking = () => {
     return (
-        <section className="w-full max-w-7xl mx-auto px-4 py-12 md:py-20 flex flex-col gap-2">
-            {/* Header section with title and decorative divider */}
-            <div className="relative flex flex-col md:flex-row items-center justify-between w-full h-12 md:h-16">
-                <h2 className="orbitron text-[19px] md:text-[27px] font-black text-[#E7EBEF] capitalize z-10  pr-4 md:pr-8">
-                    Global Leaderboard
-                </h2>
-
-                <button className="z-10 pl-4 md:pl-8 flex items-center gap-1 cursor-pointer text-[#00CCFF] hover:text-[#00CCFFEE] outfit text-xs md:text-[16px] font-medium tracking-wider group mt-4 md:mt-0">
-                    View Full Leaderboard
-                    <MdArrowForwardIos className="text-[13px] group-hover:translate-x-1 transition-transform" />
-                </button>
+        <section className="w-full max-w-7xl  mx-auto px-4 py-8">
+            <div className="text-center  w-full ">
+                <h1 className="text-[#7B899D]  font-[700] tracking-[5px] text-[13px] uppercase orbitron ">Ranking</h1>
             </div>
-
-            {/* Leaderboard List */}
             <LeaderboardLegendList data={leaderboardData} />
         </section>
     );
 };
 
-export default GlobalLeaderboard;
+export default Ranking;

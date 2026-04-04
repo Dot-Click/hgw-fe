@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Card, Button } from "@heroui/react"
 import { FiCalendar, FiClock, FiArrowRight, FiUser, FiFileText } from "react-icons/fi"
 import ArticleCard from "@/components/article/ArticleCard"
