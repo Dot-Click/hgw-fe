@@ -22,7 +22,7 @@ const LeaderBoardHeader = () => {
         />
       </div>
 
-      <div className="relative z-10 flex flex-col items-center w-full max-w-4xl text-center gap-4 px-6">
+      <div className="relative z-10 flex flex-col items-center w-full max-w-4xl text-center gap-3 px-6">
 
         {/* Top Badge */}
         <div className="flex items-center gap-2 px-4 py-1 tracking-[0.2rem] text-[#FFBF00] orbitron text-[10px] md:text-[12px] font-[700]  uppercase">

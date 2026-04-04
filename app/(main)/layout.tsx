@@ -32,7 +32,7 @@ export default function MainLayout({
       {/* Decorative Vectors */}
       {/* Decorative Vector Grid - Seamless full screen coverage */}
       <div
-        className="fixed inset-0 -z-20 pointer-events-none bg-repeat opacity-40 mix-blend-screen"
+        className="fixed inset-0 -z-20 pointer-events-none bg-repeat opacity-20 mix-blend-screen"
         style={{ backgroundImage: `url('/assets/bg-vector.png')`, backgroundSize: '700px' }}
       />
 
