@@ -32,8 +32,8 @@ const DeathMatchCard = ({
 }: DeathMatchCardProps) => {
 
   const rankColor = rank <= 3 
-    ? 'text-[#FFBF00] border-[#FFBF00] bg-[#FFBF00]/10' 
-    : 'text-[#7B899D] border-[#3A455C] bg-[#1B1C224D]';
+    ? 'text-[#FFBF00] border-[#FFBF0066] bg-[#FFBF0033] drop-shadow-[0px_0px_8px_0px_#FFBF004D]' 
+    : 'text-[#7B899D99] border-[#24262E] bg-[#1B1C22CC]';
 
   return (
     <div 
@@ -50,7 +50,7 @@ const DeathMatchCard = ({
       )}
 
       {/* Rank Badge */}
-      <div className={`absolute top-4 right-4 w-[28px] h-[28px] rounded-full border flex items-center justify-center z-30 text-[11px] orbitron font-bold backdrop-blur-md ${rankColor}`}>
+      <div className={`absolute top-4 right-4 w-[28px] h-[28px] rounded-full border flex items-center justify-center z-30 text-[12px] orbitron font-[700]  ${rankColor}`}>
         {rank}
       </div>
 
