@@ -76,7 +76,7 @@ const ArticleContainer = () => {
 
                     {/* Header Section */}
                     <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-2 text-[#00CCFF] tracking-[0.2rem]  font-bold">
+                        <div className="flex items-center gap-2 text-[#00CCFF] tracking-[0.2rem]  font-[600]">
                             <span className="text-[16px]   md:text-[17px] text-[#00CCFF]"> <FiFileText /></span>
                             <span className='text-[10px] md:text-[14px] uppercase'>HGW Editorial</span>
                         </div>
