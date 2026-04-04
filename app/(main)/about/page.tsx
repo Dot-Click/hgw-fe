@@ -4,9 +4,11 @@ import { Card } from "@heroui/react";
 import AboutCard from "@/components/about/AboutCard";
 
 export const metadata: Metadata = {
-    title: "About HGW",
-    description: "Learn more about the How Good Was Legend Vault project.",
+    title: "About HGW | The Mission to Archive Greatness",
+    description: "Discover the vision behind How Good Was (HGW). Learn about our proprietary 10-pillar scoring system and our mission to create the definitive archive for the world's greatest sporting and cultural legends.",
+    keywords: ["About HGW", "HGW Scoring System", "HGW Mission", "Legend Archiving", "Sport Evaluation", "10 Pillars of Domination"],
 };
+
 
 const About = () => {
     const aboutData = [
@@ -50,8 +52,9 @@ const About = () => {
                 <div className="flex flex-col gap-1 max-w-6xl">
                     <div className="text-[32px] md:text-[56px] flex flex-wrap items-center gap-x-6 gap-y-2 orbitron font-bold leading-tight">
                         <h1 className="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">About</h1>
-                        <h1 className="text-[#00CCFF] drop-shadow-[0_0_15px_rgba(0,204,255,0.4)]">How Good Was</h1>
+                        <span className="text-[#00CCFF] drop-shadow-[0_0_15px_rgba(0,204,255,0.4)]">How Good Was</span>
                     </div>
+
                     <p className="text-[#7B899D] font-medium text-[16px] md:text-[18px] outfit leading-relaxed max-w-3xl">
                         The HGW Legend Vault is a digital archive that ranks the greatest sports and music legends of all time using a proprietary scoring system called the <span className="text-[#FFBF00] font-bold">10 Pillars of Domination</span>.
                     </p>

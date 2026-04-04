@@ -4,9 +4,11 @@ import Card from "@/components/common/Card";
 import { PLAYERS_DATA } from '@/data/players';
 
 export const metadata: Metadata = {
-    title: "Player Database - HGW",
-    description: "Search and filter the complete legend archive.",
+    title: "Legend Database | Search & Filter History's Greatest | HGW",
+    description: "Search through the most comprehensive database of sporting and cultural icons. Filter by sport, era, and dominance stats to explore history's greatest legends.",
+    keywords: ["Legend Database", "Search Athletes", "Athlete Database", "HGW Archive", "Sports Icon Search", "Filter Legends", "Legend Vault"],
 };
+
 
 const Database = () => {
     return (
