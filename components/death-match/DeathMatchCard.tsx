@@ -14,17 +14,17 @@ export interface DeathMatchCardProps {
   onSelect?: () => void;
 }
 
-const getCategoryColor = (category: string) => {
-  switch (category.toLowerCase()) {
-    case 'football': 
-      return 'text-[#00CCFF] border-[#00CCFF]';
-    case 'music': 
-      return 'text-[#A855F7] border-[#A855F7]';
-    case 'rugby': 
-      return 'text-[#FFBF00] border-[#FFBF00]';
-    default: 
-      return 'text-gray-400 border-gray-400';
-  }
+const getCategoryStyles = (category: string) => {
+    switch (category?.toUpperCase()) {
+        case "FOOTBALL":
+            return "bg-[#00CCFF26] text-[#00CCFF] border-[#00CCFF33]";
+        case "MUSIC":
+            return "bg-[#A855F726] text-[#C084FC] border-[#A855F733]";
+        case "RUGBY":
+            return "bg-[#FFBF0026] text-[#FFBF00] border-[#FFBF0033]";
+        default:
+            return "bg-[#00CCFF26] text-[#00CCFF] border-[#00CCFF33]";
+    }
 };
 
 const DeathMatchCard = ({
@@ -68,11 +68,11 @@ const DeathMatchCard = ({
       </div>
 
       {/* Content Container */}
-      <div className="flex flex-col flex-grow p-3 sm:p-5 pt-0 sm:pt-0 justify-between z-10 relative">
+      <div className="flex flex-col flex-grow p-3 gap-2 sm:p-5 pt-0 sm:pt-0 justify-between z-10 relative">
         <h3 className="orbitron text-white text-[13px] sm:text-[16px] font-[500] truncate mt-1">{name}</h3>
         
         <div className="flex items-center gap-1 sm:gap-3 mt-1 sm:mt-2">
-          <div className={`text-[8px] sm:text-[9px] uppercase tracking-wider px-2 py-[2px] rounded-full border ${getCategoryColor(category)}`}>
+          <div className={`text-[8px] sm:text-[9px] uppercase tracking-wider px-2 py-[2px] rounded-full border ${getCategoryStyles(category)}`}>
             {category}
           </div>
           <div className="flex items-center gap-1 text-[#7B899D] text-[9px] sm:text-[11px] outfit truncate">
@@ -81,9 +81,9 @@ const DeathMatchCard = ({
           </div>
         </div>
 
-        <div className="flex items-center justify-between mt-auto pt-1 sm:pt-2">
-          <span className="text-[#7B899D] text-[10px] sm:text-[12px] outfit tracking-wider uppercase font-medium">HGW</span>
-          <span className="text-[#FFBF00] orbitron font-[700] text-[16px] sm:text-[20px] tracking-wide">{rating.toFixed(1)}</span>
+        <div className="flex items-center border-t border-[#24262E66] justify-between mt-auto pt-1 sm:pt-2">
+          <span className="text-[#7B899D] text-[10px] sm:text-[12px] orbitron tracking-widest uppercase font-[400]">HGW</span>
+          <span className="text-[#FFBF00] orbitron font-[900] text-[16px] sm:text-[20px] tracking-wide">{rating.toFixed(1)}</span>
         </div>
       </div>
     </div>
