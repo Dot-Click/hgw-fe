@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import LeaderboardCard from "./LeaderboardCard";
+import DeathMatchCard from "./DeathMatchCard";
 
 const players = [
   {
@@ -78,7 +78,7 @@ const players = [
   },
 ];
 
-const LeaderboardPlayers = () => {
+const DeathMatchPlayers = () => {
   const [selectedId, setSelectedId] = useState<number>(1);
 
   return (
@@ -96,7 +96,7 @@ const LeaderboardPlayers = () => {
       {/* Grid */}
       <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
         {players.map((player) => (
-          <LeaderboardCard
+          <DeathMatchCard
             key={player.id}
             {...player}
             isSelected={selectedId === player.id}
@@ -108,4 +108,4 @@ const LeaderboardPlayers = () => {
   );
 };
 
-export default LeaderboardPlayers;
+export default DeathMatchPlayers;

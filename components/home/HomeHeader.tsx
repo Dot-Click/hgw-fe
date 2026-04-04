@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { FiSearch, FiZap, FiTarget, FiGlobe } from "react-icons/fi";
 import { LuBrain, LuSwords, LuTrophy, LuUsers } from "react-icons/lu";
 import { Button, InputGroup } from "@heroui/react";
@@ -66,6 +67,8 @@ const HomeHeader = () => {
           </Button>
 
           <Button
+            as={Link}
+            href="/death-match"
             id="start-deathmatch-btn"
             className="w-full md:w-auto px-8 py-7 bg-[#1F2128] text-[#7B899D] font-bold rounded-[14px] flex items-center gap-3 orbitron text-[14px] md:text-[16px] border border-[#24262E] hover:text-white hover:bg-[#24262E] transition-all"
           >

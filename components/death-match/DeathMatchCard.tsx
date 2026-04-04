@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import { FiMapPin } from 'react-icons/fi';
 
-export interface LeaderboardCardProps {
+export interface DeathMatchCardProps {
   id: number;
   rank: number;
   name: string;
@@ -27,9 +27,9 @@ const getCategoryColor = (category: string) => {
   }
 };
 
-const LeaderboardCard = ({
+const DeathMatchCard = ({
   id, rank, name, category, country, rating, image, isSelected, onSelect
-}: LeaderboardCardProps) => {
+}: DeathMatchCardProps) => {
 
   const rankColor = rank <= 3 
     ? 'text-[#FFBF00] border-[#FFBF00] bg-[#FFBF00]/10' 
@@ -90,4 +90,4 @@ const LeaderboardCard = ({
   );
 };
 
-export default LeaderboardCard;
+export default DeathMatchCard;

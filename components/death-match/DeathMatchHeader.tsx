@@ -2,11 +2,10 @@
 
 import React from "react";
 import Image from "next/image";
-import { FiSearch, FiZap, FiTarget, FiGlobe } from "react-icons/fi";
-import { LuBrain, LuSwords, LuTrophy, LuUsers } from "react-icons/lu";
-import { Button, CalendarGridBody, Card, Chip, InputGroup } from "@heroui/react";
+import { LuSwords } from "react-icons/lu";
 
-const LeaderBoardHeader = () => {
+
+const DeathMatchHeader = () => {
   const [activeCard, setActiveCard] = React.useState<1 | 2>(1);
   return (
     <header className="min-h-[85vh] pt-24 md:pt-40 flex flex-col items-center justify-center relative w-full overflow-hidden">
@@ -26,7 +25,7 @@ const LeaderBoardHeader = () => {
 
         {/* Top Badge */}
         <div className="flex items-center gap-2 px-4 py-1 tracking-[0.2rem] text-[#FFBF00] orbitron text-[10px] md:text-[12px] font-[700]  uppercase">
-          <FiZap className="text-sm" aria-hidden="true" />
+          <LuSwords className="text-sm" aria-hidden="true" />
           Head-to-Head Analysis
         </div>
 
@@ -101,4 +100,4 @@ const LeaderBoardHeader = () => {
   );
 };
 
-export default LeaderBoardHeader;
+export default DeathMatchHeader;
