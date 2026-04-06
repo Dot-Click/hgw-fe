@@ -110,7 +110,7 @@ const AiModal: React.FC<AiModalProps> = ({ isOpen, onClose }) => {
                 className="p-5 rounded-full hidden md:flex bg-[#00CCFF]  hover:bg-[#08b1db] cursor-pointer  items-center justify-center text-[#0B0B0F] shadow-[0_0_30px_rgba(0,204,255,0.5)] hover:scale-105 active:scale-95 transition-all duration-300 group"
             >
                 <FiX size={32} className="group-hover:rotate-90 transition-transform duration-300" />
-            </button>
+            </button>   
         </div>
     );
 };
