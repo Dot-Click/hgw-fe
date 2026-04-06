@@ -15,7 +15,7 @@ const ArticleContainer = () => {
             id: 1,
             title: "Are Era-Adjusted Scores Fairer Than Raw Stats?",
             description: "Comparing players across decades remains notoriously difficult. Here's how we handle those who perfected...",
-            image: "https://images.unsplash.com/photo-1543351611-58f69d7c1781?q=80&w=687&auto=format&fit=crop",
+            image: "/assets/art1.png",
             category: "Analysis",
             date: "Dec 1, 2024",
             readTime: "8 min read"
@@ -24,7 +24,7 @@ const ArticleContainer = () => {
             id: 2,
             title: "The Greatest Clutch Performers in History",
             description: "When the pressure is highest, these legends deliver. A breakdown of our Clutch Factor pillar.",
-            image: "https://images.unsplash.com/photo-1511886929837-de244d82f7c2?q=80&w=2670&auto=format&fit=crop",
+            image: "/assets/art2.png",
             category: "Rankings",
             date: "Nov 20, 2024",
             readTime: "12 min read"
@@ -33,7 +33,7 @@ const ArticleContainer = () => {
             id: 3,
             title: "Messi vs Ronaldo: The Definitive HGW Breakdown",
             description: "An exhaustive statistical analysis across 10 pillars for the greatest rivalry in modern sports history.",
-            image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=2693&auto=format&fit=crop",
+            image: "/assets/art3.png",
             category: "Debates",
             date: "Nov 15, 2024",
             readTime: "15 min read"
@@ -42,7 +42,7 @@ const ArticleContainer = () => {
             id: 4,
             title: "How Cultural Legacy Shapes a Legend's Score",
             description: "Icons are more than just raw stats. Here's how we quantify cultural impact toward the final vault rating.",
-            image: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=2670&auto=format&fit=crop",
+            image: "/assets/art4.png",
             category: "Analysis",
             date: "Oct 25, 2024",
             readTime: "10 min read"
@@ -51,7 +51,7 @@ const ArticleContainer = () => {
             id: 5,
             title: "Top 10 Legends Who Peaked the Hardest",
             description: "Peak dominance is about short bursts of absolute brilliance. These five had the highest peaks ever recorded.",
-            image: "https://images.unsplash.com/photo-1510279770293-c3f9e4a3c32e?q=80&w=2670&auto=format&fit=crop",
+            image: "/assets/art5.png",
             category: "Rankings",
             date: "Oct 12, 2024",
             readTime: "15 min read"
@@ -69,7 +69,7 @@ const ArticleContainer = () => {
     };
 
     return (
-        <section className="min-h-screen pt-28 pb-20 relative flex flex-col items-center">
+        <section className="min-h-screen  pt-36 pb-20 relative flex flex-col items-center">
             {/* Centered outer container to "stuck" the content's horizontal position */}
             <div className="w-full max-w-[1400px] px-6 md:px-12 lg:px-20 flex flex-col">
                 <div className="max-w-6xl w-full flex flex-col gap-10">
@@ -105,83 +105,82 @@ const ArticleContainer = () => {
                     </div>
 
                     {/* Hero Featured Article Card */}
-                    <Card className="bg-[#0D0E12] w-[950px] mx-auto h-fit border p-0 border-[#747A94CC] rounded-[32px] overflow-hidden shadow-none group">
+                    <Card className="bg-[#0D0E12] w-full max-w-[950px] mx-auto h-fit border p-0 border-[#747A94CC] rounded-[24px] md:rounded-[32px] overflow-hidden shadow-none group">
                         <div className="relative z-10 flex flex-col">
                             {/* IMAGE SECTION */}
-                            <div className="relative w-full h-[300px] md:h-[600px] overflow-hidden">
+                            <div className="relative w-full h-[280px] md:h-[600px] overflow-hidden">
                                 {/* ASSET GRADIENT (BEFORE IMG) */}
                                 <img
                                     src="/assets/gradient.png"
-                                    className="absolute inset-x-0 top-0 w-full h-[300px] object-cover pointer-events-none z-10 rotate-180"
+                                    className="absolute inset-x-0 top-0 w-full h-[150px] md:h-[300px] object-cover pointer-events-none z-10 rotate-180"
                                     alt="Top Gradient Overlay"
                                 />
 
                                 <img
                                     src="/assets/articleImg.png"
                                     alt={heroArticle.title}
-                                    className="w-full h-full object-fill opacity-90"
+                                    className="w-full h-full object-cover opacity-90"
                                 />
 
                                 {/* ASSET GRADIENT */}
                                 <img
                                     src="/assets/gradient.png"
-                                    className="absolute inset-x-0 bottom-0 w-full h-[300px] object-cover pointer-events-none"
+                                    className="absolute inset-x-0 bottom-0 w-full h-[150px] md:h-[300px] object-cover pointer-events-none"
                                     alt="Gradient Overlay"
                                 />
 
                                 {/* TOP LEFT "FEATURED" BADGE */}
-                                <div className="absolute top-8 left-8 bg-[#00CCFFE5] text-[#0B0B0F] px-4 py-1 rounded-[9999px] text-[10px] md:text-[13px] outfit tracking-[3px] font-bold z-20">
+                                <div className="absolute top-4 md:top-8 left-4 md:left-8 bg-[#00CCFFE5] text-[#0B0B0F] px-4 py-1 rounded-[9999px] text-[10px] md:text-[13px] outfit tracking-[2px] md:tracking-[3px] font-bold z-20">
                                     FEATURED
                                 </div>
                             </div>
 
                             {/* CONTENT SECTION */}
-                            <div className="px-8 md:px-12 pb-8 -mt-56 relative z-20">
+                            <div className="px-5 md:px-12 pb-8 -mt-24 md:-mt-56 relative z-20">
                                 {/* CATEGORY BADGE */}
-                                <div className="mb-6">
-                                    <span className="px-4 py-1.5 rounded-full border border-[#00CCFF4D] text-[#00CCFF] text-[9px] md:text-[11px] font-medium tracking-[3.5px]   uppercase">
+                                <div className="mb-4 md:mb-6">
+                                    <span className="px-3 md:px-4 py-1 md:py-1.5 rounded-full border border-[#00CCFF4D] text-[#00CCFF] text-[8px] md:text-[11px] font-medium tracking-[2.5px] md:tracking-[3.5px] uppercase">
                                         {heroArticle.category}
                                     </span>
                                 </div>
 
                                 {/* TITLE */}
-                                <h2 className="text-[#E7EBEF] text-[20px] md:text-[28px] orbitron font-semibold leading-[1.1] mb-3 tracking-wide drop-shadow-sm">
+                                <h2 className="text-[#E7EBEF] text-[18px] md:text-[28px] lg:text-[32px] xl:text-[40px] orbitron font-semibold leading-[1.2] mb-3 tracking-wide drop-shadow-sm">
                                     {heroArticle.title}
                                 </h2>
    
                                 {/* DESCRIPTION */}
-                                <p className="text-[#7B899D] text-[16px] md:text-[19px] outfit leading-relaxed  line-clamp-2 md:line-clamp-none opacity-80">
+                                <p className="text-[#7B899D] text-[14px] md:text-[19px] outfit leading-relaxed line-clamp-2 md:line-clamp-none opacity-80 max-w-3xl">
                                     {heroArticle.description}
                                 </p>
       
                                 {/* META INFO & BUTTON ROW */}
-                                <div className="flex flex-col  gap-6 mt-5">
-                                    <div className='flex items-center gap-7'>
-                                        {/* ICONS / META */}
-                                        <div className="flex items-center gap-2.5 group/meta">
-                                            <div className="flex flex-wrap items-center gap-7 text-[#7B899D] text-[16px] outfit">
-                                                <FiUser className="text-[#00CCFF] text-lg" />
-                                                <span className="transition-colors group-hover/meta:text-white">{heroArticle.author}</span>
-                                            </div>
-
-                                            <div className="flex items-center gap-2.5 group/meta">
-                                                <FiCalendar className="text-[#00CCFF] text-lg" />
-                                                <span className="transition-colors group-hover/meta:text-white">{heroArticle.date}</span>
-                                            </div>
-
-                                            <div className="flex items-center gap-2.5 group/meta">
-                                                <FiClock className="text-[#00CCFF] text-lg" />
-                                                <span className="transition-colors group-hover/meta:text-white">{heroArticle.readTime}</span>
-                                            </div>
+                                <div className="flex flex-col gap-6 mt-6">
+                                    {/* ICONS / META */}
+                                    <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-[#7B899D] text-[13px] md:text-[16px] outfit">
+                                        <div className="flex items-center gap-2 group/meta">
+                                            <FiUser className="text-[#00CCFF] text-sm md:text-lg" />
+                                            <span className="transition-colors group-hover/meta:text-white">{heroArticle.author}</span>
                                         </div>
 
+                                        <div className="flex items-center gap-2 group/meta">
+                                            <FiCalendar className="text-[#00CCFF] text-sm md:text-lg" />
+                                            <span className="transition-colors group-hover/meta:text-white">{heroArticle.date}</span>
+                                        </div>
+
+                                        <div className="flex items-center gap-2 group/meta">
+                                            <FiClock className="text-[#00CCFF] text-sm md:text-lg" />
+                                            <span className="transition-colors group-hover/meta:text-white">{heroArticle.readTime}</span>
+                                        </div>
                                     </div>
 
-                                    {/* ACTION BUTTON */}
-                                    <Button className="bg-[#00CCFF] hover:bg-[#00B8E6] text-[#0B0B0F] font-[500] py-6 px-5 rounded-[14px] flex items-center justify-center gap-3  group/btn outfit text-[16px]">
-                                        Read Article
-                                        <FiArrowRight className="text-xl transition-transform group-hover/btn:translate-x-1.5" />
-                                    </Button>
+                                    {/* ACTION BUTTON SECTION */}
+                                    <div className="flex items-center justify-start">
+                                        <Button className="bg-[#00CCFF] hover:bg-[#00B8E6] text-[#0B0B0F] font-[600] py-6 px-8 rounded-[12px] md:rounded-[14px] flex items-center justify-center gap-3 group/btn outfit text-[15px] md:text-[16px] w-full md:w-fit shadow-[0_0_20px_rgba(0,204,255,0.2)]">
+                                            Read Article
+                                            <FiArrowRight className="text-xl transition-transform group-hover/btn:translate-x-1.5" />
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

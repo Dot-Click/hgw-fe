@@ -1,5 +1,7 @@
-import LeaderboardLegendList from "@/components/common/LeaderboardLegendList";
+"use client";
 
+import LeaderboardLegendList from "@/components/common/LeaderboardLegendList";
+import { useRouter } from "next/navigation";
 import { MdArrowForwardIos } from "react-icons/md";
 
 const player3 = "/assets/player3.png";
@@ -68,22 +70,27 @@ const leaderboardData = [
 ];
 
 const GlobalLeaderboard = () => {
+    const router = useRouter();
     return (
-        <section className="w-full max-w-7xl mx-auto px-4 py-12 md:py-20 flex flex-col gap-2">
+        <section className="w-full max-w-[90rem] mx-auto px-6 md:px-12 lg:px-20 py-12 md:py-20 flex flex-col gap-6">
             {/* Header section with title and decorative divider */}
-            <div className="relative flex flex-col md:flex-row items-center justify-between w-full h-12 md:h-16">
-                <h2 className="orbitron text-[19px] md:text-[27px] font-black text-[#E7EBEF] capitalize z-10  pr-4 md:pr-8">
+            <div className="relative flex flex-row items-center justify-between w-full h-12 md:h-20">
+                <h2 className="orbitron text-[18px] md:text-[27px] font-black text-[#E7EBEF] capitalize z-10 text-left pr-4 md:pr-8">
                     Global Leaderboard
                 </h2>
 
-                <button className="z-10 pl-4 md:pl-8 flex items-center gap-1 cursor-pointer text-[#00CCFF] hover:text-[#00CCFFEE] outfit text-xs md:text-[16px] font-medium tracking-wider group mt-4 md:mt-0">
+                <button 
+                  onClick={() => router.push("/leaderboard")}
+                  className="z-10 flex items-center gap-1 cursor-pointer text-[#00CCFF] hover:text-[#00CCFFEE] outfit text-[11px] md:text-[16px] font-medium tracking-wider group transition-all">
                     View Full Leaderboard
-                    <MdArrowForwardIos className="text-[13px] group-hover:translate-x-1 transition-transform" />
+                    <MdArrowForwardIos className="text-xs md:text-[13px] group-hover:translate-x-1 transition-transform" />
                 </button>
             </div>
 
             {/* Leaderboard List */}
-            <LeaderboardLegendList data={leaderboardData} />
+            <div className="w-full">
+                <LeaderboardLegendList data={leaderboardData} />
+            </div>
         </section>
     );
 };

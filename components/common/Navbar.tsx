@@ -46,7 +46,7 @@ const Navbar = () => {
           <img
             src="/logo.svg"
             alt="Logo"
-            className="object-contain w-36 md:w-44 lg:w-52"
+            className="object-contain w-36 md:w-52 lg:w-60"
           />
         </Link>
 

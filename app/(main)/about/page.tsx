@@ -43,7 +43,7 @@ const About = () => {
     ];
 
     return (
-        <section className="min-h-screen pt-28 pb-20 relative flex flex-col items-center">
+        <section className="min-h-screen pt-36 pb-20 relative flex flex-col items-center">
             {/* Centered outer container to "stuck" the content's horizontal position */}
             <div className="w-full max-w-[1400px] px-6 md:px-12 lg:px-20 flex flex-col">
                 <div className="max-w-4xl w-full flex flex-col gap-10">

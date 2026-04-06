@@ -25,7 +25,7 @@ const getThemeByRank = (rank: number) => {
         case 1:
             return {
                 wrapper: "",
-                cardSize: "w-[280px] md:w-[320px] h-[420px] md:h-[450px]",
+                cardSize: "w-[280px] md:w-[230px] lg:w-[320px] h-[420px] md:h-[360px] lg:h-[450px]",
                 borderColor: "border-[2px] border-[#FFBF004D]",
                 shadow: "shadow-[0_0_35px_rgba(255,184,0,0.35)]",
                 badgeBg: "bg-[#FFBF00]",
@@ -36,7 +36,7 @@ const getThemeByRank = (rank: number) => {
         case 2:
             return {
                 wrapper: "lg:mt-[40px]",
-                cardSize: "w-[260px] md:w-[280px] h-[380px] md:h-[400px]",
+                cardSize: "w-[260px] md:w-[210px] lg:w-[280px] h-[380px] md:h-[330px] lg:h-[400px]",
                 borderColor: "border-[2px] border-[#ABB3BA66]",
                 shadow: "shadow-none",
                 badgeBg: "bg-[#ABB3BA]",
@@ -47,7 +47,7 @@ const getThemeByRank = (rank: number) => {
         case 3:
             return {
                 wrapper: "lg:mt-[40px]",
-                cardSize: "w-[260px] md:w-[280px] h-[380px] md:h-[400px]",
+                cardSize: "w-[260px] md:w-[210px] lg:w-[280px] h-[380px] md:h-[330px] lg:h-[400px]",
                 borderColor: "border-[2px] border-[#C3652266]",
                 shadow: "shadow-none",
                 badgeBg: "bg-[#C36522]",
@@ -58,7 +58,7 @@ const getThemeByRank = (rank: number) => {
         default:
             return {
                 wrapper: "lg:mt-[40px]",
-                cardSize: "w-[260px] md:w-[280px] h-[380px] md:h-[400px]",
+                cardSize: "w-[260px] md:w-[210px] lg:w-[280px] h-[380px] md:h-[330px] lg:h-[400px]",
                 borderColor: "border-[2px] border-[#D1D5DB]/30",
                 shadow: "shadow-none",
                 badgeBg: "bg-[#D1D5DB]",
@@ -117,11 +117,13 @@ const TopLegends = () => {
                 </div>
 
                 {/* Cards Container */}
-                <div className="flex flex-col lg:flex-row items-center justify-center gap-10 md:gap-8 lg:gap-10">
+                <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-3 lg:gap-10">
                     {legends.map((legend) => {
                         const theme = getThemeByRank(legend.rank);
+                        const orderClass = legend.rank === 1 ? 'order-1 md:order-2' : legend.rank === 2 ? 'order-2 md:order-1' : 'order-3 md:order-3';
+                        
                         return (
-                        <div key={legend.rank} className={`flex flex-col items-center ${theme.wrapper || ''}`}>
+                        <div key={legend.rank} className={`flex flex-col items-center ${theme.wrapper || ''} ${orderClass}`}>
                             
                             {/* Top Icon */}
                             <div className="mb-4">

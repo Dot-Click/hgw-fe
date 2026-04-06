@@ -92,7 +92,7 @@ const PlayerDetail = () => {
 
                                 {/* Name */}
                                 <div className="flex flex-col gap-1 items-center md:items-start text-center md:text-left">
-                                    <div className="font-[900] orbitron leading-[1.1] md:leading-none flex flex-wrap justify-center md:justify-start gap-2 md:gap-3 text-[40px] md:text-[60px]">
+                                    <div className="font-[900] orbitron leading-[1.1] md:leading-none flex flex-wrap justify-center md:justify-start gap-2 md:gap-3 text-[25px] md:text-[30px] lg:text-[40px] xl:text-[60px]">
                                         <h1 className="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">{player.name}</h1>
                                         <h1 className="text-[#00CCFF] drop-shadow-[0_0_15px_rgba(0,204,255,0.4)]">{player.lastName}</h1>
                                     </div>

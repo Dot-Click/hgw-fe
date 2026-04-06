@@ -53,7 +53,7 @@ const PlayerCards: React.FC = () => {
             {/* Player Cards Grid with animations */}
             <motion.div 
                 layout 
-                className="flex justify-center w-full flex-wrap gap-4"
+                className="grid grid-cols-1 md:flex md:flex-wrap lg:grid lg:grid-cols-3 xl:grid-cols-4 justify-items-center gap-3 md:gap-6 lg:gap-8"
             >
                 <AnimatePresence mode="popLayout">
                     {filteredPlayers.map((player) => (

@@ -15,16 +15,16 @@ const PodcastHeader = () => {
                 </div>
 
                 {/* Featured Episode Section (Two Columns) */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10  items-start">
 
                     {/* Left Column: Featured Image Card */}
                     <div className="lg:col-span-6 xl:col-span-6 relative">
-                        <div className="relative h-[360px] w-full rounded-[23px] overflow-hidden border border-[#747A9499] shadow-[0_0_40px_rgba(0,0,0,0.5)] group">
+                        <div className="relative h-[220px] md:h-[400px] lg:h-[400px]  xl:h-[360px] w-full rounded-[23px] overflow-hidden border border-[#747A9499] shadow-[0_0_40px_rgba(0,0,0,0.5)] group">
                             <Image
                                 src="/assets/pdimg.svg"
                                 alt="Podcast Featured Episode"
                                 fill
-                                className="object-cover h-full transition-transform duration-700"
+                                className="object-cover lg:object-right xl:object-center h-full transition-transform duration-700"
                                 priority
                             />
                             {/* Overlay Gradient */}

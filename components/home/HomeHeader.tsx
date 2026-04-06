@@ -37,7 +37,7 @@ const HomeHeader = () => {
         {/* Main Hero Header */}
         <div className="flex flex-col gap-1">
           <div className="text-[32px] md:text-[63px] flex flex-wrap items-center orbitron font-[900] leading-tight">
-            <h1 className="    text-[#00CCFF] text-shadow-[0px_-5px_25.6px_#00CCFF6E]">How  <span className="text-[#FFFFFF] text-shadow-[0px_-5px_25.6px_#00000020]">GOOD</span> WAS</h1>
+            <h1 className=" text-center bg-red-500 w-full    text-[#00CCFF] text-shadow-[0px_-5px_25.6px_#00CCFF6E]">How  <span className="text-[#FFFFFF] text-shadow-[0px_-5px_25.6px_#00000020]">GOOD</span> WAS</h1>
           </div>
           <p className="text-[#7B899D] font-[400] text-[16px] md:text-[20px] outfit leading-relaxed">
             Archive of the Untouchable. Graded on Domination.
@@ -45,7 +45,7 @@ const HomeHeader = () => {
         </div>
 
         {/* Search Bar Section */}
-        <div className="w-full max-w-3xl mt-2">
+        <div className="w-full md:w-[75%] lg:w-[90%] max-w-3xl  mt-2">
           <InputGroup className="h-14 md:h-16 px-6 bg-[#111217CC] backdrop-blur-xl border border-[#00CCFF] rounded-[18px] flex items-center gap-4 transition-all shadow-[0_0_10px_rgba(0,204,255,0.15)] group">
             <InputGroup.Prefix>
               <FiSearch className="text-[#00CCFF] text-xl md:text-2xl" aria-hidden="true" />
@@ -55,45 +55,45 @@ const HomeHeader = () => {
               type="text"
               aria-label="Search for a legend"
               placeholder="How Good Was Ronaldo?"
-              className="bg-transparent outline-none w-full text-white outfit text-[16px] md:text-[20px] placeholder:text-[#7B899D]"
+              className="bg-transparent outline-none w-full  text-white outfit text-[16px] md:text-[20px] placeholder:text-[#7B899D]"
             />
           </InputGroup>
         </div>
 
         {/* Cta Buttons */}
-        <div className="flex flex-col md:flex-row items-center gap-4 mt-2">
+        <div className="flex flex-row items-center gap-2 md:gap-4 mt-2 w-full md:w-auto px-5 md:px-0">
           <Button
             onPress={() => router.push("/leaderboard")}
             id="explore-leaderboard-btn"
-            className="w-full md:w-auto px-8 py-7 bg-[#00CCFF] text-[#0B0B0F] font-[700] rounded-[12px] flex items-center gap-3 orbitron text-[14px] md:text-[16px] shadow-[0_0_25px_rgba(0,204,255,0.3)] hover:bg-[#00B8E6] transition-all"
+            className="flex-1 md:w-auto px-2 md:px-8 py-4 md:py-7 bg-[#00CCFF] text-[#0B0B0F] font-[700] rounded-[10px] md:rounded-[12px] flex items-center justify-center gap-1.5 md:gap-3 orbitron text-[9px] md:text-[16px] shadow-[0_0_25px_rgba(0,204,255,0.3)] hover:bg-[#00B8E6] transition-all min-w-0"
           >
-            <LuTrophy className="text-2xl" aria-hidden="true" />
-            Explore Leaderboard
+            <LuTrophy className="text-[7px] md:text-2xl shrink-0" aria-hidden="true" />
+            <span className="">Explore Leaderboard</span>
           </Button>
 
           <Button
             onPress={() => router.push("/death-match")}
             id="start-deathmatch-btn"
-            className="w-full md:w-auto px-8 py-7 bg-[#1F2128] text-[#7B899D] font-bold rounded-[14px] flex items-center gap-3 orbitron text-[14px] md:text-[16px] border border-[#24262E] hover:text-white hover:bg-[#24262E] transition-all"
+            className="flex-1 md:w-auto px-2 md:px-8 py-4 md:py-7 bg-[#1F2128] text-[#7B899D] font-bold rounded-[10px] md:rounded-[14px] flex items-center justify-center gap-1.5 md:gap-3 orbitron text-[9px] md:text-[16px] border border-[#24262E] hover:text-white hover:bg-[#24262E] transition-all min-w-0"
           >
-            <LuSwords className="text-xl" aria-hidden="true" />
-            Start Death Match
+            <LuSwords className="text-[7px] md:text-2xl shrink-0" aria-hidden="true" />
+            <span className="truncate">Start Death Match</span>
           </Button>
         </div>
 
         {/* Footer Stats Line */}
-        <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 mt-8 opacity-80">
-          <div className="flex items-center gap-2.5 text-[#AFAFAF] text-[12px] md:text-[16px] outfit font-[400] tracking-wide">
-            <LuUsers className="text-[#00CCFF] text-lg" aria-hidden="true" />
-            <span className="sr-only">Stat: </span>10,000+ Legends Ranked
+        <div className="flex flex-row items-center justify-center gap-x-4 md:gap-x-10 gap-y-0 mt-8 opacity-80 w-full overflow-x-visible">
+          <div className="flex items-center gap-1.5 md:gap-2.5 text-[#AFAFAF] text-[9px] md:text-[16px] outfit font-[400] tracking-wide whitespace-nowrap">
+            <LuUsers className="text-[#00CCFF] text-sm md:text-lg" aria-hidden="true" />
+            Ranked Legends
           </div>
-          <div className="flex items-center gap-2.5 text-[#AFAFAF] text-[12px] md:text-[16px] outfit font-[400] tracking-wide">
-            <FiGlobe className="text-[#00CCFF] text-lg" aria-hidden="true" />
-            <span className="sr-only">Coverage: </span>30+ Sports Covered
+          <div className="flex items-center gap-1.5 md:gap-2.5 text-[#AFAFAF] text-[9px] md:text-[16px] outfit font-[400] tracking-wide whitespace-nowrap">
+            <FiGlobe className="text-[#00CCFF] text-sm md:text-lg" aria-hidden="true" />
+            Sports Covered
           </div>
-          <div className="flex items-center gap-2.5 text-[#AFAFAF] text-[12px] md:text-[16px] outfit font-[400] tracking-wide">
-            <LuBrain className="text-[#00CCFF] text-lg" aria-hidden="true" />
-            <span>AI Powered HGW Analysis</span>
+          <div className="flex items-center gap-1.5 md:gap-2.5 text-[#AFAFAF] text-[9px] md:text-[16px] outfit font-[400] tracking-wide whitespace-nowrap">
+            <LuBrain className="text-[#00CCFF] text-sm md:text-lg" aria-hidden="true" />
+            AI Analysis
           </div>
         </div>
 

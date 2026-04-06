@@ -32,8 +32,8 @@ const PodcastDetails = () => {
     ];
 
     return (
-        <div className="w-full max-w-[1400px] px-6 md:px-12 lg:px-20 mt-12 relative z-10">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="w-full max-w-[1400px] px-4 md:px-12 lg:px-20 mt-8 md:mt-12 relative z-10">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
                 {stats.map((stat, index) => (
                     <div 
                         key={index}

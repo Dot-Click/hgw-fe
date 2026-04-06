@@ -32,7 +32,7 @@ const Database = () => {
                     <DatabaseFilters />
 
                     {/* Legends Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 justify-items-center">
                         {PLAYERS_DATA.map((player) => (
                             <Card key={player.id} player={player} />
                         ))}
