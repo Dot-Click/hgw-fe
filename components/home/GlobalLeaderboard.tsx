@@ -1,6 +1,7 @@
 "use client";
 
 import LeaderboardLegendList from "@/components/common/LeaderboardLegendList";
+import { Button } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { MdArrowForwardIos } from "react-icons/md";
 
@@ -79,12 +80,12 @@ const GlobalLeaderboard = () => {
                     Global Leaderboard
                 </h2>
 
-                <button 
+                <Button 
                   onClick={() => router.push("/leaderboard")}
-                  className="z-10 flex items-center gap-1 cursor-pointer text-[#00CCFF] hover:text-[#00CCFFEE] outfit text-[11px] md:text-[16px] font-medium tracking-wider group transition-all">
+                  className="z-10 flex bg-transparent items-center gap-1 cursor-pointer text-[#00CCFF] hover:text-[#00CCFFEE] outfit text-[11px] md:text-[16px] font-medium tracking-wider group transition-all">
                     View Full Leaderboard
                     <MdArrowForwardIos className="text-xs md:text-[13px] group-hover:translate-x-1 transition-transform" />
-                </button>
+                </Button>
             </div>
 
             {/* Leaderboard List */}
