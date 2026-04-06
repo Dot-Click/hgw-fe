@@ -44,7 +44,7 @@ const Navbar = () => {
         {/* Logo */}
         <Link href="/" id="navbar-logo" className="flex items-center gap-2">
           <img
-            src="/logo.png"
+            src="/logo.svg"
             alt="Logo"
             className="object-contain w-36 md:w-44 lg:w-52"
           />
@@ -58,8 +58,8 @@ const Navbar = () => {
               id={link.id}
               href={link.path}
               className={`px-[10px] py-2 text-[16px] font-[500] transition-all duration-200 rounded-[8px] ${isActive(link.path)
-                  ? "text-[#00CCFF] bg-[#00CCFF1A]"
-                  : "text-[#7B899D] hover:text-[#00CCFF] hover:bg-white/5"
+                ? "text-[#00CCFF] bg-[#00CCFF1A]"
+                : "text-[#7B899D] hover:text-[#00CCFF] hover:bg-white/5"
                 }`}
             >
               {link.name}
@@ -90,8 +90,8 @@ const Navbar = () => {
       {/* Mobile Sidebar Overlay */}
       <div
         className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] transition-opacity duration-300 lg:hidden ${isOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
+          ? "opacity-100 pointer-events-auto"
+          : "opacity-0 pointer-events-none"
           }`}
         onClick={toggleMenu}
       />
@@ -99,12 +99,12 @@ const Navbar = () => {
       {/* Mobile Sidebar */}
       <div
         className={`fixed top-0 right-0 h-full w-[300px] bg-[#0D0E12] border-l border-[#24262E] z-[70] transform transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) lg:hidden flex flex-col p-6 font-sans ${isOpen
-            ? "translate-x-0 shadow-[-20px_0_40px_rgba(0,204,255,0.1)]"
-            : "translate-x-full"
+          ? "translate-x-0 shadow-[-20px_0_40px_rgba(0,204,255,0.1)]"
+          : "translate-x-full"
           }`}
       >
         <div className="flex items-center justify-between mb-8 border-b border-[#24262E] pb-6">
-          <img src="/logo.png" alt="Logo" className="h-5 object-contain" />
+          <img src="/logo.svg" alt="Logo" className="h-5 object-contain" />
           <button
             onClick={toggleMenu}
             className="bg-[#1B1C22] p-1 rounded-lg text-[#7B899D] hover:text-[#00CCFF] transition-colors cursor-pointer"
@@ -123,14 +123,14 @@ const Navbar = () => {
               href={link.path}
               onClick={toggleMenu}
               className={`flex items-center gap-4 px-4 py-3.5 text-[16px] font-[500] transition-all duration-300 rounded-[14px] ${isActive(link.path)
-                  ? "text-[#00CCFF] bg-[#00CCFF14] shadow-[inset_0_0_10px_#00CCFF0D] border-l-4 border-[#00CCFF]"
-                  : "text-[#7B899D] hover:text-[#FFFFFF] hover:bg-[#1B1C22]"
+                ? "text-[#00CCFF] bg-[#00CCFF14] shadow-[inset_0_0_10px_#00CCFF0D] border-l-4 border-[#00CCFF]"
+                : "text-[#7B899D] hover:text-[#FFFFFF] hover:bg-[#1B1C22]"
                 }`}
             >
               <span
                 className={`text-xl ${isOpen
-                    ? "animate-in fade-in slide-in-from-left-4 duration-500"
-                    : ""
+                  ? "animate-in fade-in slide-in-from-left-4 duration-500"
+                  : ""
                   }`}
               >
                 {link.icon}

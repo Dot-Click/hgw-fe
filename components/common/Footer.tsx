@@ -26,7 +26,7 @@ const Footer = () => {
         {/* Branding Section */}
         <div className="flex flex-col gap-6">
           <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="HGW Legend Vault" className="h-10 md:h-8 object-contain" />
+            <img src="/logo.svg" alt="HGW Legend Vault" className="h-10 md:h-8 object-contain" />
           </div>
           <p className="text-[#7B899D]  text-[15px] font-[400] max-w-[280px]">
             The definitive archive ranking the greatest legends of sport and culture.

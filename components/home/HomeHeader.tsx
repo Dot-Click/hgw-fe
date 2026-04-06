@@ -2,12 +2,15 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { FiSearch, FiZap, FiTarget, FiGlobe } from "react-icons/fi";
 import { LuBrain, LuSwords, LuTrophy, LuUsers } from "react-icons/lu";
 import { Button, InputGroup } from "@heroui/react";
+import AiModal from "../common/AiModal";
 
 const HomeHeader = () => {
   const router = useRouter();
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
 
   return (
     <header className="min-h-[85vh] pt-24 md:pt-40 flex flex-col items-center justify-center relative w-full overflow-hidden">
@@ -97,7 +100,10 @@ const HomeHeader = () => {
       </div>
 
       {/* Robot Mascot Buddy */}
-      <div className="absolute bottom-0 right-4 md:bottom-0 md:right-[12%] z-20 group cursor-pointer" role="complementary" aria-label="HGW Buddy Assistant">
+      <div 
+        onClick={() => setIsAiModalOpen(true)}
+        className="absolute bottom-0 right-4 md:bottom-0 md:right-[12%] z-20 group cursor-pointer" role="complementary" aria-label="HGW Buddy Assistant"
+      >
         <div className="relative">
           <Image
             src="/assets/robot.png"
@@ -113,6 +119,7 @@ const HomeHeader = () => {
         </div>
       </div>
 
+      <AiModal isOpen={isAiModalOpen} onClose={() => setIsAiModalOpen(false)} />
     </header>
   );
 };

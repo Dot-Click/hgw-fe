@@ -12,17 +12,17 @@ export default function AdminLayout({
       <nav className="bg-[#111217] border-b border-[#24262E] px-6 py-4 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-8">
           <Link href="/">
-            <img src="/logo.png" alt="Logo" className="w-36 md:w-44 object-contain" />
+            <img src="/logo.svg" alt="Logo" className="w-36 md:w-44 object-contain" />
           </Link>
           <div className="hidden md:flex items-center gap-6 text-sm font-medium orbitron tracking-wider">
-            <Link 
-              href="/dashboard" 
+            <Link
+              href="/dashboard"
               className="text-[#00CCFF] hover:opacity-80 transition-opacity"
             >
               DASHBOARD
             </Link>
-            <Link 
-              href="/users" 
+            <Link
+              href="/users"
               className="text-[#7B899D] hover:text-white transition-colors"
             >
               USERS
@@ -30,13 +30,13 @@ export default function AdminLayout({
           </div>
         </div>
         <div className="flex items-center gap-4">
-           <div className="hidden sm:block text-right">
-             <p className="text-xs text-[#00CCFF] orbitron font-bold">ADMIN PANEL</p>
-             <p className="text-[10px] text-[#7B899D]">Super User</p>
-           </div>
-           <div className="w-10 h-10 rounded-xl bg-[#00CCFF1A] border border-[#00CCFF33] flex items-center justify-center text-[#00CCFF] font-bold">
-             A
-           </div>
+          <div className="hidden sm:block text-right">
+            <p className="text-xs text-[#00CCFF] orbitron font-bold">ADMIN PANEL</p>
+            <p className="text-[10px] text-[#7B899D]">Super User</p>
+          </div>
+          <div className="w-10 h-10 rounded-xl bg-[#00CCFF1A] border border-[#00CCFF33] flex items-center justify-center text-[#00CCFF] font-bold">
+            A
+          </div>
         </div>
       </nav>
 

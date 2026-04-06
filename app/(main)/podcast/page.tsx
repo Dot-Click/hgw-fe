@@ -9,10 +9,10 @@ export const metadata: Metadata = {
 
 const Podcast = () => {
     return (
-        // <PodcastContainer />
-        <div className="min-h-screen flex uppercase text-2xl outfit tracking-widest items-center justify-center">
-            in progress
-        </div>
+        <PodcastContainer />
+        // <div className="min-h-screen flex uppercase text-2xl outfit tracking-widest items-center justify-center">
+        //     in progress
+        // </div>
     );
 };
 
