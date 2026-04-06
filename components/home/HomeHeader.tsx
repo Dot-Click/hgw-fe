@@ -37,7 +37,7 @@ const HomeHeader = () => {
         {/* Main Hero Header */}
         <div className="flex flex-col gap-1">
           <div className="text-[32px] md:text-[63px] flex flex-wrap items-center orbitron font-[900] leading-tight">
-            <h1 className=" text-center bg-red-500 w-full    text-[#00CCFF] text-shadow-[0px_-5px_25.6px_#00CCFF6E]">How  <span className="text-[#FFFFFF] text-shadow-[0px_-5px_25.6px_#00000020]">GOOD</span> WAS</h1>
+            <h1 className=" text-center w-full    text-[#00CCFF] text-shadow-[0px_-5px_25.6px_#00CCFF6E]">How  <span className="text-[#FFFFFF] text-shadow-[0px_-5px_25.6px_#00000020]">GOOD</span> WAS</h1>
           </div>
           <p className="text-[#7B899D] font-[400] text-[16px] md:text-[20px] outfit leading-relaxed">
             Archive of the Untouchable. Graded on Domination.
