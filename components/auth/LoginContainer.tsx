@@ -171,7 +171,7 @@ const LoginContainer = () => {
                                 Remember me
                             </span>
                         </div>
-                        <Link href="/forgot-password" className='text-[#00CCFF] text-[12px] md:text-[14px] hover:underline'>Forgot Password?</Link>
+                        <Link href="/reset-password" className='text-[#00CCFF] text-[12px] md:text-[14px] hover:underline'>Forgot Password?</Link>
                     </div>
 
 
