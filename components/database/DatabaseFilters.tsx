@@ -99,6 +99,7 @@ const DatabaseFilters = () => {
                                         <ListBox.Item 
                                             key={opt.id} 
                                             id={opt.id}
+                                            textValue={opt.name}
                                             className="px-2.5 py-1.5 rounded-lg text-[#7B899D] hover:text-white hover:bg-[#24262E] transition-all cursor-pointer outfit text-[14px]"
                                         >
                                             {opt.name}
