@@ -27,6 +27,10 @@ export const metadata: Metadata = {
   title: "HGW Legend Vault",
   description: "The definitive archive ranking the greatest legends of sport and culture.",
   keywords: ["Legends", "Sports", "Culture", "Archive", "Rankings"],
+  icons: {
+    icon: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
@@ -35,8 +39,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html 
-      lang="en" 
+    <html
+      lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${outfit.variable} ${orbitron.variable} h-full antialiased`}
       suppressHydrationWarning
     >
