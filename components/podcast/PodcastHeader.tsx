@@ -5,9 +5,22 @@ import { FiCalendar, FiClock, FiExternalLink, FiHeadphones } from 'react-icons/f
 import { IoMicOutline, IoPersonOutline, IoStarOutline } from 'react-icons/io5'
 
 const PodcastHeader = () => {
-  return (
-       <div className="w-full max-w-[1400px] px-6 md:px-12 lg:px-20 flex flex-col gap-3 relative z-10">
+    return (
+        <div className="w-full relative">
+            {/* BACKGROUND IMAGE WITH OVERLAY */}
+            <div className="absolute inset-0 z-0 select-none pointer-events-none">
+                <Image
+                    src="/assets/podcastBg.png"
+                    alt="Background"
+                    fill
+                    className="object-cover opacity-100"
+                    priority
+                />
+                {/* Optional gradient overlay to blend into the dark theme */}
+                <div className="absolute inset-x-0 bottom-0 h-32 bg-linear-to-t from-[#0D0E12] to-transparent" />
+            </div>
 
+            <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20 flex flex-col gap-3 relative z-10 font-[400]">
                 {/* Section Title */}
                 <div className="flex items-center gap-2 text-[#00CCFF]  font-[500]">
                     <IoMicOutline className="text-[18px] md:text-[22px]" />
@@ -37,8 +50,8 @@ const PodcastHeader = () => {
 
                             {/* Play Button Overlay */}
                             <div className="absolute inset-0 flex items-center justify-center">
-                                <Button className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#00CCFF] text-[#0B0B0F] min-w-0 p-0 shadow-[0_0_30px_rgba(0,204,255,0.4)] hover:bg-[#0aabd3]">
-                                    <FaPlay className="text-5xl text-white ml-1" />
+                                <Button className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#00CCFF] text-[#0B0B0F] min-w-0 p-0 shadow-[0_0_30_rgba(0,204,255,0.4)] hover:bg-[#0aabd3]">
+                                    <FaPlay className="text-xl md:text-3xl text-white ml-1" />
                                 </Button>
                             </div>
                         </div>
@@ -114,9 +127,9 @@ const PodcastHeader = () => {
 
                     </div>
                 </div>
-
             </div>
-  )
+        </div>
+    )
 }
 
 export default PodcastHeader
