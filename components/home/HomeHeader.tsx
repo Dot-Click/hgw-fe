@@ -83,17 +83,17 @@ const HomeHeader = () => {
 
         {/* Footer Stats Line */}
         <div className="flex flex-row items-center justify-center gap-x-4 md:gap-x-10 gap-y-0 mt-8 opacity-80 w-full overflow-x-visible">
-          <div className="flex items-center gap-1.5 md:gap-2.5 text-[#AFAFAF] text-[9px] md:text-[16px] outfit font-[400] tracking-wide whitespace-nowrap">
+          <div className="flex flex-col md:flex-row items-center gap-1.5 md:gap-2.5 text-[#AFAFAF] text-[9px] md:text-[16px] outfit font-[400] tracking-wide whitespace-nowrap">
             <LuUsers className="text-[#00CCFF] text-sm md:text-lg" aria-hidden="true" />
-            Ranked Legends
+           10,000+ Legends Ranked
           </div>
-          <div className="flex items-center gap-1.5 md:gap-2.5 text-[#AFAFAF] text-[9px] md:text-[16px] outfit font-[400] tracking-wide whitespace-nowrap">
+          <div className="flex flex-col md:flex-row items-center gap-1.5 md:gap-2.5 text-[#AFAFAF] text-[9px] md:text-[16px] outfit font-[400] tracking-wide whitespace-nowrap">
             <FiGlobe className="text-[#00CCFF] text-sm md:text-lg" aria-hidden="true" />
-            Sports Covered
+           30+ Sports Covered
           </div>
-          <div className="flex items-center gap-1.5 md:gap-2.5 text-[#AFAFAF] text-[9px] md:text-[16px] outfit font-[400] tracking-wide whitespace-nowrap">
+          <div className="flex flex-col md:flex-row items-center gap-1.5 md:gap-2.5 text-[#AFAFAF] text-[9px] md:text-[16px] outfit font-[400] tracking-wide whitespace-nowrap">
             <LuBrain className="text-[#00CCFF] text-sm md:text-lg" aria-hidden="true" />
-            AI Analysis
+            AI Powered HGW Analysis
           </div>
         </div>
 

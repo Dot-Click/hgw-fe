@@ -156,10 +156,10 @@ const TopLegends = () => {
 
                                 {/* Bottom Content */}
                                 <div className="relative z-20 flex flex-col gap-1 w-full mt-auto">
-                                    <h3 className="text-white text-[20px] md:text-[24px] font-[700] orbitron leading-tight">
+                                    <h3 className="text-white text-[20px] md:text-[16px] font-[700] orbitron leading-tight">
                                         {legend.name}
                                     </h3>
-                                    <p className="text-[#7B899D] text-[13px] font-[500] md:text-[14px] outfit mb-2">
+                                    <p className="text-[#7B899D] text-[13px] font-[500] md:text-[12px] outfit mb-2">
                                         {legend.position}
                                     </p>
                                     
@@ -167,7 +167,7 @@ const TopLegends = () => {
                                         <span className={`px-3 py-1 rounded-full text-[10px] md:text-[11px] font-[500] outfit tracking-wider border ${getCategoryStyles(legend.category)}`}>
                                             {legend.category}
                                         </span>
-                                        <div className="flex items-center gap-0.5 text-[#7B899D]">
+                                        <div className="flex items-center gap-1 text-[#7B899D]">
                                             <BsTrophy className="text-[12px]" />
                                             <span className="text-[12px]  tracking-wide outfit md:text-[11px] font-[500]">{legend.trophies}</span>
                                         </div>
