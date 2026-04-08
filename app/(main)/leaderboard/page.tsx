@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
-import LeaderBoardHeader from '@/components/leaderboard/LeaderBoardHeader';
 import TopLegends from '@/components/leaderboard/TopLegends';
 import Ranking from '@/components/leaderboard/Ranking';
+import LeaderBoardHeader from '@/components/leaderboard/LeaderBoardHeader';
 
 export const metadata: Metadata = {
     title: 'Leaderboard | HGW',
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 const LeaderBoardPage = () => {
     return (
         <div className="flex flex-col gap-2 w-full">
-            <LeaderBoardHeader />
+            <LeaderBoardHeader/>
             <TopLegends />
             <Ranking />
 

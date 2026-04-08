@@ -2,15 +2,18 @@
 
 import React from "react"
 import { FiPlus, FiUpload, FiSearch, FiFilter } from "react-icons/fi"
-import { Button, InputGroup, cn } from "@heroui/react"
+import { Button, InputGroup, cn, useOverlayState } from "@heroui/react"
+import BulkImportModal from "./BulkImportModal"
 
 const PlayersHeader = () => {
+  const state = useOverlayState();
+
   return (
     <div className="flex flex-col gap-8 mb-8">
       {/* Top Section: Title & Action Buttons */}
       <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-col gap-1">
-          <h1 className="text-3xl font-[700] tracking-wider text-white sm:text-4xl orbitron">
+          <h1 className="text-2xl font-[900] text-white orbitron tracking-widest">
             Players
           </h1>
           <p className="text-sm text-zinc-400 outfit tracking-wide">
@@ -20,6 +23,7 @@ const PlayersHeader = () => {
 
         <div className="grid grid-cols-1 xs:grid-cols-2 sm:flex items-center gap-3 w-full lg:w-auto">
           <Button
+            onPress={state.open}
             className="flex-1 sm:flex-none h-11 px-4 sm:px-6 rounded-xl border border-[#2A3040] bg-[#1A2333]/50 text-zinc-300 font-bold orbitron text-[12px] sm:text-[13px] uppercase tracking-wider hover:bg-[#2A3040] hover:text-white transition-all flex items-center justify-center gap-2"
           >
             <FiUpload size={16} />
@@ -34,6 +38,8 @@ const PlayersHeader = () => {
           </Button>
         </div>
       </div>
+
+      <BulkImportModal isOpen={state.isOpen} onOpenChange={state.setOpen} />
 
       {/* Filter & Search Bar Section */}
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
