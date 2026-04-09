@@ -82,14 +82,14 @@ const DeathMatchHeader = ({
             {/* Circular Image Container (Scaled to 200px height) */}
             <div className="w-[68px] h-[68px] rounded-full border border-white/10 overflow-hidden mb-2 flex-shrink-0">
               <Image
-                src={player.image}
-                alt={player.name}
-                width={68}
-                height={68}
+                src={player.image}             
+                alt={player.name}                                      
+                width={68}   
+                height={68}    
                 className="object-cover object-top w-full h-full"
-              />
-            </div>
-
+              />   
+            </div>            
+                      
             {/* Name */}
             <h2 className="orbitron text-[#E7EBEF] text-[18px] font-[700] tracking-wide text-center mb-1 leading-tight">
               {player.name}
@@ -113,11 +113,11 @@ const DeathMatchHeader = ({
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center">   
             <div className={`w-[65px] h-[65px] rounded-full border border-dashed flex items-center justify-center mb-1 transition-colors ${isActive ? "border-[#00CCFF] bg-[#00CCFF]/10" : "border-[#3A455C] group-hover:border-[#7B899D]"
               }`}>
-              <h1 className={`text-[26px] font-[400] transition-colors bg-transparent ${isActive ? "text-[#00CCFF]" : "text-[#7B899D] group-hover:text-white"
-                }`}>?</h1>
+              <span className={`text-[26px] font-[400] transition-colors bg-transparent ${isActive ? "text-[#00CCFF]" : "text-[#7B899D] group-hover:text-white"
+                }`}>?</span>
             </div>
             <span className="text-[#7B899D99] text-[12px] tracking-wider font-[700]">Player {slot}</span>
             <div className="h-[20px] flex items-center justify-center mt-1">

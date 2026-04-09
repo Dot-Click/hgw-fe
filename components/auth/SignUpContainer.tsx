@@ -64,9 +64,9 @@ const SignUpContainer = () => {
             <div className='bg-[#111217FF] gap-5.5 flex flex-col px-5 md:px-7 py-5 items-center justify-center h-fit w-full max-w-[430px] rounded-[22px] border border-[#24262E]'>
 
                 <div className='flex flex-col gap-1.5'>
-                    <div className='text-[#E7EBEF] leading-8 lustra-bold font-[400] text-[20px] md:text-[28px] text-center'>
+                    <div className='text-[#E7EBEF] leading-8 orbitron font-[900] text-[20px] md:text-[24px] text-center'>
                         <h1>How Good Was</h1>
-                        <h1>account</h1>
+                        <h2>account</h2>
                     </div>
                     <p className=' text-[11px] md:text-[16px] text-[#7B899D]'>Join the archive of sporting and cultural legends</p>
                 </div>
@@ -74,12 +74,12 @@ const SignUpContainer = () => {
                 <div className='w-full flex flex-col gap-3'>
                     <Button className='flex justify-center cursor-pointer items-center rounded-[12px] w-full px-4 py-6 border border-[#24262E] bg-[#404040] hover:bg-[#383838] gap-2 transition-all'>
                         <FcGoogle className='text-lg md:text-2xl' />
-                        <span className=' text-[13px] md:text-[16px] text-[#FFFFFF] font-medium'>Continue with Google</span>
+                        <span className=' text-[13px] md:text-[16px] text-[#FFFFFF] font-[500] outfit'>Continue with Google</span>
                     </Button>
 
                     <Button className='flex justify-center cursor-pointer items-center rounded-[12px] w-full px-4 py-6 border border-[#24262E] bg-[#2258C3] hover:bg-[#1f4eac] gap-2 transition-all'>
                         <MdFacebook className='text-lg md:text-2xl' />
-                        <span className=' text-[13px] md:text-[16px] text-[#FFFFFF] font-medium'>Continue with Facebook</span>
+                        <span className=' text-[13px] md:text-[16px] text-[#FFFFFF] font-[500] outfit'>Continue with Facebook</span>
                     </Button>
                 </div>
 
@@ -233,13 +233,13 @@ const SignUpContainer = () => {
                     {/* Sign up button  */}
                     <Button
                         type="submit"
-                        className='w-full mt-2 cursor-pointer bg-[linear-gradient(97.81deg,#00CCFF_0%,#3377FF_100%)] hover:bg-[linear-gradient(97.81deg,#05aad3_0%,#3377FF_100%)] text-[#0B0B0F] font-bold py-2.5 md:py-5 rounded-[12px] transition-colors orbitron text-[13px] md:text-[15px]'
+                        className='w-full mt-2 cursor-pointer bg-[linear-gradient(97.81deg,#00CCFF_0%,#3377FF_100%)] hover:bg-[linear-gradient(97.81deg,#05aad3_0%,#3377FF_100%)] text-[#0B0B0F] font-[700] py-2.5 md:py-5 rounded-[12px] transition-colors orbitron text-[13px] md:text-[15px]'
                     >
-                        CREATE ACCOUNT
+                        Create Account
                     </Button>
 
-                    <p className='text-[#7B899D] flex items-center  justify-center gap-1 text-[12px] md:text-[15px] text-center'>
-                        Already have an account? <Link href="/login" className='text-[#00CCFF] font-medium hover:underline'>Sign In</Link>
+                    <p className='text-[#7B899D] flex items-center  justify-center gap-2 text-[12px] md:text-[15px] text-center'>
+                        Already have an account? <Link href="/login" className='text-[#00CCFF] font-[500] hover:underline'>Sign In</Link>
                     </p>
 
                 </form>

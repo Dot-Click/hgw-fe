@@ -61,7 +61,7 @@ const LoginContainer = () => {
 
 
                 <div className='flex flex-col items-center leading-7'>
-                    <h1 className='text-[#E7EBEF] font-bold orbitron text-[21px] md:text-[27px]'>Welcome Back</h1>
+                    <h1 className='text-[#E7EBEF] font-bold tracking-wide orbitron text-[21px] md:text-[27px]'>Welcome Back</h1>
                     <p className='text-[13px] md:text-[16px] text-[#7B899D]'>Access the HGW Legend Vault</p>
                 </div>
 
@@ -177,7 +177,7 @@ const LoginContainer = () => {
 
                     {/* Sign in button  */}
                     <Button type="submit" className='w-full mt-2   cursor-pointer bg-[linear-gradient(97.81deg,#00CCFF_0%,#3377FF_100%)] hover:bg-[linear-gradient(97.81deg,#05aad3_0%,#3377FF_100%)] text-[#0B0B0F] font-bold py-2 md:py-5 rounded-[12px] transition-colors orbitron text-[12px] md:text-[15px]'>
-                        SIGN IN
+                        Enter the Vault
                     </Button>
 
                     <p className='text-[#7B899D] flex items-center justify-center gap-1 text-[12px] md:text-[15px] text-center'>

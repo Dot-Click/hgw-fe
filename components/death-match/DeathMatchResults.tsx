@@ -42,7 +42,7 @@ const DeathMatchResults = ({
                 {/* Overall HGW Score Card */}
                 <div className="w-full bg-[linear-gradient(102.05deg,_#1B1C22_0%,_#0D0E12_100%)] border border-gray-800 rounded-[12px] flex flex-col justify-center items-center p-8 mb-8 relative overflow-hidden">
                     <div className="flex justify-center items-center mb-6">
-                        <h1 className="text-[#7B899D99] orbitron text-[12px] ml-12 tracking-wider font-[400] uppercase">Overall HGW Score</h1>
+                        <h2 className="text-[#7B899D99] orbitron text-[12px] ml-12 tracking-wider font-[400] uppercase">Overall HGW Score</h2>
                     </div>
                     <div className="flex items-center justify-between px-4 md:px-10 gap-4 md:gap-10">
                         <div className="text-center group">

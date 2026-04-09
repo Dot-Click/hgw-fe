@@ -72,7 +72,7 @@ const Ranking = () => {
     return (
         <section className="w-full max-w-7xl  mx-auto px-4 py-8">
             <div className="text-center  w-full ">
-                <h1 className="text-[#7B899D]  font-[700] tracking-[5px] text-[13px] uppercase orbitron ">Ranking</h1>
+                <h2 className="text-[#7B899D]  font-[700] tracking-[5px] text-[13px] uppercase orbitron ">Ranking</h2>
             </div>
             <LeaderboardLegendList data={leaderboardData} />
         </section>

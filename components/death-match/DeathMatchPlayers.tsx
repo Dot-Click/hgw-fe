@@ -21,7 +21,7 @@ const players = [
     category: "Football",
     country: "Argentina",
     rating: 98.5,
-    image: "/assets/img1.png",
+    image: "/assets/img3.png",
   },
   {
     id: 2,
@@ -30,7 +30,7 @@ const players = [
     category: "Football",
     country: "Brazil",
     rating: 97.8,
-    image: "/assets/img2.png",
+    image: "/assets/img5.png",
   },
   {
     id: 3,
@@ -39,7 +39,7 @@ const players = [
     category: "Football",
     country: "Portugal",
     rating: 97.1,
-    image: "/assets/img3.png",
+    image: "/assets/img2.png",
   },
   {
     id: 4,
@@ -84,7 +84,7 @@ const players = [
     category: "Rugby",
     country: "New Zealand",
     rating: 91.4,
-    image: "/assets/img2.png",
+    image: "/assets/img1.png",
   },
 ];
 

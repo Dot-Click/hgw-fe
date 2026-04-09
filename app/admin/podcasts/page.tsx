@@ -6,6 +6,7 @@ import AdminPodcastDetails from '@/components/podcast/AdminPodcastDetails'
 export const metadata: Metadata = {
   title: 'Podcasts Management | HGW Admin',
   description: 'Manage and publish podcast episodes and embeds for the Legend Vault.',
+  keywords: ['Podcasts Management', 'HGW Podcasts', 'Publish Podcasts', 'Legend Vault Audio', 'Admin Podcasts'],
 }
 
 const PodcastPage = () => {

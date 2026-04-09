@@ -94,7 +94,7 @@ const PlayerDetail = () => {
                                 <div className="flex flex-col gap-1 items-center md:items-start text-center md:text-left">
                                     <div className="font-[900] orbitron leading-[1.1] md:leading-none flex flex-wrap justify-center md:justify-start gap-2 md:gap-3 text-[25px] md:text-[30px] lg:text-[40px] xl:text-[60px]">
                                         <h1 className="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">{player.name}</h1>
-                                        <h1 className="text-[#00CCFF] drop-shadow-[0_0_15px_rgba(0,204,255,0.4)]">{player.lastName}</h1>
+                                        <span className="text-[#00CCFF] drop-shadow-[0_0_15px_rgba(0,204,255,0.4)]">{player.lastName}</span>
                                     </div>
 
                                     <p className="text-[#00CCFF] outfit text-[14px] md:text-[20px] font-[400] mt-1 md:mt-0">
@@ -143,9 +143,9 @@ const PlayerDetail = () => {
                                         <BsTrophy className="text-[#FFBF00] text-[18px] md:text-[20px]" />
                                         <span className="text-[#E7EBEF] text-[16px] md:text-[18px] font-bold orbitron tracking-wide">Major Trophies</span>
                                     </div>
-                                    <h1 className=" text-[#FFBF00] text-[18px] md:text-[20px] font-[700] orbitron drop-shadow-[0px_0px_20px_0px_#FFBF0026,0px_0px_6px_0px_#FFBF0066]">
+                                    <h2 className=" text-[#FFBF00] text-[18px] md:text-[20px] font-[700] orbitron drop-shadow-[0px_0px_20px_0px_#FFBF0026,0px_0px_6px_0px_#FFBF0066]">
                                         {player.trophies}
-                                    </h1>
+                                    </h2>
                                 </div>
 
                                 {/* Bottom row: Pills */}
@@ -225,8 +225,8 @@ const PlayerDetail = () => {
                                     {pillarsData.map((pillar, index) => (
                                         <div key={index} className="flex flex-col gap-1.5 md:gap-1 w-full">
                                             <div className="flex justify-between items-center text-[12px] md:text-[13px] outfit text-[#A0AEC0]">
-                                                <h1 className="text-[#D1D9E0] font-[400] outfit text-[13px] md:text-[14px]">{pillar.label}</h1>
-                                                <h1 className="text-[#00CCFF] font-[700] tracking-wider orbitron text-[12px] md:text-[13px]">{pillar.score}</h1>
+                                                <span className="text-[#D1D9E0] font-[400] outfit text-[13px] md:text-[14px]">{pillar.label}</span>
+                                                <span className="text-[#00CCFF] font-[700] tracking-wider orbitron text-[12px] md:text-[13px]">{pillar.score}</span>
                                             </div>
                                             <div className="w-full h-[5px] bg-[#1A1C23] border border-[#24262E]/50 rounded-full overflow-hidden">
                                                 <div

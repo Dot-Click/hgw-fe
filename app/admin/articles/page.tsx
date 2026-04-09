@@ -6,6 +6,7 @@ import ArticleTable from '@/components/article/ArticleTable'
 export const metadata: Metadata = {
   title: 'Articles Management | HGW Admin',
   description: 'Manage and publish blog posts and articles for the Legend Vault.',
+  keywords: ['Articles Management', 'HGW Blog', 'Publish Articles', 'Legend Vault Content', 'Admin Articles'],
 }
 
 const ArticlePage = () => {

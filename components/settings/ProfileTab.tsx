@@ -1,9 +1,15 @@
-import React from 'react'
+"use client"
+
+import React, { useState } from 'react'
 import { Button, Input, TextField, Label } from '@heroui/react'
 import { FiSave, FiUser } from 'react-icons/fi'
 import { cn } from '@heroui/react'
 
 const ProfileTab = () => {
+    const [firstName, setFirstName] = useState("Admin")
+    const [lastName, setLastName] = useState("User")
+    const [email, setEmail] = useState("admin@hgwvault.com")
+
     return (
         <div className="bg-[#0D1424] border border-[#1E293B] rounded-[24px] p-6 md:p-8 animate-in fade-in slide-in-from-bottom-6 duration-1000">
             <div className="flex flex-col gap-1 mb-10">
@@ -35,7 +41,8 @@ const ProfileTab = () => {
                         <TextField className="flex flex-col  gap-1">
                             <Label className="text-[13px] font-[500] text-zinc-500 outfit uppercase tracking-wider px-1">First Name</Label>
                             <Input 
-                                defaultValue="Admin"
+                                value={firstName}
+                                onChange={(e) => setFirstName(e.target.value)}
                                 className={cn(
                                     "h-12 bg-[#080C14] border border-[#1E293B] rounded-[14px] px-5 transition-all text-white outfit text-sm placeholder:text-zinc-600 outline-none",
                                     "hover:border-zinc-700 focus:border-[#00D4FF]/40"
@@ -46,7 +53,8 @@ const ProfileTab = () => {
                         <TextField className="flex flex-col  gap-1">
                             <Label className="text-[13px] font-[500] text-zinc-500 outfit uppercase tracking-wider px-1">Last Name</Label>
                             <Input 
-                                defaultValue="User"
+                                value={lastName}
+                                onChange={(e) => setLastName(e.target.value)}
                                 className={cn(
                                     "h-12 bg-[#080C14] border border-[#1E293B] rounded-[14px] px-5 transition-all text-white outfit text-sm placeholder:text-zinc-600 outline-none",
                                     "hover:border-zinc-700 focus:border-[#00D4FF]/40"
@@ -58,7 +66,8 @@ const ProfileTab = () => {
                     <TextField className="flex flex-col  gap-1">
                         <Label className="text-[13px] font-[500] text-zinc-500 outfit uppercase tracking-wider px-1">Email Address</Label>
                         <Input 
-                            defaultValue="admin@hgwvault.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             className={cn(
                                 "h-12 bg-[#080C14] border border-[#1E293B] rounded-[14px] px-5 transition-all text-white outfit text-sm placeholder:text-zinc-600 outline-none",
                                 "hover:border-zinc-700 focus:border-[#00D4FF]/40"
@@ -70,7 +79,7 @@ const ProfileTab = () => {
                         <Label className="text-[13px] font-[500] text-zinc-500 outfit uppercase tracking-wider px-1">User Role</Label>
                         <Input 
                             readOnly
-                            defaultValue="Super Admin"
+                            value="Super Admin"
                             className={cn(
                                 "h-12 bg-[#080C14]/50 border border-[#1E293B] rounded-[14px] px-5 text-zinc-600 orbitron font-bold text-[11px] uppercase tracking-widest outline-none cursor-not-allowed"
                             )}

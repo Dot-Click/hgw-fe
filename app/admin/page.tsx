@@ -16,6 +16,7 @@ import SystemHealth from "@/components/dashboard/SystemHealth"
 export const metadata: Metadata = {
   title: "Overview | HGW Admin",
   description: "View real-time analytics and statistics for the HGW platform.",
+  keywords: ["HGW Admin", "Admin Dashboard", "Platform Analytics", "HGW Statistics", "Legend Vault Admin"],
 }
 
 interface StatItem {

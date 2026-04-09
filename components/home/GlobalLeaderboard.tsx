@@ -21,7 +21,7 @@ const leaderboardData = [
         categoryColor: "bg-[#00CCFF26] text-[#00CCFF] border-[#00CCFF33]",
         stats: { users: 491, trophies: 11 },
         score: 96.2,
-        image: player3,
+        image: player4,
         highlight: true,
     },
     {
@@ -33,7 +33,7 @@ const leaderboardData = [
         categoryColor: "bg-[#00CCFF26] text-[#00CCFF] border-[#00CCFF33]",
         stats: { users: 689, trophies: 16 },
         score: 95.3,
-        image: player4,
+        image: player3,
     },
     {
         id: 3,

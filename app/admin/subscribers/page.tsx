@@ -7,6 +7,7 @@ import SubscribersTable from '@/components/subscribers/SubscribersTable'
 export const metadata: Metadata = {
     title: 'Subscribers | HGW Admin',
     description: 'Manage and export your newsletter subscribers.',
+    keywords: ['Subscribers Management', 'Newsletter Subscribers', 'Email List', 'HGW Subscribers', 'Admin Subscribers'],
 }
 
 const Subscribers = () => {

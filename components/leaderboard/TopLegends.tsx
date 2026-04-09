@@ -78,7 +78,7 @@ const legends = [
         category: "Football",
         trophies: 25,
         score: "97.8",
-        image: "/assets/img2.png",
+        image: "/assets/img5.png",
     },
     {
         rank: 1,
@@ -88,7 +88,7 @@ const legends = [
         category: "Football",
         trophies: 44,
         score: "98.5",
-        image: "/assets/img1.png",
+        image: "/assets/img3.png",
     },
     {
         rank: 3,
@@ -98,7 +98,7 @@ const legends = [
         category: "Football",
         trophies: 35,
         score: "97.1",
-        image: "/assets/img4.png",
+        image: "/assets/img2.png",
     }
 ];
 
@@ -132,7 +132,7 @@ const TopLegends = () => {
                             
                             {/* Card Content */}
                             <div className={`relative flex flex-col justify-between p-4 md:p-5 rounded-[20px] bg-[#0B0C10] ${theme.borderColor} ${theme.shadow} ${theme.cardSize} transition-all duration-300`}>
-                                <div className="absolute inset-x-0 top-0 h-[65%] z-0 rounded-t-[18px] overflow-hidden">
+                                <div className="absolute inset-x-0 top-0 h-[65%] object-top z-0 rounded-t-[18px] overflow-hidden">
                                     <Image 
                                         src={legend.image} 
                                         alt={legend.name} 
@@ -141,7 +141,6 @@ const TopLegends = () => {
                                         className="object-cover object-top" 
                                         sizes="(max-width: 768px) 100vw, 600px"
                                     />
-                                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#0B0C10] to-transparent z-10"></div>
                                 </div>
 
                                 {/* Top Badges */}
