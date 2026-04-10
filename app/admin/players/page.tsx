@@ -1,11 +1,11 @@
 import * as React from "react"
 import type { Metadata } from "next"
-import PlayersHeader from "@/components/players/PlayersHeader"
-import PlayersTable from "@/components/players/PlayersTable"
+import PlayersContent from "@/components/players/PlayersContent"
 
 export const metadata: Metadata = {
-  title: "Manage Players | HGW Legend Vault",
-  description: "Comprehensive management area for all athletes and legends in the HGW ecosystem. Filter, search, and update player profiles.",
+  title: "Manage Players | HGW Legend Vault Admin",
+  description: "Comprehensive management area for all athletes and legends in the HGW ecosystem. Search, filter, and bulk import legendary profiles with real-time updates.",
+  keywords: ["Legends", "HGW Admin", "Player Management", "Vault Profiles", "Real-time Search"],
   robots: {
     index: false,
     follow: false,
@@ -14,12 +14,8 @@ export const metadata: Metadata = {
 
 const PlayersPage = () => {
   return (
-    <div className="flex flex-col animate-in fade-in duration-500">
-      <PlayersHeader />
-      
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
-        <PlayersTable />
-      </div>
+    <div className="flex flex-col">
+      <PlayersContent />
     </div>
   )
 }

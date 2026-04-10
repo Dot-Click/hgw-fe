@@ -28,7 +28,7 @@ export const NewPlayerForm = () => {
           <div className="w-10 h-10 rounded-xl bg-[#001d2a] border border-[#061c40] flex items-center justify-center text-[#00D4FF] hover:bg-[#072430] transition-all cursor-pointer">
             <FiArrowLeft size={20} />
           </div>
-        </Link>
+        </Link>             
         <div className="flex flex-col gap-0.5">
           <h1 className="text-2xl font-[900] text-white orbitron tracking-widest">Add New Player</h1>
           <p className="text-sm text-zinc-500 outfit">Create a new legend entry in the vault.</p>

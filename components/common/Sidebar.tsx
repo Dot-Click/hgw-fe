@@ -39,20 +39,11 @@ export const menuItems = [
 
 const Sidebar = () => {
   const pathname = usePathname()
-  const [isOpen, setIsOpen] = React.useState(true)
+  const [isOpen, setIsOpen] = React.useState(false)
 
-  // Initialize state based on screen size
+  // Reset to default state on navigation (Closed on mobile, Open on desktop)
   React.useEffect(() => {
-    if (window.innerWidth < 1024) {
-      setIsOpen(false)
-    }
-  }, [])
-
-  // Close on small screens after navigation
-  React.useEffect(() => {
-    if (window.innerWidth < 1024) {
-      setIsOpen(false)
-    }
+    setIsOpen(false)
   }, [pathname])
 
   return (
@@ -61,7 +52,7 @@ const Sidebar = () => {
       <div 
         className={cn(
           "hidden md:flex fixed top-20 z-130 transition-all duration-300 ease-in-out",
-          isOpen ? "left-[274px]" : "left-0"
+          isOpen ? "left-0" : "left-[274px]"
         )}
       >
         <Button
@@ -71,9 +62,10 @@ const Sidebar = () => {
           onPress={() => setIsOpen(!isOpen)}
           className="bg-[#0F1420] border border-[#2A3040] text-zinc-400 hover:text-[#00D4FF] shadow-xl h-8 w-8 min-w-0 rounded-full hover:border-[#00D4FF]/50 transition-all border-l-0 rounded-l-none"
         >
-          {isOpen ? <FiChevronLeft size={16} /> : <FiMenu size={16} />}
+          {isOpen ? <FiMenu size={16} /> : <FiChevronLeft size={16} />}
         </Button>
       </div>
+
 
       {/* Mobile Toggle Button - Strictly for mobile, transitions to inside the sidebar when open */}
       <div 
@@ -85,7 +77,7 @@ const Sidebar = () => {
         <Button
           isIconOnly
           size="sm"
-          variant="ghost"
+          variant="ghost"               
           onPress={() => setIsOpen(!isOpen)}
           className="bg-[#0F1420] border border-[#2A3040] text-zinc-400 shadow-xl h-10 w-10 rounded-xl"
         >
@@ -97,7 +89,7 @@ const Sidebar = () => {
       {isOpen && (
         <div 
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-110 lg:hidden transition-opacity duration-300"
-          onClick={() => setIsOpen(false)}
+          onClick={() => setIsOpen(false)}       
         />
       )}
 
@@ -106,7 +98,7 @@ const Sidebar = () => {
           "bg-[#0F1420] border-r border-[#2A3040] transition-all duration-300 ease-in-out flex flex-col h-full",
           // Layout Behavior: Relative on desktop (pushes content), Fixed on mobile (overlay)
           "lg:relative fixed inset-y-0 left-0 z-120 shadow-2xl overflow-hidden",
-          isOpen ? "lg:w-72 w-72 translate-x-0" : "lg:w-0 w-72 -translate-x-full lg:translate-x-0"
+          isOpen ? "lg:w-0 w-72 translate-x-0" : "lg:w-72 w-72 -translate-x-full lg:translate-x-0"
         )}
       >
         {/* Sidebar Header */}

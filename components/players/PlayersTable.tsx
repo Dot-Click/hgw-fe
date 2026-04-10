@@ -40,18 +40,11 @@ const columns = [
     { name: <span className="whitespace-nowrap">Actions</span>, id: "actions" },
 ]
 
-const players = [
-    { id: 1, name: "Michael Jordan", initials: "MJ", category: "Basketball", country: "USA", era: "1984-2003", score: "98.5", status: "published" },
-    { id: 2, name: "Muhammad Ali", initials: "MA", category: "Boxing", country: "USA", era: "1960-1981", score: "97.8", status: "published" },
-    { id: 3, name: "Lionel Messi", initials: "LM", category: "Football", country: "Argentina", era: "2004-Present", score: "97.2", status: "published" },
-    { id: 4, name: "Cristiano Ronaldo", initials: "CR", category: "Football", country: "Portugal", era: "2002-Present", score: "96.8", status: "published" },
-    { id: 5, name: "Wayne Gretzky", initials: "WG", category: "Hockey", country: "Canada", era: "1979-1999", score: "96.2", status: "draft" },
-    { id: 6, name: "Roger Federer", initials: "RF", category: "Tennis", country: "Switzerland", era: "1998-2022", score: "95.9", status: "published" },
-    { id: 7, name: "Usain Bolt", initials: "UB", category: "Athletics", country: "Jamaica", era: "2004-2017", score: "95.4", status: "published" },
-    { id: 8, name: "Michael Phelps", initials: "MP", category: "Swimming", country: "USA", era: "2000-2016", score: "95.3", status: "draft" },
-]
+interface PlayersTableProps {
+    data: any[]
+}
 
-const PlayersTable = () => {
+const PlayersTable = ({ data }: PlayersTableProps) => {
     const [page, setPage] = React.useState(1)
 
     const renderCell = React.useCallback((player: any, columnKey: React.Key) => {
@@ -115,7 +108,7 @@ const PlayersTable = () => {
     }, [])
 
     return (
-        <div className="flex flex-col  gap-4">
+        <div className="flex flex-col gap-4">
 
             {/* Table */}
             <div className="rounded-2xl border border-[#1E293B] bg-[#0B1121] shadow-2xl overflow-hidden">
@@ -137,7 +130,7 @@ const PlayersTable = () => {
                                     </TableColumn>
                                 )}
                             </TableHeader>
-                            <TableBody items={players}>
+                            <TableBody items={data}>
                                 {(item) => (
                                     <TableRow
                                         key={item.id}
@@ -159,56 +152,55 @@ const PlayersTable = () => {
             {/* Pagination & Summary Bar */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between px-2 mt-2">
                 <p className="text-[13px] text-zinc-500 outfit">
-                    Showing 1-8 of 12 players
+                    {data.length > 0 
+                      ? `Showing 1-${data.length} of ${data.length} players`
+                      : "No players found matching your search."
+                    }
                 </p>
-
-                <div className="flex items-center gap-2">
-                    <Pagination className="justify-end">
-                        <Pagination.Content className="gap-2">
-                            <Pagination.Item>
-                                <Pagination.Previous
-                                    isDisabled={page === 1}
-                                    onPress={() => setPage(1)}
-                                    className="bg-[#0B1121] text-zinc-400 border border-[#1E293B] rounded-lg hover:text-white h-9 px-4 transition-all disabled:opacity-30 disabled:cursor-not-allowed text-[12px] font-medium outfit"
-                                >
-                                    <div className="flex items-center gap-1.5">
-                                        <FiChevronLeft size={16} /> Previous
-                                    </div>
-                                </Pagination.Previous>
-                            </Pagination.Item>
-
-                            {[1, 2].map((p) => (
-                                <Pagination.Item key={p}>
-                                    <Pagination.Link
-                                        isActive={p === page}
-                                        onPress={() => setPage(p)}
-                                        className={cn(
-                                            "h-9 w-9 min-w-0 flex items-center justify-center bg-[#0B1121] text-zinc-400 border border-[#1E293B] rounded-lg hover:border-[#00D4FF]/30 transition-all text-[13px] outfit font-bold",
-                                            p === page && "bg-[#00D4FF] text-[#0B1121] border-[#00D4FF] shadow-[0_0_20px_rgba(0,212,255,0.4)] hover:border-[#00D4FF]"
-                                        )}
+  
+                {data.length > 0 && (
+                    <div className="flex items-center gap-2">
+                        <Pagination className="justify-end">
+                            <Pagination.Content className="gap-2">                     
+                                <Pagination.Item>
+                                    <Pagination.Previous  
+                                        isDisabled={page === 1}
+                                        onPress={() => setPage(1)}
+                                        className="bg-[#0B1121] text-zinc-400 border border-[#1E293B] rounded-lg hover:text-white h-9 px-4 transition-all disabled:opacity-30 disabled:cursor-not-allowed text-[12px] font-medium outfit"
                                     >
-                                        {p}
+                                        <div className="flex items-center gap-1.5">
+                                            <FiChevronLeft size={16} /> Previous
+                                        </div>
+                                    </Pagination.Previous>
+                                </Pagination.Item>
+
+                                <Pagination.Item>
+                                    <Pagination.Link
+                                        isActive={true}
+                                        className="h-9 w-9 min-w-0 flex items-center justify-center bg-[#00D4FF] text-[#0B1121] border border-[#00D4FF] rounded-lg shadow-[0_0_20px_rgba(0,212,255,0.4)] text-[13px] outfit font-bold"
+                                    >
+                                        1                    
                                     </Pagination.Link>
                                 </Pagination.Item>
-                            ))}
 
-                            <Pagination.Item>
-                                <Pagination.Next
-                                    isDisabled={page === 2}
-                                    onPress={() => setPage(2)}
-                                    className="bg-[#0B1121] text-zinc-400 border border-[#1E293B] rounded-lg hover:text-white h-9 px-4 transition-all disabled:opacity-30 disabled:cursor-not-allowed text-[12px] font-medium outfit"
-                                >
-                                    <div className="flex items-center gap-1.5">
-                                        Next <FiChevronRight size={16} />
-                                    </div>
-                                </Pagination.Next>
-                            </Pagination.Item>
-                        </Pagination.Content>
-                    </Pagination>
-                </div>
+                                <Pagination.Item>
+                                    <Pagination.Next
+                                        isDisabled={true}
+                                        className="bg-[#0B1121] text-zinc-400 border border-[#1E293B] rounded-lg hover:text-white h-9 px-4 transition-all opacity-30 cursor-not-allowed text-[12px] font-medium outfit"
+                                    >
+                                        <div className="flex items-center gap-1.5">
+                                            Next <FiChevronRight size={16} />
+                                        </div>
+                                    </Pagination.Next>
+                                </Pagination.Item>
+                            </Pagination.Content>
+                        </Pagination>
+                    </div>
+                )}
             </div>
         </div>
     )
 }
+
 
 export default PlayersTable
