@@ -118,7 +118,7 @@ const FilterDropdown = ({ label, icon, options, onSelect }: { label: string; ico
                 <div className="flex items-center gap-2">
                     {icon && <span className="text-zinc-500 group-hover:text-[#00D4FF] transition-colors">{icon}</span>}
                     <span className="text-[14px] outfit font-medium">{label}</span>
-                </div>vc 
+                </div> 
                 <FiChevronDown className={`text-zinc-600 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} size={16} />
             </button>
 
