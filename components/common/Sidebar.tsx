@@ -117,7 +117,9 @@ const Sidebar = () => {
           <nav className="flex flex-col gap-1.5 font-sans">
             {menuItems.map((item) => {
               const isActive = pathname === item.href || 
-                (item.href !== "/admin" && pathname.startsWith(item.href))
+                (item.href !== "/admin" && 
+                 pathname.startsWith(item.href) && 
+                 !menuItems.some(mi => mi.href !== item.href && mi.href.startsWith(item.href) && pathname.startsWith(mi.href)))
               
               return (
                 <Link

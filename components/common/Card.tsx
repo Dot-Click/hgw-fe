@@ -167,7 +167,7 @@ const Card: React.FC<PlayerProps> = ({ player }) => {
                             <span className="font-medium text-[#7B899D] text-[12px]">{player.trophies}</span>
                         </div>
                     </div>
-
+ 
                     {/* Score Progress */}
                     <div className="flex flex-col gap-1.5 min-w-[160px] md:min-w-[130px] w-full md:w-auto">
                         <ProgressBar

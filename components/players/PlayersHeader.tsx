@@ -3,6 +3,7 @@
 import React, { useState } from "react"
 import { FiPlus, FiUpload, FiSearch, FiFilter, FiChevronDown } from "react-icons/fi"
 import { Button, useOverlayState } from "@heroui/react"
+import { useRouter } from "next/navigation"
 import { AnimatePresence, motion } from "framer-motion"
 import BulkImportModal from "./BulkImportModal"
 
@@ -34,6 +35,7 @@ const PlayersHeader = ({
     statusOptions
 }: HeaderProps) => {
     const state = useOverlayState();
+    const router = useRouter();
 
     return (
         <div className="flex flex-col gap-6">
@@ -57,6 +59,7 @@ const PlayersHeader = ({
                     </Button>
 
                     <Button
+                        onPress={() => router.push('/admin/players/new')}
                         className="flex-1 sm:flex-none bg-[#00D4FF] text-[#0B0F19] font-black orbitron uppercase tracking-[0.05em] px-6 h-11 rounded-xl border border-[#00D4FF]/50 shadow-[0_0_20px_rgba(0,212,255,0.25)] hover:shadow-[0_0_30px_rgba(0,212,255,0.4)] transition-all flex items-center justify-center gap-2"
                     >
                         <FiPlus size={18} strokeWidth={3} />

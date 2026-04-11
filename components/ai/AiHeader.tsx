@@ -21,7 +21,7 @@ const AiHeader = () => {
             />
           </div>
         </div>
-        
+          
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center gap-3">
             <h1 className="text-3xl md:text-4xl font-[900] text-white orbitron tracking-tight leading-none">
@@ -33,7 +33,7 @@ const AiHeader = () => {
           </p>
         </div>
       </div>
-
+ 
       <div className="flex items-center self-end md:self-center">
         <div className="px-5 py-2 rounded-full border border-green-500/20 bg-green-500/10 flex items-center gap-2.5">
           <span className="relative flex h-2 w-2">

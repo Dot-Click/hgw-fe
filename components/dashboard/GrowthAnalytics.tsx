@@ -94,7 +94,7 @@ const GrowthAnalytics = () => {
               formatter={(value) => (
                 <span className="text-[13px] font-medium text-zinc-400 capitalize outfit ml-1">
                   {value}
-                </span>
+                </span>  
               )}
             />
             <Line

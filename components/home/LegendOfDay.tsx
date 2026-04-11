@@ -83,7 +83,7 @@ const LegendOfDay = () => {
                 <BsTrophy className="text-[#FFFFFF66]" aria-hidden="true" />
                 <span>6</span>
               </div>
-            </div>
+            </div>   
 
             {/* Score Visualization: Progress Bar */}
             <div className="flex flex-col gap-2 md:gap-3 mt-1 md:mt-2">
