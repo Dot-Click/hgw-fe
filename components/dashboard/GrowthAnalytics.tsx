@@ -108,7 +108,7 @@ const GrowthAnalytics = () => {
             />
             <Line
               name="Subscribers"
-              type="monotone"
+              type="monotone"                 
               dataKey="subscribers"
               stroke="#8B5CF6"
               strokeWidth={3}

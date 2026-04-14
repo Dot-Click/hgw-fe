@@ -20,9 +20,9 @@ const AddCategoryModal = ({ isOpen, onOpenChange }: AddCategoryModalProps) => {
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  if (!mounted || !isOpen) return null;
-
+                        
+  if (!mounted || !isOpen) return null;    
+                     
   return createPortal(
     <Modal.Root isOpen={isOpen} onOpenChange={onOpenChange}>
       <Modal.Backdrop className="bg-black/60 fixed inset-0 z-[9998] animate-in fade-in duration-300" />
@@ -33,15 +33,15 @@ const AddCategoryModal = ({ isOpen, onOpenChange }: AddCategoryModalProps) => {
             <button 
               onClick={() => onOpenChange(false)}
               className="absolute top-2 right-2 text-zinc-500 hover:text-white transition-colors z-10"
-            >
-              <FiX size={20} />
+            >      
+              <FiX size={20} />                    
             </button>
 
             <Modal.Header className="p-0 mb-6 flex flex-col gap-1">
               <h2 className="text-lg font-[900] text-white orbitron tracking-widest leading-tight">
-                Add Category
+                Add Category  
               </h2>
-            </Modal.Header>
+            </Modal.Header>      
 
             <Modal.Body className="p-0 flex flex-col gap-5">
               {/* Category Name Field */}

@@ -202,7 +202,7 @@ const SignUpContainer = () => {
                             {!formData.confirmPassword ? "Confirm password is required" : "Passwords do not match"}
                         </FieldError>
                     </TextField>
-
+             
 
                     {/* checkbox  */}
                     <div className='flex items-center gap-2.5 mt-2'>

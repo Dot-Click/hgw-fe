@@ -49,11 +49,11 @@ const DeathMatchCard = ({
         <div className="absolute inset-0 rounded-[16px] shadow-[inset_0_0_20px_#00CCFF4D] pointer-events-none z-20"></div>
       )}
 
-      {/* Rank Badge */}
+      {/* Rank Badge */}                
       <div className={`absolute top-4 right-4 w-[28px] h-[28px] rounded-full border flex items-center justify-center z-30 text-[12px] orbitron font-[700]  ${rankColor}`}>
         {rank}
       </div>
-
+        
       {/* Image Container */}
       <div className="w-full h-[60%] relative flex-shrink-0 bg-[#0B0F19]">
         {/* Subtle gradient overlay at the bottom of the image for smooth blend */}

@@ -106,7 +106,7 @@ const LoginContainer = () => {
                                 <MdOutlineMailOutline className={cn('text-lg md:text-2xl', isSubmitted && !formData.email ? 'text-red-500' : 'text-[#7B899D]')} />
                             </InputGroup.Prefix>
                             <InputGroup.Input
-                                type="email"
+                                type="email"            
                                 id="email"
                                 placeholder='you@email.com'
                                 value={formData.email}
@@ -164,11 +164,11 @@ const LoginContainer = () => {
                                     <span className='w-[6px] h-[10px] border-r-2 border-b-2 border-black rotate-45 -mt-0.5 block'></span>
                                 )}
                             </button>
-                            <span
+                            <span   
                                 className='text-[#7B899D] text-[14px] leading-tight cursor-pointer'
                                 onClick={() => setAgreed(prev => !prev)}
                             >
-                                Remember me
+                                Remember me   
                             </span>
                         </div>
                         <Link href="/reset-password" className='text-[#00CCFF] text-[12px] md:text-[14px] hover:underline'>Forgot Password?</Link>

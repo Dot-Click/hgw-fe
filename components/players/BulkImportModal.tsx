@@ -188,14 +188,14 @@ const BulkImportModal = ({ isOpen, onOpenChange }: BulkImportModalProps) => {
                               placeholder="Enter API key"
                               className="w-full h-11 bg-[#080B12] border border-[#2A3040] rounded-xl px-4 text-white outfit text-sm placeholder:text-zinc-600 focus:border-[#00D4FF]/40 focus:ring-1 focus:ring-[#00D4FF]/20 transition-all outline-none"
                             />
-                          </div>
+                          </div>                     
                         </div>
                       </div>
 
                       <p className="text-[11px] text-zinc-600 outfit leading-relaxed ml-1 mt-1">
                         Ensure your API endpoint returns data in the supported JSON format.
                       </p>
-                    </motion.div>
+                    </motion.div>     
                   )}
 
                 </AnimatePresence>

@@ -31,12 +31,12 @@ const CustomTooltip = ({ active, payload, label }: any) => {
             <span className="text-[13px] font-medium text-white outfit">
               {entry.name}: <span className="font-bold">{entry.value}</span>
             </span>
-          </div>
+          </div>                                                        
         ))}
       </div>
-    )
+    )    
   }
-  return null
+  return null            
 }
 
 const AiChart: React.FC<AiChartProps> = ({ data, type = "bar", title, dataKey, nameKey }) => {

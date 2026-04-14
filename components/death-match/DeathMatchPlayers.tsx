@@ -101,7 +101,7 @@ const DeathMatchPlayers = ({ onSelect, player1Id, player2Id, activeSlot }: Death
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-[#7B899D] outfit text-[14px] md:text-[16px] mt-2"
-        >
+        >            
           Select <span className="text-[#00CCFF] font-medium uppercase tracking-widest">Player {activeSlot}</span> from the roster below
         </motion.p>
       </div>
@@ -118,7 +118,7 @@ const DeathMatchPlayers = ({ onSelect, player1Id, player2Id, activeSlot }: Death
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              viewport={{ once: true }}
+              viewport={{ once: true }}            
             >
               <DeathMatchCard
                 {...player}

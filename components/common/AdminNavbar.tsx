@@ -49,7 +49,8 @@ const AdminNavbar = () => {
 
         {/* 👤 USER PROFILE */}
         <div className="flex items-center outfit gap-2">
-          <div className="flex p-2 items-center justify-center rounded-full border border-[#2A3040] bg-[#3e5364] shadow-inner">
+          <div className="flex p-2 items-center justify-center rounded-full border border-[#2A3040]
+           bg-[#3e5364] shadow-inner">
             <span className="text-sm font-bold text-white outfit uppercase">AC</span>
           </div>
 

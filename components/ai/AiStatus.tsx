@@ -46,5 +46,6 @@ const AiStatus = () => {
     </div>
   )
 }
-
+        
 export default AiStatus
+         

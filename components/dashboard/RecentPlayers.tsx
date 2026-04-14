@@ -73,19 +73,19 @@ const RecentPlayers = () => {
 
       {/* List */}
       <div className="p-2">
-        {players.map((player, index) => (
+        {players.map((player, index) => (           
           <div 
-            key={index} 
+            key={index}                     
             className={cn(
               "flex flex-col gap-4 p-4 rounded-xl transition-all duration-200 hover:bg-[#1A2333]/50 group",
               "sm:flex-row sm:items-center sm:justify-between sm:gap-4",
               index !== players.length - 1 && "border-b border-[#2A3040]/50"
-            )}
+            )}        
           >
             {/* Player Info (Avatar + Name) */}
             <div className="flex items-center gap-4">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#2A3040] bg-[#1A2333] text-[13px] font-bold text-[#00D4FF] orbitron">
-                {player.initials}
+                {player.initials}           
               </div>
               <div className="flex flex-col min-w-0">
                 <span className="text-[14px] sm:text-[15px] font-bold text-white orbitron tracking-wider truncate">

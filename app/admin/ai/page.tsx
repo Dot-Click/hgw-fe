@@ -10,15 +10,14 @@ const AI = () => {
       <AiHeader />
       
       {/* Main Content Responsive Grid */}
-      <div className="grid grid-cols-1   lg:grid-cols-3 gap-6 lg:items-start">
-        {/* Left Column: Chat Interface (Spans 2 columns on large screens) */}
-        <div className="lg:col-span-2 h-[600px]">
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 items-stretch">
+        {/* Left Column: Chat Interface (Spans larger portion on big screens) */}
+        <div className="xl:col-span-3 h-[750px]">
           <AskKaty />
         </div>
 
-        
         {/* Right Column: Status & Settings */}
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 xl:h-[750px]">
           <AiStatus />
           <QuickSettings />
         </div>

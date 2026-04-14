@@ -75,36 +75,36 @@ const DeathMatchHeader = ({
                 onResetSlot(slot);
               }}
               className="absolute top-3 right-3 p-1 rounded-full bg-white/5 text-[#7B899D] opacity-0 group-hover:opacity-100 hover:text-white transition-all z-20"
-            >
+            >            
               <LuX className="text-xs" />
             </button>
 
             {/* Circular Image Container (Scaled to 200px height) */}
-            <div className="w-[68px] h-[68px] rounded-full border border-white/10 overflow-hidden mb-2 flex-shrink-0">
-              <Image
-                src={player.image}             
+            <div className="w-[68px] h-[68px] rounded-full border border-white/10 overflow-hidden mb-2 flex-shrink-0">     
+              <Image     
+                src={player.image}                 
                 alt={player.name}                                      
-                width={68}   
-                height={68}    
+                width={68}        
+                height={68}          
                 className="object-cover object-top w-full h-full"
-              />   
-            </div>            
-                      
+              />                      
+            </div>                              
+                              
             {/* Name */}
             <h2 className="orbitron text-[#E7EBEF] text-[18px] font-[700] tracking-wide text-center mb-1 leading-tight">
               {player.name}
             </h2>
-
+     
             {/* Category & Tags Row */}
             <div className="flex items-center gap-3 mb-3">
               <div className={`border text-[10px] px-2 py-1 rounded-full uppercase tracking-widest font-[500] outfit ${getCategoryStyles(player.category || "Unknown")}`}>
-                {player.category || "FOOTBALL"}
+                {player.category || "FOOTBALL"}                       
               </div>
               <div className="flex items-center gap-1 text-[#7B899D] text-[12px] tracking-wide font-[500] outfit leading-none">
                 <FiMapPin className="text-[12px]" />
                 <span>{player.country}</span>
               </div>
-            </div>
+            </div>          
 
             {/* Score */}
             <div className={`orbitron text-[24px] font-[900] leading-none tracking-wide drop-shadow-[0_0_10px_rgba(0,204,255,0.4)] ${slot === 1 ? "text-[#00CCFF]" : "text-[#FFBF00]"
@@ -156,8 +156,8 @@ const DeathMatchHeader = ({
         {/* Main Hero Header */}
         <div className="flex flex-col gap-1">
           <div className="text-[32px] md:text-[63px] flex flex-wrap justify-center items-center orbitron font-[900] leading-tight">
-            <h1 className="      text-[#FFFFFF] text-shadow-[0px_-5px_25.6px_#00000020]">Death  <span className="text-[#00CCFF] text-shadow-[0px_-5px_25.6px_#00CCFF6E]">Match</span></h1>
-          </div>
+            <h1 className="    text-[#00CCFF]  text-shadow-[0px_-5px_25.6px_#00CCFF6E] ">HGW  <span className=" text-[#FFFFFF]   text-shadow-[0px_-5px_25.6px_#00000020]">Comparison Tool</span></h1>
+          </div> 
           <p className="text-[#7B899D] font-[400] text-[16px] md:text-[20px] outfit leading-relaxed">
             Select two legends and compare their HGW pillar scores side byside          </p>
         </div>
@@ -166,12 +166,12 @@ const DeathMatchHeader = ({
         <div className="flex flex-col md:flex-row items-center justify-center gap-6 mt-8 w-full max-w-[800px]">
           {renderSlot(1, player1)}
 
-          {/* VS Badge */}
+          {/* VS Badge */}                                  
           <div className="w-[54px] h-[54px] shrink-0 rounded-full border border-[#FFBF0066] bg-[#0B0B0F] bg-[#FFBF001A] shadow-[0_0_20px_rgba(255,191,0,0.3)] flex flex-col items-center justify-center z-10">
             <span className="text-[#FFBF00] font-[900] orbitron text-[20px] tracking-wider">VS</span>
           </div>
 
-          {renderSlot(2, player2)}
+          {renderSlot(2, player2)}          
         </div>
 
         {/* Small Start Match Button */}

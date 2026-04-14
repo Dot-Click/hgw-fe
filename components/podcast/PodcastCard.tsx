@@ -119,16 +119,16 @@ const PodcastCard: React.FC<PodcastCardProps> = ({
                     </div>
                     <div className="flex items-center gap-1.5">
                         <FiHeadphones className="" />
-                        <span>{listeners}</span>
+                        <span>{listeners}</span>   
                     </div>
                 </div>
-
+               
                 {/* Host */}
                 <div className="flex items-center gap-2 text-[#7B899D] text-[12px]  font-[400] tracking-wider outfit">
                     <IoPersonOutline className="text-[#FFBF00] text-sm" />
                     <span className="truncate">{host}</span>
                 </div>
-
+   
                 {/* Tags */}
                 <div className="flex flex-wrap gap-2">
                     {tags.map((tag, idx) => (

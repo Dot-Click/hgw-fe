@@ -135,44 +135,45 @@ const PlayerDetail = () => {
                         </div>
 
                         <div className="flex flex-col gap-6 w-full">
-                            {/* Full-Width Major Trophies List */}
-                            <div className="w-full bg-[linear-gradient(118.35deg,_#1B1C22_0%,_#0D0E12_100%)] border border-[#FFBF004D] rounded-[22px] p-5 shadow-lg flex flex-col gap-6 md:gap-8">
-                                {/* Top row: Title and Badge */}
-                                <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-4 sm:gap-0">
-                                    <div className="flex items-center gap-3">
-                                        <BsTrophy className="text-[#FFBF00] text-[18px] md:text-[20px]" />
-                                        <span className="text-[#E7EBEF] text-[16px] md:text-[18px] font-bold orbitron tracking-wide">Major Trophies</span>
+                            {/* Unified Trophies & Highlights Box */}
+                            <div className="w-full bg-[linear-gradient(118.35deg,_#1B1C22_0%,_#0D0E12_100%)] border border-[#FFBF004D] rounded-[22px] p-6 md:p-8 shadow-lg flex flex-col gap-8 md:gap-10">
+                                {/* Major Trophies Section */}
+                                <div className="flex flex-col gap-6">                                         
+                                    <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-4 sm:gap-0">
+                                        <div className="flex items-center gap-3">
+                                            <BsTrophy className="text-[#FFBF00] text-[18px] md:text-[20px]" />
+                                            <span className="text-[#E7EBEF] text-[16px] md:text-[18px] font-bold orbitron tracking-wide">Career Highlights</span>
+                                        </div>                       
+                                        <h2 className=" text-[#FFBF00] text-[18px] md:text-[20px] font-[700] orbitron drop-shadow-[0px_0px_20px_0px_#FFBF0026,0px_0px_6px_0px_#FFBF0066]">
+                                            {player.trophies}
+                                        </h2>
                                     </div>
-                                    <h2 className=" text-[#FFBF00] text-[18px] md:text-[20px] font-[700] orbitron drop-shadow-[0px_0px_20px_0px_#FFBF0026,0px_0px_6px_0px_#FFBF0066]">
-                                        {player.trophies}
-                                    </h2>
+
+                                    {/* Trophies Pills */}
+                                    <div className="flex flex-wrap justify-center md:justify-start items-center gap-3 md:gap-4">
+                                        {majorTrophiesPills.map((pill, index) => (
+                                            <div key={index} className="flex items-center gap-2 bg-[#1F2128] border border-[#24262E] rounded-full px-4 py-2 md:px-6 md:py-2.5">
+                                                <pill.icon className="text-[#FFBF00] text-[16px] md:text-[18px]" />
+                                                <span className="text-[#D1D9E0] text-[13px] md:text-[16px] outfit font-[400] tracking-wide text-center">{pill.text}</span>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
+            
+                                {/* Divider */}
 
-                                {/* Bottom row: Pills */}
-                                <div className="flex flex-wrap justify-center md:justify-start items-center gap-3 md:gap-4">
-                                    {majorTrophiesPills.map((pill, index) => (
-                                        <div key={index} className="flex items-center gap-2 bg-[#1F2128] border border-[#24262E] rounded-full px-4 py-2 md:px-6 md:py-2.5">
-                                            <pill.icon className="text-[#FFBF00] text-[16px] md:text-[18px]" />
-                                            <span className="text-[#D1D9E0] text-[13px] md:text-[16px] outfit font-[400] tracking-wide text-center">{pill.text}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
+                                {/* Career Highlights Section */}
 
-                            {/* Career Highlights Box */}
-                            <div className="w-full bg-[linear-gradient(118.35deg,_#1B1C22_0%,_#0D0E12_100%)] border border-[#24262E] rounded-[22px] p-5 md:p-6 flex flex-col gap-6">
-                                <h2 className="text-[#E7EBEF] text-[16px] md:text-[19px] font-[700] orbitron tracking-wider text-center md:text-left">Career Highlights</h2>
-
-                                <ul className="flex flex-col gap-3 md:gap-2.5">
-                                    {careerHighlights.map((highlight, index) => (
-                                        <li key={index} className="flex items-start gap-3">
-                                            <div className="w-1.5 h-1.5 rounded-sm bg-[#FFBF00] shrink-0 mt-1 md:mt-1.5" />
-                                            <span className="text-[#D1D9E0] text-[13px] md:text-[16px] outfit tracking-wide md:tracking-[0.15em] uppercase font-[300]">
-                                                {highlight}
-                                            </span>
-                                        </li>
-                                    ))}
-                                </ul>
+                                    <ul className="flex flex-col gap-3 md:gap-2.5">
+                                        {careerHighlights.map((highlight, index) => (
+                                            <li key={index} className="flex items-start gap-3">
+                                                <div className="w-1.5 h-1.5 rounded-sm bg-[#FFBF00] shrink-0 mt-1 md:mt-1.5" />
+                                                <span className="text-[#D1D9E0] text-[13px] md:text-[16px] outfit tracking-wide md:tracking-[0.15em] uppercase font-[300]">
+                                                    {highlight}
+                                                </span>
+                                            </li>
+                                        ))}
+                                    </ul>
                             </div>
 
                             {/* HGW Analysis */}

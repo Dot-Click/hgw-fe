@@ -23,8 +23,8 @@ const About = () => {
             icon: <LuShieldCheck />
         },
         {
-            title: "Multi-Sport",
-            description: "We rank across football, rugby, and music — with more categories coming soon.",
+            title: "Multi-Category ",
+            description: "We rank across football, rugby, and music with more categories coming soon.",
             icon: <LuGlobe />
         },
         {

@@ -7,6 +7,7 @@ import { FiSearch, FiZap, FiTarget, FiGlobe } from "react-icons/fi";
 import { LuBrain, LuSwords, LuTrophy, LuUsers } from "react-icons/lu";
 import { Button, InputGroup } from "@heroui/react";
 import AiModal from "../common/AiModal";
+import { IoIosGitCompare } from "react-icons/io";
 
 const HomeHeader = () => {
   const router = useRouter();
@@ -76,8 +77,8 @@ const HomeHeader = () => {
             id="start-deathmatch-btn"
             className="flex-1 md:w-auto px-2 md:px-8 py-4 md:py-7 bg-[#1F2128] text-[#7B899D] font-bold rounded-[10px] md:rounded-[14px] flex items-center justify-center gap-1.5 md:gap-3 orbitron text-[9px] md:text-[16px] border border-[#24262E] hover:text-white hover:bg-[#24262E] transition-all min-w-0"
           >
-            <LuSwords className="text-[7px] md:text-2xl shrink-0" aria-hidden="true" />
-            <span className="truncate">Start Death Match</span>
+            <IoIosGitCompare  className="text-[7px] md:text-2xl shrink-0" aria-hidden="true" />
+            <span className="">HGW Comparison Tool</span>
           </Button>
         </div>
 
@@ -87,10 +88,10 @@ const HomeHeader = () => {
             <LuUsers className="text-[#00CCFF] text-sm md:text-lg" aria-hidden="true" />
            10,000+ Legends Ranked
           </div>
-          <div className="flex flex-col md:flex-row items-center gap-1.5 md:gap-2.5 text-[#AFAFAF] text-[9px] md:text-[16px] outfit font-[400] tracking-wide whitespace-nowrap">
+          {/* <div className="flex flex-col md:flex-row items-center gap-1.5 md:gap-2.5 text-[#AFAFAF] text-[9px] md:text-[16px] outfit font-[400] tracking-wide whitespace-nowrap">
             <FiGlobe className="text-[#00CCFF] text-sm md:text-lg" aria-hidden="true" />
            30+ Sports Covered
-          </div>
+          </div> */}
           <div className="flex flex-col md:flex-row items-center gap-1.5 md:gap-2.5 text-[#AFAFAF] text-[9px] md:text-[16px] outfit font-[400] tracking-wide whitespace-nowrap">
             <LuBrain className="text-[#00CCFF] text-sm md:text-lg" aria-hidden="true" />
             AI Powered HGW Analysis

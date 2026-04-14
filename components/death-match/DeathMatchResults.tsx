@@ -118,7 +118,7 @@ const DeathMatchResults = ({
                         })}
                     </div>
                 </div>
-
+          
                 {/* New Match Button */}
                 <div className="mt-12">
                     <Button

@@ -17,7 +17,7 @@ const LegendOfDay = () => {
       {/* Hero-like Title for the section */}
       <div className="flex items-center gap-2 mb-6 uppercase orbitron tracking-[0.2em] text-[12px] md:text-[16px] font-[700] text-[#FFBF00] uppercase">
         <span className="text-2xl"><CiStar /></span>
-        Legend of the Day
+        Legend of the Week
       </div>
 
       {/* Main Legend Card */}

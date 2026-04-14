@@ -105,7 +105,7 @@ const AiModal: React.FC<AiModalProps> = ({ isOpen, onClose }) => {
     return (
         <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 lg:right-10 z-[100] flex flex-col items-end gap-3 animate-in fade-in slide-in-from-bottom-10 duration-300">
             {/* Modal Container */}
-            <div className="w-[320px] xs:w-[340px] md:w-[380px] lg:w-[420px] bg-[#0E1015] border border-[#24262E] rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.6)] flex flex-col overflow-hidden">
+            <div className="w-[330px] xs:w-[360px] md:w-[400px] lg:w-[440px] bg-[#0E1015] border border-[#24262E] rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.6)] flex flex-col overflow-hidden">
                 
                 {/* Header */}
                 <div className="p-4 border-b border-[#24262E] flex items-center justify-between bg-[#111217]">
@@ -130,7 +130,7 @@ const AiModal: React.FC<AiModalProps> = ({ isOpen, onClose }) => {
                 </div>
 
                 {/* Chat Content */}
-                <div className="p-4 flex flex-col gap-4 max-h-[400px] md:max-h-[500px] overflow-y-auto custom-scrollbar bg-[#0E1015]">
+                <div className="p-4 md:p-5 flex flex-col gap-4 h-[170px] md:h-[380px] overflow-y-auto custom-scrollbar bg-[#0E1015]">
                     {messages.map((msg) => (
                         <div key={msg.id} className={`flex gap-2.5 ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}>
                             {msg.sender === 'katy' && (
@@ -140,7 +140,7 @@ const AiModal: React.FC<AiModalProps> = ({ isOpen, onClose }) => {
                             )}
                             <div className={`max-w-[85%] flex flex-col ${msg.sender === 'user' ? 'items-end' : ''}`}>
                                 <div className={cn(
-                                    "p-3 rounded-[18px] text-[13px] leading-relaxed outfit",
+                                    "p-4 rounded-[20px] text-[14px] md:text-[15px] leading-relaxed outfit",
                                     msg.sender === 'katy' 
                                         ? "bg-[#1F2128] border border-[#24262E] text-[#D1D9E0] rounded-tl-none" 
                                         : "bg-[#00CCFF] text-[#0B0B0F] rounded-tr-none font-[600]"
@@ -206,7 +206,7 @@ const AiModal: React.FC<AiModalProps> = ({ isOpen, onClose }) => {
                                 placeholder="Type a message..."
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
-                                className="w-full bg-[#1F2128] border border-[#24262E] rounded-xl py-2.5 px-4 pr-10 text-[13px] text-white placeholder-[#4A5567] outline-none focus:border-[#00CCFF33] transition-all"
+                                className="w-full bg-[#1F2128] border border-[#24262E] rounded-xl py-2.5 px-4 pr-10 text-[14px] text-white placeholder-[#4A5567] outline-none focus:border-[#00CCFF33] transition-all"
                             />
                             <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A5567] hover:text-[#00CCFF] cursor-pointer transition-colors">
                                 <IoMicOutline size={18} />
@@ -239,4 +239,4 @@ const AiModal: React.FC<AiModalProps> = ({ isOpen, onClose }) => {
     );
 };
 
-export default AiModal;
+export default AiModal;

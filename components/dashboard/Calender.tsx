@@ -55,7 +55,7 @@ const Calender = () => {
               {(date) => (
                 <Calendar.Cell 
                   date={date}
-                  className={cn(
+                  className={cn(         
                     "relative flex h-10 items-center justify-center text-[14px] font-medium outfit transition-all duration-200 cursor-pointer rounded-full",
                     "data-[outside-month=true]:text-zinc-800 data-[outside-month=true]:pointer-events-none",
                     "data-[selected=true]:bg-[#00D4FF] data-[selected=true]:text-[#0B0F19] data-[selected=true]:font-bold data-[selected=true]:shadow-[0_0_15px_rgba(0,212,255,0.4)] data-[selected=true]:w-16 data-[selected=true]:h-8 data-[selected=true]:mx-auto",
