@@ -40,7 +40,7 @@ const DeathMatchHeader = ({
   onResetSlot,
   onStartMatch,
   isMatchStarted
-}: DeathMatchHeaderProps) => {
+}: DeathMatchHeaderProps) => {                           
 
   const isMatchReady = player1 && player2;
 
@@ -62,21 +62,21 @@ const DeathMatchHeader = ({
             {/* Rank Badge - Matching Image */}
             <div className={`absolute top-3 left-3 flex items-center gap-1 px-2 py-1 rounded-full border orbitron text-[10px] font-[700] ${slot === 1
                 ? "border-[#FFBF004D] bg-[#FFBF0033] text-[#FFBF00]"
-                : "border-[#7B899D4D] bg-transparent text-[#7B899D]"
+                : "border-[#7B899D4D] bg-transparent text-[#7B899D]"    
               }`}>
-              {slot === 1 && <LuCrown className="text-xs shrink-0" />}
-              <span>{slot === 1 ? "#1" : "#4"}</span>
-            </div>
-
+              {slot === 1 && <LuCrown className="text-xs shrink-0" />}           
+              <span>{slot === 1 ? "#1" : "#4"}</span>      
+            </div>                            
+  
             {/* Reset Button (Subtle) */}
-            <button
+            <button   
               onClick={(e) => {
-                e.stopPropagation();
+                e.stopPropagation();  
                 onResetSlot(slot);
-              }}
+              }}  
               className="absolute top-3 right-3 p-1 rounded-full bg-white/5 text-[#7B899D] opacity-0 group-hover:opacity-100 hover:text-white transition-all z-20"
             >            
-              <LuX className="text-xs" />
+              <LuX className="text-xs" />    
             </button>
 
             {/* Circular Image Container (Scaled to 200px height) */}
@@ -89,23 +89,23 @@ const DeathMatchHeader = ({
                 className="object-cover object-top w-full h-full"
               />                      
             </div>                              
-                              
+                                       
             {/* Name */}
             <h2 className="orbitron text-[#E7EBEF] text-[18px] font-[700] tracking-wide text-center mb-1 leading-tight">
-              {player.name}
+              {player.name}     
             </h2>
      
             {/* Category & Tags Row */}
             <div className="flex items-center gap-3 mb-3">
               <div className={`border text-[10px] px-2 py-1 rounded-full uppercase tracking-widest font-[500] outfit ${getCategoryStyles(player.category || "Unknown")}`}>
                 {player.category || "FOOTBALL"}                       
-              </div>
+              </div>     
               <div className="flex items-center gap-1 text-[#7B899D] text-[12px] tracking-wide font-[500] outfit leading-none">
                 <FiMapPin className="text-[12px]" />
                 <span>{player.country}</span>
               </div>
             </div>          
-
+   
             {/* Score */}
             <div className={`orbitron text-[24px] font-[900] leading-none tracking-wide drop-shadow-[0_0_10px_rgba(0,204,255,0.4)] ${slot === 1 ? "text-[#00CCFF]" : "text-[#FFBF00]"
               }`}>

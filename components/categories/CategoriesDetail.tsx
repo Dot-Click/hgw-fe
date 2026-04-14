@@ -54,7 +54,7 @@ const CategoriesDetail = () => {
               >       
                 {category.initials}   
               </div>
-                             
+                               
               <div className="flex flex-col">  
                 <span className="text-[16px] font-bold text-white orbitron tracking-widest">{category.name}</span>
                 <span className="text-[12px] text-zinc-500 outfit">{category.players} players</span>
@@ -62,7 +62,7 @@ const CategoriesDetail = () => {
             </div>    
      
             {/* Actions */}
-            <div className="flex items-center gap-1  transition-opacity">
+            <div className="flex items-center gap-1  transition-opacity">     
                <Tooltip>  
                   <Tooltip.Trigger>   
                     <Button isIconOnly variant="tertiary" className="text-white bg-[#0a4653] hover:bg-[#0a4653] hover:text-white transition-colors h-9 w-9">

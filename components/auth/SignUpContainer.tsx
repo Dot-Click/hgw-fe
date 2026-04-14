@@ -58,6 +58,7 @@ const SignUpContainer = () => {
         toast.success('Account created successfully!')
     }
 
+
     return (
         <div className="min-h-screen outfit flex items-center justify-center px-4 py-8 pt-28 md:pt-32">
 
@@ -118,7 +119,7 @@ const SignUpContainer = () => {
                     </TextField>
 
 
-                    {/* email  */}
+                    {/* email  */}          
                     <TextField
                         className='w-full flex flex-col gap-1'
                         isInvalid={isSubmitted && !formData.email}

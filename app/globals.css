@@ -53,3 +53,17 @@
 *:hover {
   scrollbar-color: #00CCFF #0A0B0F;
 }
+
+@theme {
+  --animate-gradient: gradient 8s ease infinite;
+
+  @keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+}
+
+@utility text-stroke {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
+}
