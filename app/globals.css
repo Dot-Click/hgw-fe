@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "@heroui/styles";
 
+/* Prevent I-beam cursor appearing on non-interactive text */
+
+
 @font-face {
   font-family: 'LustraTextBold';
   src: url('/fonts/lustra-text-bold.ttf') format('truetype');

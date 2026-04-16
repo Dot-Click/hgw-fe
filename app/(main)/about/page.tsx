@@ -1,7 +1,8 @@
 import { Metadata } from 'next';
-import { LuChartColumn, LuShieldCheck, LuGlobe, LuZap } from "react-icons/lu";
+import { LuChartColumn, LuGlobe, LuZap } from "react-icons/lu";
 import { Card } from "@heroui/react";
 import AboutCard from "@/components/about/AboutCard";
+import { FiShield } from 'react-icons/fi';
 
 export const metadata: Metadata = {
     title: "About HGW | The Mission to Archive Greatness",
@@ -20,7 +21,7 @@ const About = () => {
         {
             title: "Fair Comparison",
             description: "Era-adjusted scoring ensures legends from different decades are compared on equal footing.",
-            icon: <LuShieldCheck />
+            icon: <FiShield  />
         },
         {
             title: "Multi-Category ",

@@ -20,13 +20,13 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="w-full bg-[#0D0E12] border-t border-[#24262E] pt-16 pb-8 px-6 md:px-12 lg:px-20 outfit">
-      <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+    <footer className="w-full bg-[#0D0E12] border-t border-[#24262E] pt-16 pb-8 px-6 md:px-12 lg:px-32 outfit">
+      <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-4">
 
         {/* Branding Section */}
         <div className="flex flex-col gap-6">
           <div className="flex items-center gap-2">
-            <img src="/logo.svg" alt="HGW Legend Vault" className="h-10 md:h-8 object-contain" />
+            <img src="/logo.svg" alt="HGW Legend Vault" className="h-10 md:h-12 object-contain" />
           </div>
           <p className="text-[#7B899D]  text-[15px] font-[400] max-w-[280px]">
             The definitive archive ranking the greatest legends of sport and culture.

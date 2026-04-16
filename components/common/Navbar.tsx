@@ -28,6 +28,7 @@ const Navbar = () => {
       icon: <FiBarChart2 />,
     },
     { id: "database", name: "Database", path: "/database", icon: <FiDatabase /> },
+    { id: "domination", name: "Domination", path: "/domination", icon: <FiBarChart2 /> },
     { id: "podcast", name: "Podcast", path: "/podcast", icon: <FiMic /> },
     { id: "article", name: "Article", path: "/article", icon: <FiFileText /> },
     { id: "about", name: "About", path: "/about", icon: <FiHelpCircle /> },
@@ -42,12 +43,15 @@ const Navbar = () => {
     <>
       <nav className="fixed top-0 h-20 outfit left-0 right-0 z-50 bg-[#111217] border-b border-[#24262E] px-6 py-4 flex items-center justify-between xl:justify-around">
         {/* Logo */}
-        <Link href="/" id="navbar-logo" className="flex items-center gap-2">
+        <Link href="/" id="navbar-logo" className="flex items-center gap-3">
           <img
-            src="/logo.svg"
+            src="/nav-logo.svg"
             alt="Logo"
-            className="object-contain w-36 md:w-52 lg:w-60"
+            className="object-contain w-20 md:w-24 lg:w-16"
           />
+          <p className="orbitron text-[#7B899D] text-[11px] md:text-[16px] lg:text-[12px] font-[700]  text-[#E7EBEF] uppercase tracking-[0.5px] ">
+            HGW LEGEND VAULT
+          </p>
         </Link>
 
         {/* Desktop Navigation Links */}
@@ -57,7 +61,7 @@ const Navbar = () => {
               key={link.id}
               id={link.id}
               href={link.path}
-              className={`px-[10px] py-2 text-[16px] font-[500] transition-all duration-200 rounded-[8px] ${isActive(link.path)
+              className={`px-[10px] py-2 text-[13px] font-[500] transition-all duration-200 rounded-[8px] ${isActive(link.path)
                 ? "text-[#00CCFF] bg-[#00CCFF1A]"
                 : "text-[#7B899D] hover:text-[#00CCFF] hover:bg-white/5"
                 }`}
@@ -104,7 +108,7 @@ const Navbar = () => {
           }`}
       >
         <div className="flex items-center justify-between mb-8 border-b border-[#24262E] pb-6">
-          <img src="/logo.svg" alt="Logo" className="h-5 object-contain" />
+          <img src="/logo.svg" alt="Logo" className="h-8 object-contain" />
           <button
             onClick={toggleMenu}
             className="bg-[#1B1C22] p-1 rounded-lg text-[#7B899D] hover:text-[#00CCFF] transition-colors cursor-pointer"

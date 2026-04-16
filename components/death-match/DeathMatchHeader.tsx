@@ -50,7 +50,7 @@ const DeathMatchHeader = ({
     return (
       <div
         onClick={() => setActiveSlot(slot)}
-        className={`w-full md:w-[460px] h-[200px] orbitron flex flex-col items-center justify-center rounded-[16px] relative cursor-pointer transition-all duration-300 ${isActive
+        className={`w-full md:w-[950px] h-[220px] orbitron flex flex-col items-center justify-center rounded-[16px] gap-3 relative cursor-pointer transition-all duration-300 ${isActive
             ? "border border-[#00CCFF] bg-[#00CCFF]/[0.05] shadow-[0_0_30px_rgba(0,204,255,0.2)]"
             : player
               ? "border border-white/5 bg-[#111217] shadow-xl"
@@ -91,7 +91,7 @@ const DeathMatchHeader = ({
             </div>                              
                                        
             {/* Name */}
-            <h2 className="orbitron text-[#E7EBEF] text-[18px] font-[700] tracking-wide text-center mb-1 leading-tight">
+            <h2 className="orbitron text-[#E7EBEF]  text-[18px] font-[700] tracking-wide text-center mb-1 leading-tight">
               {player.name}     
             </h2>
      
@@ -113,7 +113,7 @@ const DeathMatchHeader = ({
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center">   
+          <div className="flex flex-col  items-center justify-center">   
             <div className={`w-[65px] h-[65px] rounded-full border border-dashed flex items-center justify-center mb-1 transition-colors ${isActive ? "border-[#00CCFF] bg-[#00CCFF]/10" : "border-[#3A455C] group-hover:border-[#7B899D]"
               }`}>
               <span className={`text-[26px] font-[400] transition-colors bg-transparent ${isActive ? "text-[#00CCFF]" : "text-[#7B899D] group-hover:text-white"
@@ -163,7 +163,7 @@ const DeathMatchHeader = ({
         </div>
 
         {/* Matchup Container */}
-        <div className="flex flex-col md:flex-row items-center justify-center gap-6 mt-8 w-full max-w-[800px]">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-6 mt-8 w-[1000px]">
           {renderSlot(1, player1)}
 
           {/* VS Badge */}                                  

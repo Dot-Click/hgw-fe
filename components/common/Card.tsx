@@ -111,7 +111,7 @@ const Card: React.FC<PlayerProps> = ({ player }) => {
                         {player.score.toFixed(1)}
                     </div>
                 </div>
-
+  
                 {/* Body: Image Container */}
                 <div className="p-0 overflow-hidden relative h-[400px]">
                     <Image
@@ -126,7 +126,7 @@ const Card: React.FC<PlayerProps> = ({ player }) => {
 
                 {/* Footer: Details & Stats */}
                 <HeroCard.Footer className="flex flex-col px-6 pb-3 pt-0 bg-[#0A0B0F] relative z-20 flex-1 justify-end items-stretch gap-2 border-none">
-                    <div className="mb-auto pt-1 flex flex-col gap-1">
+                    <div className="mb-auto pt-1 flex fl ex-col gap-1">
                         <h3 className="orbitron text-[16px] font-bold text-[#E7EBEF] tracking-wider mb-0.5 leading-tight">
                             {player.name}
                         </h3>
@@ -151,8 +151,8 @@ const Card: React.FC<PlayerProps> = ({ player }) => {
                                 </div>
                             )}
                         </div>
-                    </div>
-
+                    </div>         
+  
                     {/* Category + Trophies Row */}
                     <div className="flex items-center justify-between mb-2">
                         <div
