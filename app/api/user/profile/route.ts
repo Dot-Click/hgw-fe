@@ -3,6 +3,8 @@ import { UserService } from "@/services/user.service";
 import { ApiResponse } from "@/lib/utils/api-response";
 import { headers } from "next/headers";
 
+export const dynamic = "force-dynamic";
+
 /**
  * @route   GET /api/user/profile
  * @desc    Get the current user's profile
