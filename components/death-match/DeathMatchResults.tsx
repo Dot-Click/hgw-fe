@@ -96,7 +96,7 @@ const DeathMatchResults = ({
                                                 className={`h-full rounded-sm transition-all duration-700 ${isWinner1 ? "bg-[linear-gradient(90deg,rgba(0,204,255,0.6)_0%,#00CCFF_100%)] shadow-[0_0_16px_rgba(0,204,255,0.4)]" : "bg-[#00CCFF66]"}`}
                                                 style={{ width: `${score1}%` }}
                                             />
-                                        </div>
+                                        </div>     
                                         {/* Gold bar — Player 2 */}
                                         <div className="w-full h-[8px] md:h-[8px] bg-[#1A1400] rounded-sm overflow-hidden">
                                             <div
@@ -117,7 +117,7 @@ const DeathMatchResults = ({
                         onClick={onNewMatch}
                         className="py-2.5 px-5 h-auto rounded-[8px] bg-[#1F2128] border border-[#24262E] text-[#E7EBEF] orbitron text-[13px] tracking-widest hover:border-white/30 hover:bg-white/5 transition-all font-bold uppercase"
                     >
-                        New Match
+                        Reset
                     </Button>
                 </div>
             </div>

@@ -29,12 +29,13 @@ const SecurityTab = () => {
                             className={cn(
                                 "h-12 w-full bg-[#080C14] border border-[#1E293B] rounded-xl px-5 transition-all text-white outfit text-sm placeholder:text-zinc-600 outline-none pr-12",
                                 "hover:border-zinc-700 focus:border-[#00D4FF]/40 focus:ring-1 focus:ring-[#00D4FF]/20"
-                            )}
+                            )}   
                         />
                         <button 
                             type="button"
                             onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-600 hover:text-[#00D4FF] transition-colors bg-transparent border-none outline-none cursor-pointer"
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-600 hover:text-[#00D4FF] transition-colors bg-transparent 
+                             border-none outline-none cursor-pointer"
                         >
                             {showCurrentPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
                         </button>
@@ -53,16 +54,16 @@ const SecurityTab = () => {
                                 "hover:border-zinc-700 focus:border-[#00D4FF]/40 focus:ring-1 focus:ring-[#00D4FF]/20"
                             )}
                         />
-                        <button 
+                        <button           
                             type="button"
                             onClick={() => setShowNewPassword(!showNewPassword)}
                             className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-600 hover:text-[#00D4FF] transition-colors bg-transparent border-none outline-none cursor-pointer"
                         >
                             {showNewPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
-                        </button>
+                        </button>                  
                     </div>
-                </TextField>
-
+                </TextField>  
+                                  
                 {/* Confirm New Password */}
                 <TextField className="flex flex-col gap-2">
                     <Label className="text-[13px] font-semibold text-zinc-500 outfit uppercase tracking-wider px-1">Confirm New Password</Label>

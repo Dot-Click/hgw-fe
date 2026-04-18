@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import DatabaseFilters from "@/components/database/DatabaseFilters";
 import Card from "@/components/common/Card";
-import { PLAYERS_DATA } from '@/data/players';
+import { PlayerData, PLAYERS_DATA } from '@/data/players';
 
 export const metadata: Metadata = {
     title: "Legend Database | Search & Filter History's Greatest | HGW",
@@ -20,7 +20,7 @@ const Database = () => {
                     {/* Header Section */}
                     <div className="flex flex-col gap-1">
                         <div className="text-[32px] md:text-[56px] font-[900] flex flex-wrap items-center gap-x-6 gap-y-2 orbitron leading-tight">
-                            <h1 className="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">Player</h1>
+                            <h1 className="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">HGW</h1>
                             <span className="text-[#00CCFF] drop-shadow-[0_0_15px_rgba(0,204,255,0.4)]">Database</span>
                         </div>
                         <p className="text-[#7B899D] font-medium text-[16px] md:text-[18px] outfit leading-relaxed max-w-3xl">

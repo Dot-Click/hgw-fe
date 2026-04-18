@@ -66,7 +66,7 @@ const DeathMatchHeader = ({
               }`}>
               {slot === 1 && <LuCrown className="text-xs shrink-0" />}           
               <span>{slot === 1 ? "#1" : "#4"}</span>      
-            </div>                            
+            </div>                                
   
             {/* Reset Button (Subtle) */}
             <button   
@@ -181,7 +181,7 @@ const DeathMatchHeader = ({
               onClick={onStartMatch}
               className="py-1 px-4 h-auto rounded-[8px] bg-[#00CCFF] text-[#0B0B0F] font-bold orbitron text-[12px] md:text-[14px] tracking-widest shadow-[0_0_15px_#00CCFF4D] hover:bg-[#00CCFFDD] transition-all"
             >
-              START MATCH
+             Compare
             </Button>
           </div>
         )}

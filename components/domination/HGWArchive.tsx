@@ -59,7 +59,7 @@ const HGWArchive = () => {
             <span className="text-[#00CCFF]">CORE RULES</span>
           </h2>
           <p className="max-w-3xl text-[#7B899D] outfit text-[11px] md:text-[16px] font-[400] leading-relaxed opacity-80">
-            Before an asset is graded on the 10 Pillars, their data must pass through the seven strict calibration 
+            Before an asset is graded on the 10 Pillars of domination, their data must pass through the seven strict calibration 
             protocols of the HGW algorithm.
           </p> 
         </div>

@@ -88,7 +88,9 @@ const ProfileTab = () => {
 
                     <div className="flex justify-end pt-4">
                         <Button 
-                            className="bg-[#00D4FF] text-[#0B1221] font-[600]  text-[17px] outfit uppercase tracking-[0.1em] py-5 px-7 rounded-md shadow-[0_8px_30px_rgba(0,212,255,0.3)] hover:bg-[#00D4FF]/90 hover:scale-[1.02] transition-all flex items-center gap-3 active:scale-[0.98]"
+                            className="bg-[#00D4FF] text-[#0B1221] font-[600]  text-[17px] outfit uppercase tracking-[0.1em] py-5 px-7
+                             rounded-md shadow-[0_8px_30px_rgba(0,212,255,0.3)] hover:bg-[#00D4FF]/90 hover:scale-[1.02] transition-all 
+                             flex items-center gap-3 active:scale-[0.98]"
                         >
                             <FiSave size={25} className="stroke-[3px]" />
                             Save Profile

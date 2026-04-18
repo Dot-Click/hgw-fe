@@ -6,7 +6,7 @@ import Link from "next/link";
 import { FiArrowLeft, FiMapPin, FiCalendar, FiAward, FiStar, FiArrowRight, FiLock, FiMail } from "react-icons/fi";
 import { BsTrophy } from "react-icons/bs";
 import { useParams, notFound } from "next/navigation";
-import { PLAYERS_DATA } from '@/data/players';
+import { PlayerData, PLAYERS_DATA } from '@/data/players';
 import { CgFileDocument } from 'react-icons/cg';
 
 const PlayerDetail = () => {

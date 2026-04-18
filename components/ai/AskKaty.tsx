@@ -5,7 +5,7 @@ import { FiSend } from "react-icons/fi"
 import { HiOutlineSparkles } from "react-icons/hi"
 import Image from "next/image"
 import AiChart from "./AiChart"
-import { PLAYERS_DATA } from "@/data/players"
+import { PlayerData, PLAYERS_DATA } from '@/data/players';
 
 interface Message {
   id: string
