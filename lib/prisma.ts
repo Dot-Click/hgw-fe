@@ -14,13 +14,9 @@ const createPrismaClient = () => {
   const isAccelerate = url.startsWith("prisma://") || url.startsWith("prisma+postgres://");
 
   if (isAccelerate) {
-    // For Prisma Accelerate, initialize directly without the 'pg' adapter
+    // For Prisma Accelerate (Prisma 7+), use the accelerateUrl directly
     return new PrismaClient({
-      datasources: {
-        db: {
-          url: url,
-        },
-      },
+      accelerateUrl: url,
       log: env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
     });
   }
