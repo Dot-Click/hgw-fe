@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     });
 
     // Simple role check
-    if (!session || session.user.role !== "admin") {
+    if (!session || (session.user as any).role !== "admin") {
       return ApiResponse.forbidden("Only admins can create podcasts");
     }
 
