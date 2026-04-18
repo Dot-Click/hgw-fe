@@ -7,8 +7,6 @@ import { MdOutlineMailOutline, MdFacebook } from 'react-icons/md'
 import { FcGoogle } from 'react-icons/fc'
 import Link from 'next/link'
 import { toast } from '@heroui/react'
-import { signIn, signOut } from '@/lib/auth-client'
-
 import { TextField, Label, InputGroup, Button, FieldError, cn } from "@heroui/react";
 
 const LoginContainer = () => {
@@ -43,72 +41,18 @@ const LoginContainer = () => {
 
         if (!email || !password) return;
 
-        setIsLoading(true)
-        try {
-            await signIn.email({
-                email,
-                password,
-                callbackURL: "/admin",
-            }, {
-                onSuccess: () => {
-                    toast.success('Logged In Successfully!')
-                },
-                onError: (ctx) => {
-                    toast.danger(ctx.error.message);
-                }
-            });
-        } finally {
-            setIsLoading(false)
-        }
+        console.log("Login logic removed. Form data:", formData);
+        toast.success('Frontend only: Login clicked!');
     }
 
     const handleGoogleSignIn = async () => {
-        setIsLoading(true);
-        try {
-            await signOut();
-            const { data, error } = await signIn.social({
-                provider: "google",
-                callbackURL: "/admin",
-            });
-
-            if (error) {
-                toast.danger(error.message || "Failed to sign in with Google");
-                setIsLoading(false);
-                return;
-            }
-
-            if (data?.url) {
-                console.log(data.url);
-                window.location.href = data.url;
-            }
-        } catch (error) {
-            console.error(error);
-            setIsLoading(false);
-        }
+        console.log("Google Login logic removed.");
+        toast.info("Google OAuth logic removed.");
     };
 
     const handleFacebookSignIn = async () => {
-        setIsLoading(true);
-        try {
-            await signOut();
-            const { data, error } = await signIn.social({
-                provider: "facebook",
-                callbackURL: "/admin",
-            });
-
-            if (error) {
-                toast.danger(error.message || "Failed to sign in with Facebook");
-                setIsLoading(false);
-                return;
-            }
-
-            if (data?.url) {
-                window.location.href = data.url;
-            }
-        } catch (error) {
-            console.error(error);
-            setIsLoading(false);
-        }
+        console.log("Facebook Login logic removed.");
+        toast.info("Facebook OAuth logic removed.");
     };
 
     return (

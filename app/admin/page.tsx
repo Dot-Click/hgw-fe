@@ -53,7 +53,6 @@ const AdminDashboardPage = () => {
     },
   ]
 
-
   return (
     <div className="flex flex-col gap-8 py-2">
       <DashboardHeader />

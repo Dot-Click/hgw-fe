@@ -9,8 +9,6 @@ import { MdFacebook, MdOutlineMailOutline } from 'react-icons/md'
 import Link from 'next/link'
 import { toast } from '@heroui/react'
 import { TextField, Label, InputGroup, Button, FieldError, cn } from "@heroui/react";
-import { signIn, signUp, signOut } from '@/lib/auth-client'
-
 
 const SignUpContainer = () => {
     const [agreed, setAgreed] = useState(false)
@@ -57,79 +55,19 @@ const SignUpContainer = () => {
             return
         }
 
-        setIsLoading(true);
-
-        try {
-            await signUp.email({
-                email,
-                password,
-                name: fullName,
-                callbackURL: "/admin",
-            }, {
-                onSuccess: () => {
-                    toast.success('Account created successfully!')
-                },
-                onError: (ctx) => {
-                    toast.danger(ctx.error.message);
-                }
-            });
-        } finally {
-            setIsLoading(false);
-        }
+        console.log("Sign up logic removed. Form data:", formData);
+        toast.success("Frontend only: Account created!");
     }
 
     const handleGoogleSignIn = async () => {
-        setIsLoading(true);
-        try {
-            // Clear any stale session first.
-            // If a session cookie exists, Better Auth skips Google
-            // and goes straight to callbackURL — causing the bypass.
-            await signOut();
-
-            const { data, error } = await signIn.social({
-                provider: "google",
-                callbackURL: "/admin",
-            });
-
-            if (error) {
-                toast.danger(error.message || "Failed to sign in with Google");
-                setIsLoading(false);
-                return;
-            }  
-
-            if (data?.url) {
-                window.location.href = data.url;
-            }
-        } catch (err) {
-            console.error("[OAuth] Google sign-in error:", err);
-            setIsLoading(false);
-        }
+        console.log("Google Signup logic removed.");
+        toast.info("Google OAuth logic removed.");
     };
+
     const handleFacebookSignIn = async () => {
-        setIsLoading(true);
-        try {
-            await signOut();
-
-            const { data, error } = await signIn.social({
-                provider: "facebook",
-                callbackURL: "/admin",
-            });
-
-            if (error) {
-                toast.danger(error.message || "Failed to sign in with Facebook");
-                setIsLoading(false);
-                return;
-            }
-
-            if (data?.url) {
-                window.location.href = data.url;
-            }
-        } catch (error) {
-            console.error(error);
-            setIsLoading(false);
-        }
+        console.log("Facebook Signup logic removed.");
+        toast.info("Facebook OAuth logic removed.");
     };
-
 
     return (
         <div className="min-h-screen outfit flex items-center justify-center px-4 py-8 pt-28 md:pt-32">
@@ -252,7 +190,7 @@ const SignUpContainer = () => {
                                 onChange={handleChange}
                                 className='bg-transparent outline-none w-full text-[#7B899D] text-[14px] md:text-[17px]'
                             />
-                            <InputGroup.Suffix onClick={() => setShowPassword(!showPassword)} className='cursor-pointer text-lg md:text-2xl'>
+                            <InputGroup.Suffix onClick={() => setShowPassword(!showPassword)} className='cursor-pointer text-lg md:text-xl'>
                                 {showPassword ? <IoEyeOffOutline className={cn(isSubmitted && !formData.password ? 'text-red-500' : 'text-[#7B899D]')} /> : <IoEyeOutline className={cn(isSubmitted && !formData.password ? 'text-red-500' : 'text-[#7B899D]')} />}
                             </InputGroup.Suffix>
                         </InputGroup>
@@ -281,7 +219,7 @@ const SignUpContainer = () => {
                                 onChange={handleChange}
                                 className='bg-transparent outline-none w-full text-[#7B899D] text-[14px] md:text-[17px]'
                             />
-                            <InputGroup.Suffix onClick={() => setShowConfirmPassword(!showConfirmPassword)} className='cursor-pointer text-lg md:text-2xl'>
+                            <InputGroup.Suffix onClick={() => setShowConfirmPassword(!showConfirmPassword)} className='cursor-pointer text-lg md:text-xl'>
                                 {showConfirmPassword ? <IoEyeOffOutline className={cn(isSubmitted && (!formData.confirmPassword || formData.password !== formData.confirmPassword) ? 'text-red-500' : 'text-[#7B899D]')} /> : <IoEyeOutline className={cn(isSubmitted && (!formData.confirmPassword || formData.password !== formData.confirmPassword) ? 'text-red-500' : 'text-[#7B899D]')} />}
                             </InputGroup.Suffix>
                         </InputGroup>
