@@ -3,9 +3,11 @@
 import { useState } from 'react'
 import { GoLock } from 'react-icons/go'
 import { IoEyeOffOutline, IoEyeOutline } from 'react-icons/io5'
-import { MdOutlineMailOutline } from 'react-icons/md'
+import { MdOutlineMailOutline, MdFacebook } from 'react-icons/md'
+import { FcGoogle } from 'react-icons/fc'
 import Link from 'next/link'
 import { toast } from '@heroui/react'
+import { signIn, signOut } from '@/lib/auth-client'
 
 import { TextField, Label, InputGroup, Button, FieldError, cn } from "@heroui/react";
 
@@ -14,6 +16,7 @@ const LoginContainer = () => {
     const [agreed, setAgreed] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
     const [isSubmitted, setIsSubmitted] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
 
     const [formData, setFormData] = useState({
         email: '',
@@ -33,18 +36,80 @@ const LoginContainer = () => {
         }))
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setIsSubmitted(true)
         const { email, password } = formData
 
-        if (!email || !password) {
-            return
-        }
+        if (!email || !password) return;
 
-        console.log(`${loginType === 'user' ? 'User' : 'Admin'} Login Details:`, { ...formData, agreed })
-        toast.success('Logged In Successfully!')
+        setIsLoading(true)
+        try {
+            await signIn.email({
+                email,
+                password,
+                callbackURL: "/admin",
+            }, {
+                onSuccess: () => {
+                    toast.success('Logged In Successfully!')
+                },
+                onError: (ctx) => {
+                    toast.danger(ctx.error.message);
+                }
+            });
+        } finally {
+            setIsLoading(false)
+        }
     }
+
+    const handleGoogleSignIn = async () => {
+        setIsLoading(true);
+        try {
+            await signOut();
+            const { data, error } = await signIn.social({
+                provider: "google",
+                callbackURL: "/admin",
+            });
+
+            if (error) {
+                toast.danger(error.message || "Failed to sign in with Google");
+                setIsLoading(false);
+                return;
+            }
+
+            if (data?.url) {
+                console.log(data.url);
+                window.location.href = data.url;
+            }
+        } catch (error) {
+            console.error(error);
+            setIsLoading(false);
+        }
+    };
+
+    const handleFacebookSignIn = async () => {
+        setIsLoading(true);
+        try {
+            await signOut();
+            const { data, error } = await signIn.social({
+                provider: "facebook",
+                callbackURL: "/admin",
+            });
+
+            if (error) {
+                toast.danger(error.message || "Failed to sign in with Facebook");
+                setIsLoading(false);
+                return;
+            }
+
+            if (data?.url) {
+                window.location.href = data.url;
+            }
+        } catch (error) {
+            console.error(error);
+            setIsLoading(false);
+        }
+    };
 
     return (
         <div className="min-h-screen outfit flex items-center justify-center px-4 py-8 pt-28 md:pt-32">
@@ -87,6 +152,38 @@ const LoginContainer = () => {
                     >
                         Admin Login
                     </button>
+                </div>
+
+                <div className='w-full flex flex-col gap-3'>
+                    <Button 
+                        onClick={handleGoogleSignIn}
+                        isDisabled={isLoading}
+                        type="button"
+                        className='flex justify-center cursor-pointer items-center rounded-[12px] w-full px-4 py-6 border border-[#24262E] bg-[#404040] hover:bg-[#383838] gap-2 transition-all'
+                    >
+                        <FcGoogle className='text-lg md:text-2xl' />
+                        <span className=' text-[13px] md:text-[16px] text-[#FFFFFF] font-[500] outfit'>
+                            {isLoading ? "Connecting..." : "Continue with Google"}
+                        </span>
+                    </Button>
+
+                    <Button 
+                        onClick={handleFacebookSignIn}
+                        isDisabled={isLoading}
+                        type="button"
+                        className='flex justify-center cursor-pointer items-center rounded-[12px] w-full px-4 py-6 border border-[#24262E] bg-[#2258C3] hover:bg-[#1f4eac] gap-2 transition-all'
+                    >
+                        <MdFacebook className='text-lg md:text-2xl' />
+                        <span className=' text-[13px] md:text-[16px] text-[#FFFFFF] font-[500] outfit'>
+                            {isLoading ? "Connecting..." : "Continue with Facebook"}
+                        </span>
+                    </Button>
+                </div>
+
+                <div className='flex w-full justify-center items-center gap-2'>
+                    <span className='w-[25%] h-px bg-[#24262E]'></span>
+                    <span className='text-[8px] md:text-[13px] orbitron text-[#7B899D]'>Or login with email</span>
+                    <span className='w-[25%] h-px bg-[#24262E]'></span>
                 </div>
 
                 {/* form  */}
@@ -176,8 +273,12 @@ const LoginContainer = () => {
 
 
                     {/* Sign in button  */}
-                    <Button type="submit" className='w-full mt-2   cursor-pointer bg-[linear-gradient(97.81deg,#00CCFF_0%,#3377FF_100%)] hover:bg-[linear-gradient(97.81deg,#05aad3_0%,#3377FF_100%)] text-[#0B0B0F] font-bold py-2 md:py-5 rounded-[12px] transition-colors orbitron text-[12px] md:text-[15px]'>
-                        Enter the Vault
+                    <Button 
+                        type="submit" 
+                        isDisabled={isLoading}
+                        className='w-full mt-2   cursor-pointer bg-[linear-gradient(97.81deg,#00CCFF_0%,#3377FF_100%)] hover:bg-[linear-gradient(97.81deg,#05aad3_0%,#3377FF_100%)] text-[#0B0B0F] font-bold py-2 md:py-5 rounded-[12px] transition-colors orbitron text-[12px] md:text-[15px]'
+                    >
+                        {isLoading ? "Entering..." : "Enter the Vault"}
                     </Button>
 
                     <p className='text-[#7B899D] flex items-center justify-center gap-1 text-[12px] md:text-[15px] text-center'>

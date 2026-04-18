@@ -9,12 +9,15 @@ import { MdFacebook, MdOutlineMailOutline } from 'react-icons/md'
 import Link from 'next/link'
 import { toast } from '@heroui/react'
 import { TextField, Label, InputGroup, Button, FieldError, cn } from "@heroui/react";
+import { signIn, signUp, signOut } from '@/lib/auth-client'
+
 
 const SignUpContainer = () => {
     const [agreed, setAgreed] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const [isSubmitted, setIsSubmitted] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
 
     const [formData, setFormData] = useState({
         fullName: '',
@@ -38,7 +41,7 @@ const SignUpContainer = () => {
         }))
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitted(true)
 
@@ -54,9 +57,78 @@ const SignUpContainer = () => {
             return
         }
 
-        console.log('User Signup Details:', { ...formData, agreed })
-        toast.success('Account created successfully!')
+        setIsLoading(true);
+
+        try {
+            await signUp.email({
+                email,
+                password,
+                name: fullName,
+                callbackURL: "/admin",
+            }, {
+                onSuccess: () => {
+                    toast.success('Account created successfully!')
+                },
+                onError: (ctx) => {
+                    toast.danger(ctx.error.message);
+                }
+            });
+        } finally {
+            setIsLoading(false);
+        }
     }
+
+    const handleGoogleSignIn = async () => {
+        setIsLoading(true);
+        try {
+            // Clear any stale session first.
+            // If a session cookie exists, Better Auth skips Google
+            // and goes straight to callbackURL — causing the bypass.
+            await signOut();
+
+            const { data, error } = await signIn.social({
+                provider: "google",
+                callbackURL: "/admin",
+            });
+
+            if (error) {
+                toast.danger(error.message || "Failed to sign in with Google");
+                setIsLoading(false);
+                return;
+            }
+
+            if (data?.url) {
+                window.location.href = data.url;
+            }
+        } catch (err) {
+            console.error("[OAuth] Google sign-in error:", err);
+            setIsLoading(false);
+        }
+    };
+    const handleFacebookSignIn = async () => {
+        setIsLoading(true);
+        try {
+            await signOut();
+
+            const { data, error } = await signIn.social({
+                provider: "facebook",
+                callbackURL: "/admin",
+            });
+
+            if (error) {
+                toast.danger(error.message || "Failed to sign in with Facebook");
+                setIsLoading(false);
+                return;
+            }
+
+            if (data?.url) {
+                window.location.href = data.url;
+            }
+        } catch (error) {
+            console.error(error);
+            setIsLoading(false);
+        }
+    };
 
 
     return (
@@ -73,14 +145,28 @@ const SignUpContainer = () => {
                 </div>
 
                 <div className='w-full flex flex-col gap-3'>
-                    <Button className='flex justify-center cursor-pointer items-center rounded-[12px] w-full px-4 py-6 border border-[#24262E] bg-[#404040] hover:bg-[#383838] gap-2 transition-all'>
+                    <Button 
+                        onClick={handleGoogleSignIn}
+                        isDisabled={isLoading}
+                        type="button"
+                        className='flex justify-center cursor-pointer items-center rounded-[12px] w-full px-4 py-6 border border-[#24262E] bg-[#404040] hover:bg-[#383838] gap-2 transition-all'
+                    >
                         <FcGoogle className='text-lg md:text-2xl' />
-                        <span className=' text-[13px] md:text-[16px] text-[#FFFFFF] font-[500] outfit'>Continue with Google</span>
+                        <span className=' text-[13px] md:text-[16px] text-[#FFFFFF] font-[500] outfit'>
+                            {isLoading ? "Connecting..." : "Continue with Google"}
+                        </span>
                     </Button>
 
-                    <Button className='flex justify-center cursor-pointer items-center rounded-[12px] w-full px-4 py-6 border border-[#24262E] bg-[#2258C3] hover:bg-[#1f4eac] gap-2 transition-all'>
+                    <Button 
+                        onClick={handleFacebookSignIn}
+                        isDisabled={isLoading}
+                        type="button"
+                        className='flex justify-center cursor-pointer items-center rounded-[12px] w-full px-4 py-6 border border-[#24262E] bg-[#2258C3] hover:bg-[#1f4eac] gap-2 transition-all'
+                    >
                         <MdFacebook className='text-lg md:text-2xl' />
-                        <span className=' text-[13px] md:text-[16px] text-[#FFFFFF] font-[500] outfit'>Continue with Facebook</span>
+                        <span className=' text-[13px] md:text-[16px] text-[#FFFFFF] font-[500] outfit'>
+                            {isLoading ? "Connecting..." : "Continue with Facebook"}
+                        </span>
                     </Button>
                 </div>
 
@@ -234,9 +320,10 @@ const SignUpContainer = () => {
                     {/* Sign up button  */}
                     <Button
                         type="submit"
+                        isDisabled={isLoading}
                         className='w-full mt-2 cursor-pointer bg-[linear-gradient(97.81deg,#00CCFF_0%,#3377FF_100%)] hover:bg-[linear-gradient(97.81deg,#05aad3_0%,#3377FF_100%)] text-[#0B0B0F] font-[700] py-2.5 md:py-5 rounded-[12px] transition-colors orbitron text-[13px] md:text-[15px]'
                     >
-                        Create Account
+                        {isLoading ? "Creating Account..." : "Create Account"}
                     </Button>
 
                     <p className='text-[#7B899D] flex items-center  justify-center gap-2 text-[12px] md:text-[15px] text-center'>

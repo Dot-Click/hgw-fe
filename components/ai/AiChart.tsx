@@ -40,6 +40,12 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 }
 
 const AiChart: React.FC<AiChartProps> = ({ data, type = "bar", title, dataKey, nameKey }) => {
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
   return (
     <div className="w-full mt-4 rounded-2xl border border-[#24262E] bg-[#111217] p-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
       {title && (
@@ -49,47 +55,49 @@ const AiChart: React.FC<AiChartProps> = ({ data, type = "bar", title, dataKey, n
       )}
       
       <div className="h-[200px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          {type === "bar" ? (
-            <BarChart data={data} margin={{ top: 5, right: 10, left: -25, bottom: 0 }}>
-              <CartesianGrid 
-                strokeDasharray="3 3" 
-                stroke="#24262E" 
-                vertical={false}
-              />
-              <XAxis
-                dataKey={nameKey}
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "#7B899D", fontSize: 10 }}
-                dy={10}
-                className="outfit"
-              />
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "#7B899D", fontSize: 10 }}
-                className="outfit"
-              />
-              <Tooltip content={<CustomTooltip />} cursor={{ fill: '#1F2128' }} />
-              <Bar 
-                dataKey={dataKey} 
-                radius={[4, 4, 0, 0]}
-                barSize={30}
-              >
-                {data.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
-                    fill={index % 2 === 0 ? "#00CCFF" : "#7000FF"} 
-                    className="drop-shadow-[0_0_8px_rgba(0,212,255,0.3)]"
-                  />
-                ))}
-              </Bar>
-            </BarChart>
-          ) : (
-            null // LineChart implementation could go here if needed
-          )}
-        </ResponsiveContainer>
+        {mounted && (
+          <ResponsiveContainer width="100%" height="100%">
+            {type === "bar" ? (
+              <BarChart data={data} margin={{ top: 5, right: 10, left: -25, bottom: 0 }}>
+                <CartesianGrid 
+                  strokeDasharray="3 3" 
+                  stroke="#24262E" 
+                  vertical={false}
+                />
+                <XAxis
+                  dataKey={nameKey}
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "#7B899D", fontSize: 10 }}
+                  dy={10}
+                  className="outfit"
+                />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "#7B899D", fontSize: 10 }}
+                  className="outfit"
+                />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: '#1F2128' }} />
+                <Bar 
+                  dataKey={dataKey} 
+                  radius={[4, 4, 0, 0]}
+                  barSize={30}
+                >
+                  {data.map((entry, index) => (
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={index % 2 === 0 ? "#00CCFF" : "#7000FF"} 
+                      className="drop-shadow-[0_0_8px_rgba(0,212,255,0.3)]"
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            ) : (
+              null // LineChart implementation could go here if needed
+            )}
+          </ResponsiveContainer>
+        )}
       </div>
       
       <div className="mt-2 flex justify-end">

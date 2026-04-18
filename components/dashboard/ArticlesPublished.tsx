@@ -39,6 +39,12 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 }
 
 const ArticlesPublished = () => {
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
   return (
     <div className="flex flex-col h-full rounded-2xl border border-[#2A3040] bg-[#111A2C]/50 transition-all duration-300 hover:border-[#F59E0B]/20">
       <div className="p-6 border-b border-[#2A3040]">
@@ -49,47 +55,49 @@ const ArticlesPublished = () => {
 
       <div className="flex-1 p-6">
         <div className="h-[250px] w-full min-w-0">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={data}
-              margin={{ top: 10, right: 10, left: -25, bottom: 0 }}
-              barGap={0}
-            >
-              <CartesianGrid 
-                strokeDasharray="3 3" 
-                stroke="#2A3040" 
-                vertical={false}
-              />
-              <XAxis
-                dataKey="name"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "#71717a", fontSize: 11 }}
-                dy={10}
-                className="outfit"
-              />
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "#71717a", fontSize: 11 }}
-                dx={-2}
-                domain={[0, 8]}
-                ticks={[0, 2, 4, 6, 8]}
-                className="outfit"
-              />
-              <Tooltip content={<CustomTooltip />} cursor={{ fill: '#1A2333', opacity: 0.4 }} />
-              <Bar 
-                dataKey="count" 
-                fill="#F59E0B" 
-                radius={[4, 4, 0, 0]}
-                barSize={40}
+          {mounted && (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={data}
+                margin={{ top: 10, right: 10, left: -25, bottom: 0 }}
+                barGap={0}
               >
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill="#F59E0B" />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+                <CartesianGrid 
+                  strokeDasharray="3 3" 
+                  stroke="#2A3040" 
+                  vertical={false}
+                />
+                <XAxis
+                  dataKey="name"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "#71717a", fontSize: 11 }}
+                  dy={10}
+                  className="outfit"
+                />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "#71717a", fontSize: 11 }}
+                  dx={-2}
+                  domain={[0, 8]}
+                  ticks={[0, 2, 4, 6, 8]}
+                  className="outfit"
+                />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: '#1A2333', opacity: 0.4 }} />
+                <Bar 
+                  dataKey="count" 
+                  fill="#F59E0B" 
+                  radius={[4, 4, 0, 0]}
+                  barSize={40}
+                >
+                  {data.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill="#F59E0B" />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </div>
       </div>
     </div>

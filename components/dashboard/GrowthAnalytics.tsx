@@ -43,6 +43,12 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 }
 
 const GrowthAnalytics = () => {
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
   return (
     <div className="rounded-2xl border border-[#2A3040] bg-[#111A2C]/50 p-6 transition-all duration-300 hover:border-[#00D4FF]/20">
       {/* Header */}
@@ -58,7 +64,9 @@ const GrowthAnalytics = () => {
 
       {/* Chart Container */}
       <div className="h-[350px] w-full">
-        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+        {mounted && (
+          <ResponsiveContainer width="100%" height="100%">
+
           <LineChart
             data={data}
             margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
@@ -117,6 +125,7 @@ const GrowthAnalytics = () => {
             />
           </LineChart>
         </ResponsiveContainer>
+        )}
       </div>
     </div>
   )

@@ -105,10 +105,10 @@ const AdminPodcastDetails = () => {
       <div className="bg-[#0D1424] border border-[#1E293B] p-4 md:p-6 rounded-[20px] md:rounded-[24px]">
         <div className="relative max-w-md group">
           <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none text-zinc-500 group-focus-within:text-[#00D4FF]/60 transition-colors">
-            <FiSearch size={20} />
+            <FiSearch size={20} />   
           </div>
           <input
-            type="text"
+            type="text"          
             placeholder="Search episodes..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
