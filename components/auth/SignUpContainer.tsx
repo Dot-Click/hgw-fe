@@ -95,7 +95,7 @@ const SignUpContainer = () => {
                 toast.danger(error.message || "Failed to sign in with Google");
                 setIsLoading(false);
                 return;
-            }
+            }  
 
             if (data?.url) {
                 window.location.href = data.url;
