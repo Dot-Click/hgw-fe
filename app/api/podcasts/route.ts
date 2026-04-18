@@ -4,6 +4,8 @@ import { createPodcastSchema } from "@/validators/podcast.validator";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
+export const dynamic = "force-dynamic";
+
 /**
  * @route   GET /api/podcasts
  * @desc    Get all podcasts
