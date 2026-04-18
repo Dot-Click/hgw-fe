@@ -39,7 +39,7 @@ const SignUpContainer = () => {
     }
 
     const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
+        e.preventDefault();
         setIsSubmitted(true)
 
         const { fullName, email, password, confirmPassword } = formData
