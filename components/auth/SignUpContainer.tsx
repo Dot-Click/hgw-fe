@@ -9,13 +9,18 @@ import { MdFacebook, MdOutlineMailOutline } from 'react-icons/md'
 import Link from 'next/link'
 import { toast } from '@heroui/react'
 import { TextField, Label, InputGroup, Button, FieldError, cn } from "@heroui/react";
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { signUpWithEmail, loginWithGoogle } from '@/store/slices/authSlice'
+import Loader from '@/components/common/Loader'
 
 const SignUpContainer = () => {
+    const dispatch = useAppDispatch()
+    const { loading: isLoading, error: authError } = useAppSelector((state) => state.auth)
+
     const [agreed, setAgreed] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const [isSubmitted, setIsSubmitted] = useState(false)
-    const [isLoading, setIsLoading] = useState(false)
 
     const [formData, setFormData] = useState({
         fullName: '',
@@ -41,27 +46,36 @@ const SignUpContainer = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setIsSubmitted(true)
+        setIsSubmitted(true);
 
-        const { fullName, email, password, confirmPassword } = formData
+        const { fullName, email, password, confirmPassword } = formData;
 
         if (!fullName || !email || !password || !confirmPassword || !agreed) {
             if (!agreed && (fullName && email && password && confirmPassword)) toast.danger('You must agree to the terms');
-            return
+            return;
         }
 
         if (password !== confirmPassword) {
-            toast.danger('Passwords do not match')
-            return
+            toast.danger('Passwords do not match');
+            return;
         }
 
-        console.log("Sign up logic removed. Form data:", formData);
-        toast.success("Frontend only: Account created!");
+        const resultAction = await dispatch(signUpWithEmail({ email, password, fullName, agreedTerms: agreed }));
+        if (signUpWithEmail.fulfilled.match(resultAction)) {
+            toast.success('Account created successfully!');
+            window.location.href = '/';
+        } else {
+            const message = resultAction.payload as string || 'Something went wrong';
+            toast.danger(message);
+        }
     }
 
     const handleGoogleSignIn = async () => {
-        console.log("Google Signup logic removed.");
-        toast.info("Google OAuth logic removed.");
+        const resultAction = await dispatch(loginWithGoogle());
+        if (loginWithGoogle.rejected.match(resultAction)) {
+            const message = resultAction.payload as string || 'Something went wrong';
+            toast.danger(message);
+        }
     };
 
     const handleFacebookSignIn = async () => {
@@ -70,9 +84,16 @@ const SignUpContainer = () => {
     };
 
     return (
-        <div className="min-h-screen outfit flex items-center justify-center px-4 py-8 pt-28 md:pt-32">
-
-            <div className='bg-[#111217FF] gap-5.5 flex flex-col px-5 md:px-7 py-5 items-center justify-center h-fit w-full max-w-[430px] rounded-[22px] border border-[#24262E]'>
+        <div className="min-h-screen outfit flex items-center justify-center px-4 py-8 pt-28 md:pt-32 relative">
+            {isLoading && (
+                <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#0B0B0F]/80 backdrop-blur-sm transition-all duration-500">
+                    <Loader label="Creating your archive..." />
+                </div>
+            )}
+            <div className={cn(
+                'bg-[#111217FF] gap-5.5 flex flex-col px-5 md:px-7 py-5 items-center justify-center h-fit w-full max-w-[430px] rounded-[22px] border border-[#24262E] transition-all duration-500',
+                isLoading && 'blur-sm scale-95 opacity-50 pointer-events-none'
+            )}>
 
                 <div className='flex flex-col gap-1.5'>
                     <div className='text-[#E7EBEF] leading-8 orbitron font-[900] text-[20px] md:text-[24px] text-center'>
@@ -250,7 +271,7 @@ const SignUpContainer = () => {
                             className='text-[#7B899D] text-[11px] md:text-[14px]  leading-tight tracking-wider cursor-pointer'
                             onClick={() => setAgreed(prev => !prev)}
                         >
-                            I agree to the <Link href="/terms" className='text-[#00CCFF] hover:underline' onClick={e => e.stopPropagation()}>Terms</Link> and <Link href="/privacy" className='text-[#00CCFF] hover:underline' onClick={e => e.stopPropagation()}>Privacy Policy</Link>
+                            I agree to the <span className='text-[#00CCFF] hover:underline'>Terms</span> and <span className='text-[#00CCFF] hover:underline'>Privacy Policy</span>
                         </span>
                     </div>
 

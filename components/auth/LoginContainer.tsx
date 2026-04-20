@@ -8,13 +8,18 @@ import { FcGoogle } from 'react-icons/fc'
 import Link from 'next/link'
 import { toast } from '@heroui/react'
 import { TextField, Label, InputGroup, Button, FieldError, cn } from "@heroui/react";
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { signInWithEmail, loginWithGoogle } from '@/store/slices/authSlice'
+import Loader from '@/components/common/Loader'
 
 const LoginContainer = () => {
+    const dispatch = useAppDispatch()
+    const { loading: isLoading, error: authError } = useAppSelector((state) => state.auth)
+    
     const [loginType, setLoginType] = useState('user') // 'user' or 'admin'
     const [agreed, setAgreed] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
     const [isSubmitted, setIsSubmitted] = useState(false)
-    const [isLoading, setIsLoading] = useState(false)
 
     const [formData, setFormData] = useState({
         email: '',
@@ -41,13 +46,22 @@ const LoginContainer = () => {
 
         if (!email || !password) return;
 
-        console.log("Login logic removed. Form data:", formData);
-        toast.success('Frontend only: Login clicked!');
+        const resultAction = await dispatch(signInWithEmail({ email, password }));
+        if (signInWithEmail.fulfilled.match(resultAction)) {
+            toast.success('Successfully logged in!');
+            window.location.href = '/';
+        } else {
+            const message = resultAction.payload as string || 'Login failed';
+            toast.danger(message);
+        }
     }
 
     const handleGoogleSignIn = async () => {
-        console.log("Google Login logic removed.");
-        toast.info("Google OAuth logic removed.");
+        const resultAction = await dispatch(loginWithGoogle());
+        if (loginWithGoogle.rejected.match(resultAction)) {
+            const message = resultAction.payload as string || 'Something went wrong';
+            toast.danger(message);
+        }
     };
 
     const handleFacebookSignIn = async () => {
@@ -56,9 +70,16 @@ const LoginContainer = () => {
     };
 
     return (
-        <div className="min-h-screen outfit flex items-center justify-center px-4 py-8 pt-28 md:pt-32">
-
-            <div className='bg-[#111217FF] gap-5.5 flex flex-col px-5 md:px-7 py-6 items-center justify-center h-fit w-full max-w-[430px] rounded-[22px] border border-[#24262E]'>
+        <div className="min-h-screen outfit flex items-center justify-center px-4 py-8 pt-28 md:pt-32 relative">
+            {isLoading && (
+                <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#0B0B0F]/80 backdrop-blur-sm transition-all duration-500">
+                    <Loader label="Authenticating with Vault..." />
+                </div>
+            )}
+            <div className={cn(
+                'bg-[#111217FF] gap-5.5 flex flex-col px-5 md:px-7 py-6 items-center justify-center h-fit w-full max-w-[430px] rounded-[22px] border border-[#24262E] transition-all duration-500',
+                isLoading && 'blur-sm scale-95 opacity-50 pointer-events-none'
+            )}>
 
                 {/* logo */}
                 <div
