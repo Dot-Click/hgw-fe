@@ -8,7 +8,7 @@ import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
 import { Avatar, Dropdown } from "@heroui/react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { fetchSession, logout } from "@/store/slices/authSlice";
+import { fetchSession, logout } from "@/store/actions/authActions";
 import Loader from "@/components/common/Loader";
 import {
   FiHome,

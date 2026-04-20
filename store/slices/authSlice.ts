@@ -1,23 +1,11 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { authApi } from '@/lib/api/auth';
-
-interface User {
-    id: string;
-    name: string | null;
-    email: string;
-    image?: string | null;
-    role?: string;
-    agreedTerms?: boolean;
-    createdAt?: string; // Serialized string
-}
-
-interface AuthState {
-    user: User | null;
-    isAuthenticated: boolean;
-    loading: boolean;
-    isInitialLoading: boolean; // For initial session check
-    error: string | null;
-}
+import { createSlice } from '@reduxjs/toolkit';
+import { AuthState, User } from '../types/auth';
+import { 
+    fetchSession, 
+    signUpWithEmail, 
+    signInWithEmail, 
+    logout 
+} from '../actions/authActions';
 
 const initialState: AuthState = {
     user: null,
@@ -27,7 +15,6 @@ const initialState: AuthState = {
     error: null,
 };
 
-// Helper to sanitize non-serializable data from Better Auth
 const sanitizeUser = (user: any): User => {
     if (!user) return user;
     return {
@@ -37,73 +24,6 @@ const sanitizeUser = (user: any): User => {
         emailVerified: user.emailVerified instanceof Date ? user.emailVerified.toISOString() : user.emailVerified,
     };
 };
-
-export const fetchSession = createAsyncThunk(
-    'auth/fetchSession',
-    async (_, { rejectWithValue }) => {
-        try {
-            const { data, error } = await authApi.getSession();
-            if (error) return rejectWithValue(error.message);
-            if (!data) return null;
-            // Serialize session and user to avoid Date objects in Redux
-            return JSON.parse(JSON.stringify(data));
-        } catch (err: any) {
-            return rejectWithValue(err.message || 'Failed to fetch session');
-        }
-    }
-);
-
-export const loginWithGoogle = createAsyncThunk(
-    'auth/loginWithGoogle',
-    async (_, { rejectWithValue }) => {
-        try {
-            const { error } = await authApi.signInSocial('google');
-            if (error) return rejectWithValue(error.message);
-            return null;
-        } catch (err: any) {
-            return rejectWithValue(err.message || 'Google login failed');
-        }
-    }
-);
-
-export const signUpWithEmail = createAsyncThunk(
-    'auth/signUpWithEmail',
-    async (formData: any, { rejectWithValue }) => {
-        try {
-            const { data, error } = await authApi.signUpEmail(formData);
-            if (error) return rejectWithValue(error.message);
-            return JSON.parse(JSON.stringify(data));
-        } catch (err: any) {
-            return rejectWithValue(err.message || 'Signup failed');
-        }
-    }
-);
-
-export const signInWithEmail = createAsyncThunk(
-    'auth/signInWithEmail',
-    async (formData: any, { rejectWithValue }) => {
-        try {
-            const { data, error } = await authApi.signInEmail(formData);
-            if (error) return rejectWithValue(error.message);
-            return JSON.parse(JSON.stringify(data));
-        } catch (err: any) {
-            return rejectWithValue(err.message || 'Login failed');
-        }
-    }
-);
-
-export const logout = createAsyncThunk(
-    'auth/logout',
-    async (_, { rejectWithValue }) => {
-        try {
-            const { error } = await authApi.signOut();
-            if (error) return rejectWithValue(error.message);
-            return null;
-        } catch (err: any) {
-            return rejectWithValue(err.message || 'Logout failed');
-        }
-    }
-);
 
 const authSlice = createSlice({
     name: 'auth',
@@ -172,6 +92,7 @@ const authSlice = createSlice({
                 state.user = null;
                 state.isAuthenticated = false;
                 state.isInitialLoading = false;
+                state.loading = false;
             });
     },
 });

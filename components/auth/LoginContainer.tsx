@@ -9,7 +9,7 @@ import Link from 'next/link'
 import { toast } from '@heroui/react'
 import { TextField, Label, InputGroup, Button, FieldError, cn } from "@heroui/react";
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
-import { signInWithEmail, loginWithGoogle } from '@/store/slices/authSlice'
+import { signInWithEmail, loginWithGoogle } from '@/store/actions/authActions'
 import Loader from '@/components/common/Loader'
 
 const LoginContainer = () => {
