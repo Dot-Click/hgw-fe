@@ -25,7 +25,10 @@ export const authApi = {
     },
 
     getSession: async () => {
-        return await authClient.getSession();
+        console.time("⏱️ [authApi.getSession]");
+        const response = await authClient.getSession();
+        console.timeEnd("⏱️ [authApi.getSession]");
+        return response;
     },
 
     signOut: async () => {

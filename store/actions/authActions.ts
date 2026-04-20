@@ -15,15 +15,15 @@ export const fetchSession = createAsyncThunk(
     }
 );
 
-export const loginWithGoogle = createAsyncThunk(
-    'auth/loginWithGoogle',
-    async (_, { rejectWithValue }) => {
+export const signInSocial = createAsyncThunk(
+    'auth/signInSocial',
+    async (provider: 'google' | 'facebook', { rejectWithValue }) => {
         try {
-            const { error } = await authApi.signInSocial('google');
+            const { error } = await authApi.signInSocial(provider);
             if (error) return rejectWithValue(error.message);
             return null;
         } catch (err: any) {
-            return rejectWithValue(err.message || 'Google login failed');
+            return rejectWithValue(err.message || `${provider} login failed`);
         }
     }
 );

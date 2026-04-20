@@ -3,7 +3,8 @@ import { AuthState, User } from '../types/auth';
 import { 
     fetchSession, 
     signUpWithEmail, 
-    signInWithEmail, 
+    signInWithEmail,
+    signInSocial,
     logout 
 } from '../actions/authActions';
 
@@ -11,6 +12,7 @@ const initialState: AuthState = {
     user: null,
     isAuthenticated: false,
     loading: false,
+    loadingProvider: null,
     isInitialLoading: true,
     error: null,
 };
@@ -58,10 +60,12 @@ const authSlice = createSlice({
             // Sign Up
             .addCase(signUpWithEmail.pending, (state) => {
                 state.loading = true;
+                state.loadingProvider = 'email';
                 state.error = null;
             })
             .addCase(signUpWithEmail.fulfilled, (state, action) => {
                 state.loading = false;
+                state.loadingProvider = null;
                 if (action.payload) {
                     state.user = sanitizeUser(action.payload.user);
                     state.isAuthenticated = true;
@@ -69,15 +73,18 @@ const authSlice = createSlice({
             })
             .addCase(signUpWithEmail.rejected, (state, action) => {
                 state.loading = false;
+                state.loadingProvider = null;
                 state.error = action.payload as string;
             })
             // Sign In
             .addCase(signInWithEmail.pending, (state) => {
                 state.loading = true;
+                state.loadingProvider = 'email';
                 state.error = null;
             })
             .addCase(signInWithEmail.fulfilled, (state, action) => {
                 state.loading = false;
+                state.loadingProvider = null;
                 if (action.payload) {
                     state.user = sanitizeUser(action.payload.user);
                     state.isAuthenticated = true;
@@ -85,6 +92,22 @@ const authSlice = createSlice({
             })
             .addCase(signInWithEmail.rejected, (state, action) => {
                 state.loading = false;
+                state.loadingProvider = null;
+                state.error = action.payload as string;
+            })
+            // Social Login
+            .addCase(signInSocial.pending, (state, action) => {
+                state.loading = true;
+                state.loadingProvider = action.meta.arg;
+                state.error = null;
+            })
+            .addCase(signInSocial.fulfilled, (state) => {
+                state.loading = false;
+                state.loadingProvider = null;
+            })
+            .addCase(signInSocial.rejected, (state, action) => {
+                state.loading = false;
+                state.loadingProvider = null;
                 state.error = action.payload as string;
             })
             // Logout

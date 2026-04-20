@@ -14,6 +14,7 @@ export interface AuthState {
     user: User | null;
     isAuthenticated: boolean;
     loading: boolean;
+    loadingProvider: string | null; // 'google', 'facebook', 'email', etc.
     isInitialLoading: boolean;
     error: string | null;
 }

@@ -35,17 +35,29 @@ export const auth = betterAuth({
         },
     },
     logger: {
-        level: "debug",
+        level: "warn",
     },
     databaseHooks: {
         user: {
             create: {
+                before: async () => {
+                    console.time("⏱️ [DB.createUser]");
+                },
                 after: async (user) => {
-                    // Log user data as requested for new signups
-                    console.log("User data from Google", user);
-                    console.log(`Allowing new signup: ${user.email}`);
+                    console.timeEnd("⏱️ [DB.createUser]");
+                    console.log(`New signup: ${user.email}`);
                 }
             }
         },
+        session: {
+            create: {
+                before: async () => {
+                    console.time("⏱️ [DB.createSession]");
+                },
+                after: async () => {
+                    console.timeEnd("⏱️ [DB.createSession]");
+                }
+            }
+        }
     }
 });
