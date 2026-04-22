@@ -2,6 +2,8 @@ import * as React from "react"
 import type { Metadata } from "next"
 import Sidebar from "@/components/common/Sidebar"
 import AdminNavbar from "@/components/common/AdminNavbar"
+import { getServerSession } from "@/lib/auth"
+import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
   title: "Admin Dashboard | HGW Legend Vault",
@@ -12,11 +14,24 @@ export const metadata: Metadata = {
   },
 }
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  // Server-Side Safety Layer (Required)
+  const session = await getServerSession();
+
+  // 1. If no session -> redirect /login
+  if (!session) {
+    redirect("/login");
+  }
+
+  // 2. If role is not admin -> redirect /
+  if (session.user.role !== "ADMIN") {
+    redirect("/");
+  }
+
   return (
     <div className="flex h-screen overflow-hidden bg-[#0B0F19] text-white">
       <Sidebar />
