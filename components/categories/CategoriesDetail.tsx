@@ -27,7 +27,7 @@ const CategoriesDetail = () => {
   if (loading && categories.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-        <Spinner size="lg" color="primary" />
+        <Spinner size="lg" color="accent" />
         <span className="text-zinc-500 orbitron text-xs tracking-widest uppercase animate-pulse">Loading Vault...</span>
       </div>
     );
