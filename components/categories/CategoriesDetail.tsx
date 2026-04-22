@@ -95,7 +95,7 @@ const CategoriesDetail = () => {
               <div className="flex items-center gap-1">     
                  <Tooltip>  
                     <Tooltip.Trigger>
-                      <Button isIconOnly variant="light" className="text-zinc-500 hover:text-white transition-colors h-9 w-9 min-w-0">
+                      <Button isIconOnly className="text-zinc-500 hover:text-white transition-colors h-9 w-9 min-w-0 bg-transparent border-none">
                         <FiEdit3 size={18} />  
                       </Button>           
                     </Tooltip.Trigger>
@@ -106,7 +106,7 @@ const CategoriesDetail = () => {
   
                  <Tooltip>
                     <Tooltip.Trigger>
-                      <Button isIconOnly variant="light" className="text-zinc-500 hover:text-red-500 transition-colors h-9 w-9 min-w-0">
+                      <Button isIconOnly className="text-zinc-500 hover:text-red-500 transition-colors h-9 w-9 min-w-0 bg-transparent border-none">
                         <FiTrash2 size={18} />
                       </Button>   
                     </Tooltip.Trigger>
