@@ -91,22 +91,18 @@ const LeaderboardLegendList = ({ data }: LeaderboardLegendListProps) => {
                                     {/* Numerical Stats with Tooltips */}
                                     <div className="flex items-center gap-3 md:gap-2 lg:gap-3 text-[#7B899D] outfit text-[11px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-[400] whitespace-nowrap">
                                         <Tooltip>
-                                            <Tooltip.Trigger>
-                                                <div className="flex items-center gap-1.5 md:gap-1">
-                                                    <LuUsers className="text-[14px] md:text-[13px] lg:text-[16px]" />
-                                                    <span>{player.stats.users}</span>
-                                                </div>
-                                            </Tooltip.Trigger>
-                                            <Tooltip.Content>Global Users</Tooltip.Content>
+                                            <div className="flex items-center gap-1.5 md:gap-1">
+                                                <LuUsers className="text-[14px] md:text-[13px] lg:text-[16px]" />
+                                                <span>{player.stats.users}</span>
+                                            </div>
+                                            <Tooltip.Content placement="top">Global Users</Tooltip.Content>
                                         </Tooltip>
                                         <Tooltip>
-                                            <Tooltip.Trigger>
-                                                <div className="flex items-center gap-1.5 md:gap-1">
-                                                    <LuTrophy className="text-[14px] md:text-[13px] lg:text-[16px]" />
-                                                    <span>{player.stats.trophies}</span>
-                                                </div>
-                                            </Tooltip.Trigger>
-                                            <Tooltip.Content>Trophies Won</Tooltip.Content>
+                                            <div className="flex items-center gap-1.5 md:gap-1">
+                                                <LuTrophy className="text-[14px] md:text-[13px] lg:text-[16px]" />
+                                                <span>{player.stats.trophies}</span>
+                                            </div>
+                                            <Tooltip.Content placement="top">Trophies Won</Tooltip.Content>
                                         </Tooltip>
                                     </div>
 

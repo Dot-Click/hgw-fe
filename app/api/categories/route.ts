@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "@/lib/auth";
+import { verifyAdminApi } from "../../../lib/auth";
 import { categorySchema } from "@/lib/schemas";
 import { z } from "zod";
 
@@ -9,19 +9,17 @@ import { z } from "zod";
  * Fetches all categories. Restricted to Admin only.
  */
 export async function GET() {
-  const session = await getServerSession();
-
-  // AUTHENTICATION & RBAC CHECK
-  if (!session || session.user.role !== "ADMIN") {
-    return NextResponse.json(
-      { error: "Forbidden: Admin access only" }, 
-      { status: 403 }
-    );
-  }
+  const { authorized, response } = await verifyAdminApi();
+  if (!authorized) return response;
 
   try {
     const categories = await prisma.category.findMany({
       orderBy: { createdAt: "desc" },
+      include: {
+        _count: {
+          select: { players: true },
+        },
+      },
     });
     return NextResponse.json(categories);
   } catch (error) {
@@ -38,15 +36,8 @@ export async function GET() {
  * Creates a new category. Restricted to Admin only.
  */
 export async function POST(req: Request) {
-  const session = await getServerSession();
-
-  // AUTHENTICATION & RBAC CHECK
-  if (!session || session.user.role !== "ADMIN") {
-    return NextResponse.json(
-      { error: "Forbidden: Admin access only" }, 
-      { status: 403 }
-    );
-  }
+  const { authorized, response } = await verifyAdminApi();
+  if (!authorized) return response;
 
   try {
     const body = await req.json();

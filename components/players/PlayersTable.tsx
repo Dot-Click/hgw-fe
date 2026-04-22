@@ -12,51 +12,65 @@ import {
     Pagination,
     Button,
     cn,
+    Spinner,
 } from "@heroui/react"
 
 import { FiMoreHorizontal, FiChevronLeft, FiChevronRight } from "react-icons/fi"
 import { LuArrowUpDown } from "react-icons/lu"
-
-const columns = [
-    { name: <span className="whitespace-nowrap">#</span>, id: "id" },
-    {
-        name: (
-            <div className="flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors whitespace-nowrap">
-                Player <LuArrowUpDown size={14} className="text-zinc-600" />
-            </div>
-        ), id: "player"
-    },
-    { name: <span className="whitespace-nowrap">Category</span>, id: "category" },
-    { name: <span className="whitespace-nowrap">Country</span>, id: "country" },
-    { name: <span className="whitespace-nowrap">Era</span>, id: "era" },
-    {
-        name: (
-            <div className="flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors whitespace-nowrap">
-                HGW Score <LuArrowUpDown size={14} className="text-zinc-600" />
-            </div>
-        ), id: "score"
-    },
-    { name: <span className="whitespace-nowrap">Status</span>, id: "status" },
-    { name: <span className="whitespace-nowrap">Actions</span>, id: "actions" },
-]
+import { useIsAdmin } from "../../lib/auth-utils"
 
 interface PlayersTableProps {
-    data: any[]
+    data: any[];
+    isLoading?: boolean;
 }
 
-const PlayersTable = ({ data }: PlayersTableProps) => {
+const PlayersTable = ({ data, isLoading }: PlayersTableProps) => {
+    const { isAdmin } = useIsAdmin()
     const [page, setPage] = React.useState(1)
 
+    const columns = React.useMemo(() => {
+        const base = [
+            { name: <span className="whitespace-nowrap">#</span>, id: "id" },
+            {
+                name: (
+                    <div className="flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors whitespace-nowrap">
+                        Player <LuArrowUpDown size={14} className="text-zinc-600" />
+                    </div>
+                ), id: "player"
+            },
+            { name: <span className="whitespace-nowrap">Category</span>, id: "category" },
+            { name: <span className="whitespace-nowrap">Country</span>, id: "country" },
+            { name: <span className="whitespace-nowrap">Era</span>, id: "era" },
+            {
+                name: (
+                    <div className="flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors whitespace-nowrap">
+                        HGW Score <LuArrowUpDown size={14} className="text-zinc-600" />
+                    </div>
+                ), id: "score"
+            },
+            { name: <span className="whitespace-nowrap">Status</span>, id: "status" },
+        ]
+        if (isAdmin) base.push({ name: <span className="whitespace-nowrap">Actions</span>, id: "actions" })
+        return base
+    }, [isAdmin])
+
     const renderCell = React.useCallback((player: any, columnKey: React.Key) => {
+        const initials = player.name
+            .split(' ')
+            .map((n: string) => n[0])
+            .join('')
+            .toUpperCase()
+            .slice(0, 2);
+
         switch (columnKey) {
             case "id":
-                return <span className="text-zinc-500 text-[13px] outfit">{player.id}</span>
+                return <span className="text-zinc-500 text-[11px] outfit truncate max-w-[80px] block">{player.id.slice(0, 8)}...</span>
 
             case "player":
                 return (
                     <div className="flex items-center gap-3">
                         <div className="flex h-8 w-8 min-w-8 items-center justify-center rounded-full border border-[#2A3040] bg-[#1A2333] text-[11px] font-bold text-[#00D4FF] orbitron">
-                            {player.initials}
+                            {initials}
                         </div>
                         <span className="text-[14px] font-bold text-white orbitron tracking-wider whitespace-nowrap">
                             {player.name}
@@ -67,7 +81,7 @@ const PlayersTable = ({ data }: PlayersTableProps) => {
             case "category":
                 return (
                     <div className="px-2 py-0.5 rounded-full border border-[#1E293B] bg-[#1A2333]/50 text-zinc-400 text-[11px] font-medium outfit w-fit">
-                        {player.category}
+                        {player.category?.name || "Uncategorized"}
                     </div>
                 )
 
@@ -78,10 +92,10 @@ const PlayersTable = ({ data }: PlayersTableProps) => {
                 return <span className="text-zinc-500 text-[13px] outfit font-medium whitespace-nowrap">{player.era}</span>
 
             case "score":
-                return <span className="text-[15px] font-bold text-[#00D4FF] orbitron tracking-wide whitespace-nowrap">{player.score}</span>
+                return <span className="text-[15px] font-bold text-[#00D4FF] orbitron tracking-wide whitespace-nowrap">{player.finalScore?.toFixed(1) || "0.0"}</span>
 
             case "status":
-                const isPublished = player.status === "published"
+                const isPublished = player.status === "PUBLISHED"
                 return (
                     <div className={cn(
                         "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest outfit w-fit",
@@ -130,18 +144,43 @@ const PlayersTable = ({ data }: PlayersTableProps) => {
                                     </TableColumn>
                                 )}
                             </TableHeader>
-                            <TableBody items={data}>
-                                {(item) => (
-                                    <TableRow
-                                        key={item.id}
-                                        className="group hover:bg-[#1A2333]/40 bg-[#0B1121] transition-colors border-b border-[#1E293B]/50 last:border-none"
-                                    >
-                                        {columns.map((column) => (
-                                            <TableCell key={column.id} className="py-4 bg-[#0B1121] px-6">
-                                                {renderCell(item, column.id)}
-                                            </TableCell>
-                                        ))}
+                            <TableBody>
+                                {isLoading ? (
+                                    <TableRow className="outline-none">
+                                        <TableCell className="py-20 text-center bg-[#0B1121] outline-none">
+                                            {/* We use a hidden cell for the ID and span the rest, or just one cell if colSpan works */}
+                                            <div className="flex flex-col items-center justify-center gap-4 w-full absolute left-0 right-0">
+                                                <Spinner color="accent" size="lg" />
+                                                <span className="text-[#00D4FF] orbitron font-bold text-sm tracking-widest animate-pulse">
+                                                    Loading Legends...
+                                                </span>
+                                            </div>
+                                        </TableCell>
+                                        {/* Placeholders for other columns to avoid layout shift/warnings */}
+                                        {columns.slice(1).map(c => <TableCell key={c.id} className="bg-[#0B1121]" />)}
                                     </TableRow>
+                                ) : data.length === 0 ? (
+                                    <TableRow className="outline-none">
+                                        <TableCell className="py-20 text-center text-zinc-500 outfit bg-[#0B1121] outline-none">
+                                            <div className="w-full absolute left-0 right-0">
+                                                No players found matching your search.
+                                            </div>
+                                        </TableCell>
+                                        {columns.slice(1).map(c => <TableCell key={c.id} className="bg-[#0B1121]" />)}
+                                    </TableRow>
+                                ) : (
+                                    data.map((item) => (
+                                        <TableRow
+                                            key={item.id}
+                                            className="group hover:bg-[#1A2333]/40 bg-[#0B1121] transition-colors border-b border-[#1E293B]/50 last:border-none outline-none"
+                                        >
+                                            {columns.map((column) => (
+                                                <TableCell key={column.id} className="py-4 bg-[#0B1121] px-6 outline-none">
+                                                    {renderCell(item, column.id)}
+                                                </TableCell>
+                                            ))}
+                                        </TableRow>
+                                    ))
                                 )}
                             </TableBody>
                         </TableContent>

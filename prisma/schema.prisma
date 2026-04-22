@@ -80,6 +80,58 @@ model Category {
   color     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  players   Player[]
 
   @@map("category")
+}
+
+enum PlayerStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Player {
+  id               String       @id @default(uuid())
+  name             String
+  categoryId       String
+  category         Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  positionRole     String
+  era              String
+  country          String
+  
+  // Career Statistics
+  appearancesGames Int
+  goalsPoints      Int
+  majorAchievements Int
+
+  // HGW Scoring Matrix (0–10 each)
+  dominance        Int
+  longevity        Int
+  peakPerformance  Int
+  championships    Int
+  records          Int
+  culturalImpact   Int
+  clutchFactor     Int
+  versatility      Int
+  rivalry          Int
+  legacy           Int
+
+  // System Fields
+  image            String?
+  status           PlayerStatus @default(DRAFT)
+  finalScore       Float        @default(0)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@map("player")
+}
+
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  source    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("subscriber")
 }

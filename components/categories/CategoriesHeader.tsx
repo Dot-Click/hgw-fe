@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { Button } from '@heroui/react'
 import { FiPlus } from 'react-icons/fi'
 import AddCategoryModal from './AddCategoryModal'
+import AdminGuard from '../common/AdminGuard'
 
 const CategoriesHeader = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,18 +16,22 @@ const CategoriesHeader = () => {
         <p className="text-sm text-zinc-500 outfit">Manage sport and legend categories.</p>
       </div>
 
-      <Button 
-        onPress={() => setIsModalOpen(true)}
-        className="bg-[#00D4FF] text-[#0B1221] font-black orbitron uppercase tracking-wider h-11 px-6 rounded-xl shadow-[0_4px_20px_rgba(0,212,255,0.2)] hover:bg-[#00D4FF]/90 transition-all flex items-center gap-2"
-      >
-        <FiPlus size={18} className="stroke-[3px]" />
-        Add Category
-      </Button>
+      <AdminGuard>
+        <>
+          <Button 
+            onPress={() => setIsModalOpen(true)}
+            className="bg-[#00D4FF] text-[#0B1221] font-black orbitron uppercase tracking-wider h-11 px-6 rounded-xl shadow-[0_4px_20px_rgba(0,212,255,0.2)] hover:bg-[#00D4FF]/90 transition-all flex items-center gap-2"
+          >
+            <FiPlus size={18} className="stroke-[3px]" />
+            Add Category
+          </Button>
 
-      <AddCategoryModal 
-        isOpen={isModalOpen} 
-        onOpenChange={setIsModalOpen} 
-      />
+          <AddCategoryModal 
+            isOpen={isModalOpen} 
+            onOpenChange={setIsModalOpen} 
+          />
+        </>
+      </AdminGuard>
     </div>
   )
 }

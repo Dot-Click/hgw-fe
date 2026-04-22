@@ -7,9 +7,10 @@ import { AnimatePresence, motion } from "framer-motion"
 interface BulkImportModalProps {
   isOpen: boolean
   onOpenChange: (isOpen: boolean) => void
+  onSuccess?: () => void
 }
 
-const BulkImportModal = ({ isOpen, onOpenChange }: BulkImportModalProps) => {
+const BulkImportModal = ({ isOpen, onOpenChange, onSuccess }: BulkImportModalProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [activeTab, setActiveTab] = useState<"csv" | "api">("csv")
 
@@ -205,7 +206,10 @@ const BulkImportModal = ({ isOpen, onOpenChange }: BulkImportModalProps) => {
             {/* Footer / Action Button */}
             <div className="pt-4 pb-8 px-8">
               <button
-                onClick={() => onOpenChange(false)}
+                onClick={() => {
+                  onOpenChange(false);
+                  if (onSuccess) onSuccess();
+                }}
                 className="w-full bg-[#00D4FF] text-[#0B0F19] font-black orbitron uppercase tracking-[0.1em] h-12 rounded-xl shadow-[0_0_20px_rgba(0,212,255,0.2)] hover:shadow-[0_0_30px_rgba(0,212,255,0.4)] active:scale-[0.98] transition-all cursor-pointer text-[14px] border-none outline-none"
               >
                 Start Import

@@ -56,7 +56,7 @@ const AiChart: React.FC<AiChartProps> = ({ data, type = "bar", title, dataKey, n
       
       <div className="h-[200px] w-full">
         {mounted && (
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
             {type === "bar" ? (
               <BarChart data={data} margin={{ top: 5, right: 10, left: -25, bottom: 0 }}>
                 <CartesianGrid 

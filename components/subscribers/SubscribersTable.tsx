@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import {
   Table,
@@ -11,38 +11,63 @@ import {
   TableRow,
   TableCell,
   Button,
-  cn
+  Spinner,
+  toast,
+  cn,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  ModalBackdrop,
+  ModalContainer,
+  ModalDialog,
+  Input,
+  TextField,
+  Label,
+  useOverlayState
 } from '@heroui/react'
-import { FiSearch, FiMail, FiCalendar, FiChevronLeft, FiChevronRight, FiMoreVertical, FiEye, FiEdit2, FiTrash2 } from 'react-icons/fi'
+import { FiSearch, FiMail, FiCalendar, FiChevronLeft, FiChevronRight, FiMoreVertical, FiEdit2, FiTrash2 } from 'react-icons/fi'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '@/store/store'
+import { fetchSubscribers, Subscriber } from '@/store/slices/subscriberSlice'
+import { useIsAdmin } from '../../lib/auth-utils'
 
-const columns = [
-  { name: "Email", id: "email" },
-  { name: "Date Subscribed", id: "date" },
-  { name: "Source", id: "source" },
-  { name: "Actions", id: "actions" },
-]
-
-const subscribers = [
-  { id: 1, email: 'john.doe@email.com', date: '2026-04-01', source: 'Homepage' },
-  { id: 2, email: 'jane.smith@email.com', date: '2026-03-30', source: 'Article' },
-  { id: 3, email: 'mike.wilson@email.com', date: '2026-03-28', source: 'Footer' },
-  { id: 4, email: 'sarah.johnson@email.com', date: '2026-03-25', source: 'Homepage' },
-  { id: 5, email: 'alex.brown@email.com', date: '2026-03-22', source: 'Popup' },
-  { id: 6, email: 'emily.davis@email.com', date: '2026-03-20', source: 'Homepage' },
-  { id: 7, email: 'chris.miller@email.com', date: '2026-03-18', source: 'Article' },
-  { id: 8, email: 'lisa.taylor@email.com', date: '2026-03-15', source: 'Footer' },
-  { id: 9, email: 'david.anderson@email.com', date: '2026-03-12', source: 'Homepage' },
-  { id: 10, email: 'amy.thomas@email.com', date: '2026-03-10', source: 'Popup' },
-]
+// Sub-components
+import EditSubscriberModal from './EditSubscriberModal'
+import DeleteSubscriberModal from './DeleteSubscriberModal'
 
 const SubscribersTable = () => {
-    const [page, setPage] = React.useState(1)
-    const [search, setSearch] = React.useState('')
-    const [openDropdown, setOpenDropdown] = React.useState<number | null>(null)
-    const [dropdownPos, setDropdownPos] = React.useState({ top: 0, right: 0 })
-    const dropdownRef = React.useRef<HTMLDivElement>(null)
+    const dispatch = useDispatch<AppDispatch>()
+    const { subscribers, loading } = useSelector((state: RootState) => state.subscribers)
+    const { isAdmin } = useIsAdmin()
 
-    const handleToggleDropdown = (id: number, e: React.MouseEvent) => {
+    const columns = useMemo(() => {
+        const base = [
+            { name: "Email", id: "email" },
+            { name: "Date Subscribed", id: "date" },
+            { name: "Source", id: "source" },
+        ]
+        if (isAdmin) base.push({ name: "Actions", id: "actions" })
+        return base
+    }, [isAdmin])
+    
+    const [page, setPage] = useState(1)
+    const [search, setSearch] = useState('')
+    const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+    const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 })
+    const dropdownRef = useRef<HTMLDivElement>(null)
+
+    // State for modals - Single Source of Truth
+    const [modalType, setModalType] = useState<'edit' | 'delete' | null>(null)
+    const [subscriberToManage, setSubscriberToManage] = useState<Subscriber | null>(null)
+
+    // Fetch subscribers
+    useEffect(() => {
+        dispatch(fetchSubscribers())
+    }, [dispatch])
+
+    const handleToggleDropdown = (id: string, e: React.MouseEvent) => {
+        if (!isAdmin) return; // Prevent dropdown for non-admins
         if (openDropdown === id) {
             setOpenDropdown(null)
             return
@@ -52,7 +77,26 @@ const SubscribersTable = () => {
         setOpenDropdown(id)
     }
 
-    React.useEffect(() => {
+    const handleEditOpen = (subscriber: Subscriber) => {
+        if (!isAdmin) return;
+        setSubscriberToManage(subscriber)
+        setOpenDropdown(null)
+        setModalType('edit')
+    }
+
+    const handleDeleteOpen = (subscriber: Subscriber) => {
+        if (!isAdmin) return;
+        setSubscriberToManage(subscriber)
+        setOpenDropdown(null)
+        setModalType('delete')
+    }
+
+    const handleCloseModal = () => {
+        setModalType(null)
+        setSubscriberToManage(null)
+    }
+
+    useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
                 setOpenDropdown(null)
@@ -62,16 +106,16 @@ const SubscribersTable = () => {
         return () => document.removeEventListener("mousedown", handleClickOutside)
     }, [openDropdown])
 
-    const filteredSubscribers = React.useMemo(() => {
+    const filteredSubscribers = useMemo(() => {
         if (!search.trim()) return subscribers
         const q = search.toLowerCase()
         return subscribers.filter((s) =>
             s.email.toLowerCase().includes(q) ||
-            s.source.toLowerCase().includes(q)
+            (s.source?.toLowerCase() || '').includes(q)
         )
-    }, [search])
+    }, [search, subscribers])
 
-    const renderCell = React.useCallback((subscriber: any, columnKey: React.Key) => {
+    const renderCell = useCallback((subscriber: Subscriber, columnKey: React.Key) => {
         switch (columnKey) {
             case "email":
                 return (
@@ -86,16 +130,17 @@ const SubscribersTable = () => {
                 return (
                     <div className="flex items-center gap-2.5 text-zinc-400 outfit text-sm whitespace-nowrap">
                         <FiCalendar size={14} className="text-zinc-600" />
-                        {subscriber.date}
+                        {new Date(subscriber.createdAt).toLocaleDateString()}
                     </div>
                 )
             case "source":
                 return (
                     <span className="text-zinc-400 outfit text-sm whitespace-nowrap">
-                        {subscriber.source}
+                        {subscriber.source || 'N/A'}
                     </span>
                 )
             case "actions":
+                if (!isAdmin) return null; // Hide actions for non-admins
                 return (
                     <div className="flex items-center justify-end">
                         <button
@@ -107,9 +152,9 @@ const SubscribersTable = () => {
                     </div>
                 )
             default:
-                return subscriber[columnKey as keyof typeof subscriber]
+                return (subscriber as any)[columnKey as string]
         }
-    }, [openDropdown])
+    }, [openDropdown, isAdmin])
 
     return (
         <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -133,8 +178,8 @@ const SubscribersTable = () => {
             </div>
 
             {/* Table Container */}
-            <div className="rounded-2xl border border-[#1E293B] bg-[#0B1121] shadow-2xl overflow-hidden mb-8">
-                <div className="overflow-x-auto scrollbar-hide">
+            <div className="rounded-2xl border border-[#1E293B] bg-[#0B1121] shadow-2xl overflow-hidden mb-8 min-h-[400px] flex flex-col">
+                <div className="overflow-x-auto scrollbar-hide flex-1">
                     <Table className="bg-[#0B1121] border-none w-full min-w-[800px] shadow-none! [&_th:after]:hidden [&_th:before]:hidden">
                         <TableContent aria-label="Subscribers management table" className="bg-transparent border-none">
                             <TableHeader columns={columns} className="border-none outline-none">
@@ -152,11 +197,34 @@ const SubscribersTable = () => {
                                     </TableColumn>
                                 )}
                             </TableHeader>
-                            <TableBody items={filteredSubscribers}>
-                                {(item) => (
+                            <TableBody>
+                                {loading ? (
+                                    <TableRow className="outline-none">
+                                        <TableCell className="py-24 text-center bg-[#0B1121] outline-none">
+                                            <div className="flex flex-col items-center justify-center gap-4 w-full absolute left-0 right-0">
+                                                <Spinner color="accent" size="lg" />
+                                                <span className="text-[#00D4FF] orbitron font-bold text-sm tracking-widest animate-pulse">
+                                                    Loading Subscribers...
+                                                </span>
+                                            </div>
+                                        </TableCell>
+                                        {/* Placeholders for other columns to avoid layout shift */}
+                                        {columns.slice(1).map(c => <TableCell key={c.id} className="bg-[#0B1121]" />)}
+                                    </TableRow>
+                                ) : filteredSubscribers.length === 0 ? (
+                                    <TableRow className="outline-none">
+                                        <TableCell className="py-24 text-center text-zinc-500 outfit bg-[#0B1121] outline-none">
+                                            <div className="w-full absolute left-0 right-0">
+                                                No subscribers found matching your search.
+                                            </div>
+                                        </TableCell>
+                                        {columns.slice(1).map(c => <TableCell key={c.id} className="bg-[#0B1121]" />)}
+                                    </TableRow>
+                                ) : (
+                                    filteredSubscribers.map((item) => (
                                         <TableRow
                                             key={item.id}
-                                            className="group hover:bg-[#1A2333]/40 bg-[#0B1121] transition-colors last:border-none"
+                                            className="group hover:bg-[#1A2333]/40 bg-[#0B1121] transition-colors last:border-none outline-none"
                                         >
                                             {columns.map((column) => (
                                                 <TableCell 
@@ -167,6 +235,7 @@ const SubscribersTable = () => {
                                                 </TableCell>
                                             ))}
                                         </TableRow>
+                                    ))
                                 )}
                             </TableBody>
                         </TableContent>
@@ -176,7 +245,7 @@ const SubscribersTable = () => {
                 {/* Pagination & Summary Bar */}
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between px-6 py-5 border-t border-[#1E293B]">
                     <p className="text-[13px] text-zinc-500 outfit">
-                        Showing 1-10 of 15,432 subscribers
+                        Showing {filteredSubscribers.length} subscribers
                     </p>
 
                     <div className="flex items-center gap-2">
@@ -191,7 +260,7 @@ const SubscribersTable = () => {
                             </Button>
 
                             <div className="flex items-center gap-1.5 mx-1">
-                                {[1, 2, 3].map((p) => (
+                                {[1].map((p) => (
                                     <button
                                         key={p}
                                         onClick={() => setPage(p)}
@@ -205,13 +274,12 @@ const SubscribersTable = () => {
                                         {p}
                                     </button>
                                 ))}
-                                <span className="text-zinc-600 px-1 font-bold">...</span>
                             </div>
 
                             <Button
                                 variant="ghost"
                                 className="bg-[#0B1221] text-zinc-400 border border-[#1E293B] rounded-xl hover:text-white h-9 px-4 transition-all disabled:opacity-30 text-[12px] font-medium outfit"
-                                onClick={() => setPage(prev => prev + 1)}
+                                isDisabled={true}
                             >
                                 Next <FiChevronRight size={16} className="ml-1" />
                             </Button>
@@ -219,6 +287,19 @@ const SubscribersTable = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Modals */}
+            <EditSubscriberModal 
+                isOpen={modalType === 'edit'}
+                onClose={handleCloseModal}
+                subscriber={subscriberToManage}
+            />
+
+            <DeleteSubscriberModal 
+                isOpen={modalType === 'delete'}
+                onClose={handleCloseModal}
+                subscriber={subscriberToManage}
+            />
 
             {/* Floating Dropdown Portal */}
             {openDropdown !== null && createPortal(
@@ -228,20 +309,20 @@ const SubscribersTable = () => {
                     style={{ top: dropdownPos.top, right: dropdownPos.right }}
                 >
                     <button
-                        onClick={() => { console.log("View", openDropdown); setOpenDropdown(null) }}
-                        className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-zinc-300 hover:bg-white/5 hover:text-white transition-colors outfit"
-                    >
-                        <FiEye size={15} /> View
-                    </button>
-                    <button
-                        onClick={() => { console.log("Edit", openDropdown); setOpenDropdown(null) }}
+                        onClick={() => {
+                            const sub = subscribers.find(s => s.id === openDropdown)
+                            if (sub) handleEditOpen(sub)
+                        }}
                         className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-zinc-300 hover:bg-white/5 hover:text-white transition-colors outfit"
                     >
                         <FiEdit2 size={15} /> Edit
                     </button>
                     <div className="mx-3 my-1 border-t border-[#1E293B]" />
                     <button
-                        onClick={() => { console.log("Delete", openDropdown); setOpenDropdown(null) }}
+                        onClick={() => {
+                            const sub = subscribers.find(s => s.id === openDropdown)
+                            if (sub) handleDeleteOpen(sub)
+                        }}
                         className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors outfit"
                     >
                         <FiTrash2 size={15} /> Delete

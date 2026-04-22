@@ -1,8 +1,15 @@
+"use client"
+
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { FaInstagram, FaTiktok, FaYoutube, FaTwitter } from 'react-icons/fa';
 import { MdOutlineMailOutline } from 'react-icons/md';
+import { toast, Spinner } from '@heroui/react';
 
 const Footer = () => {
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+
   const quickLinks = [
     { id: 1, name: 'Home', path: '/' },
     { id: 2, name: 'Leaderboard', path: '/leaderboard' },
@@ -18,6 +25,35 @@ const Footer = () => {
     { id: 3, name: 'YouTube', path: '#', icon: <FaYoutube /> },
     { id: 4, name: 'TikTok', path: '#', icon: <FaTiktok /> },
   ];
+
+  const handleJoin = async () => {
+    if (!email || !email.includes('@')) {
+      toast.danger('Please enter a valid email address.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch('/api/subscribers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source: 'Footer' }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Something went wrong');
+      }
+
+      toast.success('Welcome to the Vault! You have been subscribed.');
+      setEmail('');
+    } catch (error: any) {
+      toast.danger(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <footer className="w-full bg-[#0D0E12] border-t border-[#24262E] pt-16 pb-8 px-6 md:px-12 lg:px-32 outfit">
@@ -74,12 +110,19 @@ const Footer = () => {
               <input
                 type="email"
                 placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full bg-[#1B1C22] border border-[#24262E] rounded-xl py-3 pl-12 pr-4 text-white text-[15px] outline-none focus:border-[#00CCFF80] transition-colors"
                 id="newsletter-email"
+                disabled={loading}
               />
             </div>
-            <button className="bg-[#00CCFF] text-[#0B0B0F] font-bold px-6 py-3 rounded-xl orbitron text-[13px] shadow-[0_0_20px_#00CCFF4D] hover:bg-[#00e1ff] transition-all cursor-pointer">
-              Join
+            <button 
+              onClick={handleJoin}
+              disabled={loading}
+              className="bg-[#00CCFF] text-[#0B0B0F] font-bold px-6 py-3 rounded-xl orbitron text-[13px] shadow-[0_0_20px_#00CCFF4D] hover:bg-[#00e1ff] transition-all cursor-pointer flex items-center justify-center min-w-[80px]"
+            >
+              {loading ? <Spinner size="sm" color="current" /> : 'Join'}
             </button>
           </div>
         </div>

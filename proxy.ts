@@ -1,28 +1,37 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+interface Session {
+    user: {
+        role: string;
+    };
+}
+
 /**
  * PRODUCTION-GRADE ROUTE PROTECTION (Proxy Layer)
  * 
- * In Next.js 16, 'middleware.ts' is deprecated in favor of 'proxy.ts'.
- * This layer provides the first line of defense for /admin routes.
+ * In this version of Next.js, 'proxy.ts' is used for edge-level security.
  */
 export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
     if (pathname.startsWith("/admin")) {
-        // Better Auth default session cookie name
-        const sessionToken = request.cookies.get("better-auth.session_token") || 
-                           request.cookies.get("__Secure-better-auth.session_token");
+        try {
+            const response = await fetch(new URL("/api/auth/get-session", request.nextUrl.origin), {
+                headers: {
+                    cookie: request.headers.get("cookie") || "",
+                },
+            });
 
-        if (!sessionToken) {
-            const loginUrl = new URL("/login", request.url);
-            loginUrl.searchParams.set("callbackUrl", pathname);
-            return NextResponse.redirect(loginUrl);
+            const session = await response.json();
+
+            if (!session || session.user.role !== "ADMIN") {
+                return NextResponse.redirect(new URL("/", request.url));
+            }
+        } catch (error) {
+            // If check fails, default to redirecting for security
+            return NextResponse.redirect(new URL("/", request.url));
         }
-
-        // NOTE: Deep RBAC (role-based access control) is performed in the 
-        // Admin Layout and API Routes to ensure database-level accuracy.
     }
 
     return NextResponse.next();

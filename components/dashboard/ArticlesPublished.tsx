@@ -56,7 +56,7 @@ const ArticlesPublished = () => {
       <div className="flex-1 p-6">
         <div className="h-[250px] w-full min-w-0">
           {mounted && (
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
               <BarChart
                 data={data}
                 margin={{ top: 10, right: 10, left: -25, bottom: 0 }}

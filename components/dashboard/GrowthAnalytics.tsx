@@ -65,7 +65,7 @@ const GrowthAnalytics = () => {
       {/* Chart Container */}
       <div className="h-[350px] w-full">
         {mounted && (
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
 
           <LineChart
             data={data}

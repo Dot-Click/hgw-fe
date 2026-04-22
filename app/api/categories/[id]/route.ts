@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "@/lib/auth";
+import { verifyAdminApi } from "../../../../lib/auth";
 import { categorySchema } from "@/lib/schemas";
 import { z } from "zod";
 
@@ -13,11 +13,8 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const session = await getServerSession();
-
-  if (!session || session.user.role !== "ADMIN") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
+  const { authorized, response } = await verifyAdminApi();
+  if (!authorized) return response;
 
   try {
     const category = await prisma.category.findUnique({
@@ -43,11 +40,8 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const session = await getServerSession();
-
-  if (!session || session.user.role !== "ADMIN") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
+  const { authorized, response } = await verifyAdminApi();
+  if (!authorized) return response;
 
   try {
     const body = await req.json();
@@ -94,11 +88,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const session = await getServerSession();
-
-  if (!session || session.user.role !== "ADMIN") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
+  const { authorized, response } = await verifyAdminApi();
+  if (!authorized) return response;
 
   try {
     const existingCategory = await prisma.category.findUnique({

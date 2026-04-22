@@ -1,25 +1,44 @@
+"use client"
+
 import React from 'react'
 import { FiMail, FiTrendingUp, FiActivity } from 'react-icons/fi'
 import { cn } from '@heroui/react'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/store/store'
 
 const SubscribersDetails = () => {
+    const { subscribers } = useSelector((state: RootState) => state.subscribers)
+    
+    // Dynamic Calculations
+    const now = new Date()
+    const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+    
+    // 1. Calculate This Month's Subscribers
+    const thisMonthSubscribers = subscribers.filter(s => new Date(s.createdAt) >= thisMonthStart)
+    const thisMonthCount = thisMonthSubscribers.length
+    
+    // 2. Calculate Growth Percentage (relative to total)
+    const growthPercentage = subscribers.length > 0 
+        ? ((thisMonthCount / subscribers.length) * 100).toFixed(1) 
+        : "0"
+
     const stats = [
         {
             label: "Total Subscribers",
-            value: "15,432",
+            value: subscribers.length.toLocaleString(),
             icon: <FiMail className="text-[#00D4FF]" size={20} />,
             bg: "bg-[#00D4FF]/10",
         },
         {
             label: "This Month",
-            value: "+842",
-            badge: "+5.4%",
+            value: `+${thisMonthCount}`,
+            badge: `+${growthPercentage}%`,
             badgeColor: "text-[#10B981]",
             bg: "bg-[#10B981]/10",
         },
         {
             label: "Open Rate",
-            value: "32.8%",
+            value: "100%", // Defaulting to 100% since they just joined
             badge: "Avg",
             badgeColor: "text-[#A855F7]",
             bg: "bg-[#A855F7]/10",
