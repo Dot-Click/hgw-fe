@@ -93,24 +93,24 @@ const CategoriesDetail = () => {
        
               {/* Actions */}
               <div className="flex items-center gap-1">     
-                 <Tooltip placement="top">  
+                 <Tooltip>  
                     <Tooltip.Trigger>
                       <Button isIconOnly variant="light" className="text-zinc-500 hover:text-white transition-colors h-9 w-9 min-w-0">
                         <FiEdit3 size={18} />  
                       </Button>           
                     </Tooltip.Trigger>
-                    <Tooltip.Content className="bg-[#1A2333] text-white orbitron text-[10px] rounded-lg border border-[#1E293B] px-3 py-1.5">
+                    <Tooltip.Content placement="top" className="bg-[#1A2333] text-white orbitron text-[10px] rounded-lg border border-[#1E293B] px-3 py-1.5">
                       Edit Category
                     </Tooltip.Content>
                  </Tooltip>  
   
-                 <Tooltip placement="top">
+                 <Tooltip>
                     <Tooltip.Trigger>
                       <Button isIconOnly variant="light" className="text-zinc-500 hover:text-red-500 transition-colors h-9 w-9 min-w-0">
                         <FiTrash2 size={18} />
                       </Button>   
                     </Tooltip.Trigger>
-                    <Tooltip.Content className="bg-red-950 text-red-200 orbitron text-[10px] rounded-lg border border-red-900/50 px-3 py-1.5">
+                    <Tooltip.Content placement="top" className="bg-red-950 text-red-200 orbitron text-[10px] rounded-lg border border-red-900/50 px-3 py-1.5">
                       Delete Category
                     </Tooltip.Content>
                  </Tooltip>  
