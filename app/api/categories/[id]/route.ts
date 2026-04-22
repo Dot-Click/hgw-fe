@@ -10,8 +10,9 @@ import { z } from "zod";
  */
 export async function GET(
   req: Request, 
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const session = await getServerSession();
 
   if (!session || session.user.role !== "ADMIN") {
@@ -20,7 +21,7 @@ export async function GET(
 
   try {
     const category = await prisma.category.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!category) {
@@ -39,8 +40,9 @@ export async function GET(
  */
 export async function PUT(
   req: Request, 
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const session = await getServerSession();
 
   if (!session || session.user.role !== "ADMIN") {
@@ -52,7 +54,7 @@ export async function PUT(
     const validatedData = categorySchema.parse(body);
 
     const existingCategory = await prisma.category.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!existingCategory) {
@@ -70,7 +72,7 @@ export async function PUT(
     }
 
     const updatedCategory = await prisma.category.update({
-      where: { id: params.id },
+      where: { id },
       data: validatedData,
     });
 
@@ -89,8 +91,9 @@ export async function PUT(
  */
 export async function DELETE(
   req: Request, 
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const session = await getServerSession();
 
   if (!session || session.user.role !== "ADMIN") {
@@ -99,7 +102,7 @@ export async function DELETE(
 
   try {
     const existingCategory = await prisma.category.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!existingCategory) {
@@ -107,7 +110,7 @@ export async function DELETE(
     }
 
     await prisma.category.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ message: "Category deleted successfully" });
