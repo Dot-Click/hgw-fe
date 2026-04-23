@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchPlayers, addPlayer, updatePlayerAction, deletePlayerAction } from '../actions/playerActions';
+import { fetchPlayers, fetchPlayerById, addPlayer, updatePlayerAction, deletePlayerAction } from '../actions/playerActions';
 
 export interface Player {
   id: string;
@@ -34,12 +34,14 @@ export interface Player {
 
 interface PlayerState {
   players: Player[];
+  selectedPlayer: Player | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: PlayerState = {
   players: [],
+  selectedPlayer: null,
   loading: false,
   error: null,
 };
@@ -47,7 +49,11 @@ const initialState: PlayerState = {
 const playerSlice = createSlice({
   name: 'players',
   initialState,
-  reducers: {},
+  reducers: {
+    clearSelectedPlayer: (state) => {
+      state.selectedPlayer = null;
+    }
+  },
   extraReducers: (builder) => {
     builder
       // Fetch Players
@@ -60,6 +66,19 @@ const playerSlice = createSlice({
         state.players = action.payload;
       })
       .addCase(fetchPlayers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      // Fetch Player By ID
+      .addCase(fetchPlayerById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchPlayerById.fulfilled, (state, action: PayloadAction<Player>) => {
+        state.loading = false;
+        state.selectedPlayer = action.payload;
+      })
+      .addCase(fetchPlayerById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
@@ -82,14 +101,20 @@ const playerSlice = createSlice({
         if (index !== -1) {
           state.players[index] = action.payload;
         }
+        if (state.selectedPlayer?.id === action.payload.id) {
+          state.selectedPlayer = action.payload;
+        }
       })
       // Delete Player
       .addCase(deletePlayerAction.fulfilled, (state, action: PayloadAction<string>) => {
         state.players = state.players.filter(p => p.id !== action.payload);
+        if (state.selectedPlayer?.id === action.payload) {
+          state.selectedPlayer = null;
+        }
       });
   },
 });
 
-export const { } = playerSlice.actions;
-export { fetchPlayers, addPlayer, updatePlayerAction, deletePlayerAction };
+export const { clearSelectedPlayer } = playerSlice.actions;
+export { fetchPlayers, fetchPlayerById, addPlayer, updatePlayerAction, deletePlayerAction };
 export default playerSlice.reducer;

@@ -49,33 +49,17 @@ const PlayerCards: React.FC = () => {
         return list;
     }, [dbCategories]);
 
-    // Functional mapping from Database Player to UI Card Player
-    const mappedPlayers = useMemo(() => {
-        // 1. Sort by score descending to determine rank
-        const sorted = [...players].sort((a, b) => (b.finalScore || 0) - (a.finalScore || 0));
-        
-        // 2. Map fields and assign rank strings
-        return sorted.map((p, index) => ({
-            id: p.id as any,
-            rank: `#${index + 1}`,
-            name: p.name,
-            role: p.positionRole || "Legend",
-            stats: {
-                apps: `${p.appearancesGames || 0} Apps`,
-                years: p.era || "N/A",
-                country: p.country || ""
-            },
-            category: p.category?.name || "Uncategorized",
-            trophies: p.majorAchievements || 0,
-            score: p.finalScore || 0,
-            image: p.image || "/images/placeholder-player.jpg" // Fallback image
-        }));
+    // Filter published players and sort by score descending to determine rank
+    const publishedPlayers = useMemo(() => {
+        return [...players]
+            .filter(p => p.status === "PUBLISHED")
+            .sort((a, b) => (b.finalScore || 0) - (a.finalScore || 0));
     }, [players]);
 
     const filteredPlayers = useMemo(() => {
-        if (selectedCategory === "All Sports") return mappedPlayers.slice(0, 8); 
-        return mappedPlayers.filter(p => p.category.toLowerCase() === selectedCategory.toLowerCase());
-    }, [selectedCategory, mappedPlayers]);
+        if (selectedCategory === "All Sports") return publishedPlayers.slice(0, 8); 
+        return publishedPlayers.filter(p => p.category?.name?.toLowerCase() === selectedCategory.toLowerCase());
+    }, [selectedCategory, publishedPlayers]);
 
     if (playersLoading || catsLoading) {
         return (
@@ -126,18 +110,22 @@ const PlayerCards: React.FC = () => {
                         className="grid grid-cols-1 md:flex md:flex-wrap lg:grid lg:grid-cols-3 xl:grid-cols-4 justify-items-center gap-3 md:gap-6 lg:gap-8"
                     >
                         <AnimatePresence mode="popLayout">
-                            {filteredPlayers.map((player) => (
-                                <motion.div
-                                    key={player.id}
-                                    layout
-                                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                    exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                                    transition={{ duration: 0.4, ease: "easeOut" }}
-                                >
-                                    <PlayerCard player={player} />
-                                </motion.div>
-                            ))}
+                            {filteredPlayers.map((player) => {
+                                // Find global rank from publishedPlayers
+                                const rank = publishedPlayers.findIndex(p => p.id === player.id) + 1;
+                                return (
+                                    <motion.div
+                                        key={player.id}
+                                        layout
+                                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                                        transition={{ duration: 0.4, ease: "easeOut" }}
+                                    >
+                                        <PlayerCard player={player as any} rank={rank} />
+                                    </motion.div>
+                                );
+                            })}
                         </AnimatePresence>
                     </motion.div>
                 ) : (

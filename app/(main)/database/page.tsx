@@ -1,19 +1,28 @@
-import { Metadata } from 'next';
+"use client"
+
+import React, { useEffect } from 'react';
 import DatabaseFilters from "@/components/database/DatabaseFilters";
-import Card from "@/components/common/Card";
-import { PlayerData, PLAYERS_DATA } from '@/data/players';
-
-export const metadata: Metadata = {
-    title: "Legend Database | Search & Filter History's Greatest | HGW",
-    description: "Search through the most comprehensive database of sporting and cultural icons. Filter by sport, era, and dominance stats to explore history's greatest legends.",
-    keywords: ["Legend Database", "Search Athletes", "Athlete Database", "HGW Archive", "Sports Icon Search", "Filter Legends", "Legend Vault"],
-};
-
+import Card, { CardSkeleton } from "@/components/common/Card";
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { fetchPlayers } from '@/store/actions/playerActions';
+import { fetchCategories } from '@/store/actions/categoryActions';
 
 const Database = () => {
+    const dispatch = useAppDispatch();
+    const { players, loading } = useAppSelector((state) => state.players);
+
+    useEffect(() => {
+        dispatch(fetchPlayers());
+        dispatch(fetchCategories());
+    }, [dispatch]);
+
+    // Filter published players and sort by finalScore descending
+    const publishedPlayers = players
+        .filter(p => p.status === "PUBLISHED")
+        .sort((a, b) => b.finalScore - a.finalScore);
+
     return (
         <section className="min-h-screen pt-28 pb-20 relative flex flex-col items-center">
-            {/* Centered outer container to "stuck" the content's horizontal position */}
             <div className="w-full max-w-[1400px] px-6 md:px-12 lg:px-20 flex flex-col">
                 <div className="max-w-7xl w-full flex flex-col gap-10">
 
@@ -32,10 +41,21 @@ const Database = () => {
                     <DatabaseFilters />
 
                     {/* Legends Grid */}
-                    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 justify-items-center">
-                        {PLAYERS_DATA.map((player) => (
-                            <Card key={player.id} player={player} />
-                        ))}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 justify-items-center">
+                        {loading ? (
+                            // Show Skeletons while loading
+                            Array.from({ length: 8 }).map((_, i) => (
+                                <CardSkeleton key={i} />
+                            ))
+                        ) : publishedPlayers.length > 0 ? (
+                            publishedPlayers.map((player, index) => (
+                                <Card key={player.id} player={player} rank={index + 1} />
+                            ))
+                        ) : (
+                            <div className="col-span-full py-20 text-center">
+                                <p className="text-zinc-500 orbitron text-sm tracking-widest">No Legends found.</p>
+                            </div>
+                        )}
                     </div>
 
                 </div>

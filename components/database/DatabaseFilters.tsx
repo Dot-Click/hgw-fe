@@ -1,55 +1,67 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import { InputGroup, Button, Select, ListBox } from "@heroui/react";
 import { FiSearch } from "react-icons/fi";
 import { LuSettings2 } from "react-icons/lu";
-
-const FILTER_CONFIG = [
-    {
-        label: "Category",
-        placeholder: "All",
-        options: [
-            { id: "all", name: "All" },
-            { id: "football", name: "Football" },
-            { id: "rugby", name: "Rugby" },
-            { id: "music", name: "Music" },
-        ]
-    },
-    {
-        label: "Position",
-        placeholder: "All",
-        options: [
-            { id: "all", name: "All" },
-            { id: "forward", name: "Forward" },
-            { id: "midfielder", name: "Midfielder" },
-            { id: "defender", name: "Defender" },
-            { id: "goalkeeper", name: "Goalkeeper" },
-        ]
-    },
-    {
-        label: "Era",
-        placeholder: "All",
-        options: [
-            { id: "all", name: "All" },
-            { id: "modern", name: "Modern Era" },
-            { id: "golden", name: "Golden Era" },
-            { id: "vintage", name: "Vintage Era" },
-        ]
-    },
-    {
-        label: "Sort by",
-        placeholder: "Highest Rated",
-        options: [
-            { id: "highest", name: "Highest Rated" },
-            { id: "lowest", name: "Lowest Rated" },
-            { id: "alphabetical", name: "Alphabetical" },
-            { id: "newest", name: "Newest Added" },
-        ]
-    }
-];
+import { useAppSelector } from "@/store/hooks";
 
 const DatabaseFilters = () => {
+    const { categories } = useAppSelector((state) => state.categories);
+    const { players } = useAppSelector((state) => state.players);
+
+    // Dynamically derive categories from DB
+    const dynamicCategories = useMemo(() => {
+        const list = [{ id: "all", name: "All Categories" }];
+        categories.forEach(cat => {
+            list.push({ id: cat.id, name: cat.name });
+        });
+        return list;
+    }, [categories]);
+
+    // Dynamically derive unique countries from players
+    const dynamicLocations = useMemo(() => {
+        const uniqueCountries = Array.from(new Set(players.map(p => p.country))).filter(Boolean);
+        const list = [{ id: "all", name: "All Locations" }];
+        uniqueCountries.forEach(country => {
+            list.push({ id: country.toLowerCase(), name: country });
+        });
+        return list;
+    }, [players]);
+
+    const FILTER_CONFIG = [
+        {
+            label: "Category",
+            placeholder: "All Categories",
+            options: dynamicCategories
+        },
+        {
+            label: "Location",
+            placeholder: "All Locations",
+            options: dynamicLocations
+        },
+        {
+            label: "Era",
+            placeholder: "All",
+            options: [
+                { id: "all", name: "All" },
+                { id: "modern", name: "Modern Era" },
+                { id: "golden", name: "Golden Era" },
+                { id: "vintage", name: "Vintage Era" },
+            ]
+        },
+        {
+            label: "Sort by",
+            placeholder: "Highest Rated",
+            options: [
+                { id: "highest", name: "Highest Rated" },
+                { id: "lowest", name: "Lowest Rated" },
+                { id: "alphabetical", name: "Alphabetical" },
+                { id: "newest", name: "Newest Added" },
+            ]
+        }
+    ];
+
     return (
         <div className="w-full flex flex-col gap-6 outfit mt-4">
             {/* Search Bar & Filter Button Row */}

@@ -64,3 +64,19 @@ export const deletePlayerAction = createAsyncThunk(
     }
   }
 );
+
+/**
+ * FETCH PLAYER BY ID
+ * Retrieves a specific legend's details.
+ */
+export const fetchPlayerById = createAsyncThunk(
+  'players/fetchPlayerById',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/players/${id}`);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error);
+    }
+  }
+);
