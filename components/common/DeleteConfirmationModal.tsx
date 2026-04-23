@@ -51,7 +51,7 @@ const DeleteConfirmationModal = ({
                         className="flex-1 h-12 bg-red-500 hover:bg-red-600 disabled:bg-red-500/50 text-white font-bold rounded-xl shadow-lg shadow-red-500/20 transition-all flex items-center justify-center gap-2 outline-none active:scale-[0.98] uppercase text-xs tracking-widest"
                     >
                         {isDeleting ? (
-                            <Spinner size="sm" color="white" />
+                            <Spinner size="sm" color="current" />
                         ) : (
                             <>
                                 <FiTrash2 size={16} />
