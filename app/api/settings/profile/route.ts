@@ -59,7 +59,7 @@ export async function PATCH(req: NextRequest) {
         });
     } catch (error) {
         if (error instanceof z.ZodError) {
-            return NextResponse.json({ error: error.errors[0].message }, { status: 400 });
+            return NextResponse.json({ error: error.issues[0].message }, { status: 400 });
         }
         console.error("Profile update error:", error);
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
