@@ -12,7 +12,7 @@ import Link from "next/link";
 
 interface PlayerProps {
     player: {
-        id: number;
+        id: string | number;
         rank: string;
         name: string;
         role: string;

@@ -1,28 +1,96 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { MdArrowForwardIos } from 'react-icons/md';
-import { Button } from "@heroui/react";
+import { Button, Skeleton } from "@heroui/react";
 import PlayerCard from '@/components/common/Card';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/store/store';
+import { fetchPlayers } from '@/store/actions/playerActions';
+import { fetchCategories } from '@/store/actions/categoryActions';
 
-import { PlayerData, PLAYERS_DATA } from '@/data/players';
+const PlayerCardSkeleton = () => (
+    <div className="w-[300px] h-[430px] rounded-[22px] bg-[#0A0B0F] border border-[#24262E] overflow-hidden p-0 flex flex-col">
+        <div className="h-[300px] w-full bg-zinc-900/50 animate-pulse" />
+        <div className="p-6 space-y-4 flex-1 flex flex-col justify-end">
+            <div className="space-y-2">
+                <Skeleton className="w-3/4 h-5 rounded-lg bg-zinc-800" />
+                <Skeleton className="w-1/2 h-3 rounded-lg bg-zinc-800" />
+            </div>
+            <div className="flex justify-between items-center pt-2">
+                <Skeleton className="w-20 h-6 rounded-full bg-zinc-800" />
+                <Skeleton className="w-12 h-6 rounded-lg bg-zinc-800" />
+            </div>
+            <Skeleton className="w-full h-8 rounded-lg bg-zinc-800" />
+        </div>
+    </div>
+);
 
 const PlayerCards: React.FC = () => {
+    const dispatch = useDispatch<AppDispatch>();
+    const { players, loading: playersLoading } = useSelector((state: RootState) => state.players);
+    const { categories: dbCategories, loading: catsLoading } = useSelector((state: RootState) => state.categories);
+    
     const [selectedCategory, setSelectedCategory] = useState<string>("All Sports");
 
-    const categories = [
-        { id: 1, name: "All Sports" },
-        { id: 2, name: "Football" },
-        { id: 3, name: "Rugby" },
-        { id: 4, name: "Music" }
-    ];
+    useEffect(() => {
+        dispatch(fetchPlayers());
+        dispatch(fetchCategories());
+    }, [dispatch]);
+
+    // Build categories list with "All Sports" at the start
+    const categoriesList = useMemo(() => {
+        const list = [{ id: 'all', name: "All Sports" }];
+        dbCategories.forEach(cat => {
+            list.push({ id: cat.id, name: cat.name });
+        });
+        return list;
+    }, [dbCategories]);
+
+    // Functional mapping from Database Player to UI Card Player
+    const mappedPlayers = useMemo(() => {
+        // 1. Sort by score descending to determine rank
+        const sorted = [...players].sort((a, b) => (b.finalScore || 0) - (a.finalScore || 0));
+        
+        // 2. Map fields and assign rank strings
+        return sorted.map((p, index) => ({
+            id: p.id as any,
+            rank: `#${index + 1}`,
+            name: p.name,
+            role: p.positionRole || "Legend",
+            stats: {
+                apps: `${p.appearancesGames || 0} Apps`,
+                years: p.era || "N/A",
+                country: p.country || ""
+            },
+            category: p.category?.name || "Uncategorized",
+            trophies: p.majorAchievements || 0,
+            score: p.finalScore || 0,
+            image: p.image || "/images/placeholder-player.jpg" // Fallback image
+        }));
+    }, [players]);
 
     const filteredPlayers = useMemo(() => {
-        if (selectedCategory === "All Sports") return PLAYERS_DATA.slice(0, 8); // Showing top 8 on home
-        return PLAYERS_DATA.filter(p => p.category.toLowerCase() === selectedCategory.toLowerCase());
-    }, [selectedCategory]);
+        if (selectedCategory === "All Sports") return mappedPlayers.slice(0, 8); 
+        return mappedPlayers.filter(p => p.category.toLowerCase() === selectedCategory.toLowerCase());
+    }, [selectedCategory, mappedPlayers]);
+
+    if (playersLoading || catsLoading) {
+        return (
+            <section className="w-full max-w-7xl mx-auto px-4 py-8 flex flex-col gap-8">
+                <div className="flex flex-wrap items-center gap-3">
+                    {[1, 2, 3, 4].map(i => (
+                        <Skeleton key={i} className="w-24 h-10 rounded-[12px] bg-zinc-900/50" />
+                    ))}
+                </div>
+                <div className="grid grid-cols-1 md:flex md:flex-wrap lg:grid lg:grid-cols-3 xl:grid-cols-4 justify-items-center gap-3 md:gap-6 lg:gap-8">
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map(i => <PlayerCardSkeleton key={i} />)}
+                </div>
+            </section>
+        );
+    }
 
     return (
         <section className="w-full max-w-7xl mx-auto px-4 py-8 flex flex-col gap-8">
@@ -30,7 +98,7 @@ const PlayerCards: React.FC = () => {
             <div className="relative flex flex-col md:flex-row items-center justify-between w-full gap-6">
                 {/* Filter Section */}
                 <div className="flex flex-wrap items-center gap-3">
-                    {categories.map((cat) => (
+                    {categoriesList.map((cat) => (
                         <Button
                             key={cat.id}
                             onPress={() => setSelectedCategory(cat.name)}
@@ -51,25 +119,33 @@ const PlayerCards: React.FC = () => {
             </div>
 
             {/* Player Cards Grid with animations */}
-            <motion.div 
-                layout 
-                className="grid grid-cols-1 md:flex md:flex-wrap lg:grid lg:grid-cols-3 xl:grid-cols-4 justify-items-center gap-3 md:gap-6 lg:gap-8"
-            >
-                <AnimatePresence mode="popLayout">
-                    {filteredPlayers.map((player) => (
-                        <motion.div
-                            key={player.id}
-                            layout
-                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            transition={{ duration: 0.4, ease: "easeOut" }}
-                        >
-                            <PlayerCard player={player} />
-                        </motion.div>
-                    ))}
-                </AnimatePresence>
-            </motion.div>
+            <div className="min-h-[430px]">
+                {filteredPlayers.length > 0 ? (
+                    <motion.div 
+                        layout 
+                        className="grid grid-cols-1 md:flex md:flex-wrap lg:grid lg:grid-cols-3 xl:grid-cols-4 justify-items-center gap-3 md:gap-6 lg:gap-8"
+                    >
+                        <AnimatePresence mode="popLayout">
+                            {filteredPlayers.map((player) => (
+                                <motion.div
+                                    key={player.id}
+                                    layout
+                                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                                    transition={{ duration: 0.4, ease: "easeOut" }}
+                                >
+                                    <PlayerCard player={player} />
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
+                    </motion.div>
+                ) : (
+                    <div className="w-full py-20 text-center">
+                        <p className="text-zinc-500 orbitron uppercase tracking-widest">No players found in this category.</p>
+                    </div>
+                )}
+            </div>
         </section>
     );
 };
