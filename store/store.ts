@@ -3,6 +3,8 @@ import authReducer from './reducers/authReducer';
 import categoryReducer from './reducers/categoryReducer';
 import playerReducer from './reducers/playerReducer';
 import subscriberReducer from './reducers/subscriberReducer';
+import settingsReducer from './slices/settingsSlice';
+import podcastReducer from './slices/podcastSlice';
 
 export const store = configureStore({
     reducer: {
@@ -10,6 +12,8 @@ export const store = configureStore({
         categories: categoryReducer,
         players: playerReducer,
         subscribers: subscriberReducer,
+        settings: settingsReducer,
+        podcasts: podcastReducer,
     },
 });
 

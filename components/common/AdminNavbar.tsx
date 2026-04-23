@@ -2,19 +2,41 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { FiBell, FiLogOut } from "react-icons/fi"
-import { Badge } from "@heroui/react"
+import { Badge, Spinner, Avatar } from "@heroui/react"
 import { menuItems } from "./Sidebar"
+import { useAppDispatch, useAppSelector } from "@/store/hooks"
+import { fetchSession, logout } from "@/store/actions/authActions"
 
 const AdminNavbar = () => {
   const pathname = usePathname()
+  const router = useRouter()
+  const dispatch = useAppDispatch()
+  const { user, isInitialLoading } = useAppSelector((state) => state.auth)
+
+  React.useEffect(() => {
+    if (!user && isInitialLoading) {
+      dispatch(fetchSession())
+    }
+  }, [user, isInitialLoading, dispatch])
+
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    await dispatch(logout())
+    router.push("/login")
+  }
 
   const activeItem = menuItems.find(
     (item) =>
       pathname === item.href ||
       (item.href !== "/admin" && pathname.startsWith(item.href))
   )
+
+  const getInitials = () => {
+    if (user?.name) return user.name.substring(0, 2).toUpperCase()
+    return "AD"
+  }
 
   return (
     <header className="sticky top-0 z-50 flex h-16 items-center justify-between border-b border-[#2A3040] bg-[#0B0F19]/90 px-6 lg:pl-6 pl-16 backdrop-blur-md">
@@ -48,27 +70,35 @@ const AdminNavbar = () => {
         </div>
 
         {/* 👤 USER PROFILE */}
-        <div className="flex items-center outfit gap-2">
-          <div className="flex p-2 items-center justify-center rounded-full border border-[#2A3040]
-           bg-[#3e5364] shadow-inner">
-            <span className="text-sm font-bold text-white outfit uppercase">AC</span>
-          </div>
+        <div className="flex items-center outfit gap-3">
+          {isInitialLoading && !user ? (
+            <div className="w-10 h-10 flex items-center justify-center rounded-full border border-[#2A3040] bg-[#3e5364]">
+              <Spinner size="sm" color="current" />
+            </div>
+          ) : (
+            <Avatar className="w-10 h-10 border border-[#2A3040] bg-[#3e5364] shrink-0">
+              {user?.image && <Avatar.Image src={user.image} className="object-cover" />}
+              <Avatar.Fallback className="text-sm font-bold text-white orbitron uppercase">
+                {getInitials()}
+              </Avatar.Fallback>
+            </Avatar>
+          )}
 
           <div className="hidden flex-col md:flex">
             <span className="text-sm font-[700] text-white leading-tight">
-              Admin
+              {user?.name || "Admin"}
             </span>
             <span className="text-[10px] uppercase tracking-wider text-zinc-500">
-              Super Admin
+              {user?.role || "User"}
             </span>
           </div>
         </div>
 
         {/* 🚪 LOGOUT */}
         <div className="ml-2 hidden outfit sm:flex">
-          <Link
-            href="/"
-            className=" group flex gap-1 items-center  transition-all"
+          <button
+            onClick={handleLogout}
+            className=" group flex gap-1 items-center transition-all bg-transparent border-none outline-none cursor-pointer"
           >
             <div className="rounded-lg  p-1 text-red-500 group-hover:text-white">
               <FiLogOut size={15} />
@@ -76,7 +106,7 @@ const AdminNavbar = () => {
             <span className="text-[12px] font-[700] uppercase text-red-500 group-hover:text-white ">
               Logout
             </span>
-          </Link>
+          </button>
         </div>
       </div>
     </header>

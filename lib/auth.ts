@@ -23,6 +23,11 @@ export const auth = betterAuth({
                 required: false,
                 defaultValue: "USER",
             },
+            emailAlerts: {
+                type: "boolean",
+                required: false,
+                defaultValue: true,
+            },
             agreedTerms: {
                 type: "boolean",
                 required: false,

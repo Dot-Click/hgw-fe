@@ -5,6 +5,8 @@ export interface User {
     image?: string | null;
     role?: string;
     agreedTerms?: boolean;
+    emailAlerts?: boolean;
+    isOAuth?: boolean;
     createdAt?: string;
     updatedAt?: string;
     emailVerified?: string;

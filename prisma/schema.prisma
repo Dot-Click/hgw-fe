@@ -20,12 +20,14 @@ model User {
   password      String?
   role          Role      @default(USER)
   agreedTerms   Boolean   @default(false)
+  emailAlerts   Boolean   @default(true)
   emailVerified Boolean   @default(false)
   image         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  podcasts      Podcast[]
 
   @@map("user")
 }
@@ -122,8 +124,27 @@ model Player {
   finalScore       Float        @default(0)
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
+  
+  podcasts         Podcast[]
 
   @@map("player")
+}
+
+model Podcast {
+  id            String   @id @default(cuid())
+  title         String
+  imageUrl      String
+  description   String?
+  status        String   @default("draft")
+  platformLinks Json
+  createdAt     DateTime @default(now())
+
+  // Creator
+  createdById   String
+  createdBy     User     @relation(fields: [createdById], references: [id])
+
+  // Players relation
+  players       Player[]
 }
 
 model Subscriber {

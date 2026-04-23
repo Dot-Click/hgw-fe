@@ -19,7 +19,7 @@ const SettingsTabs = () => {
     return (
         <div className="flex flex-col gap-8 animate-in fade-in duration-1000">
             <Tabs>
-                <Tabs.List className="grid grid-cols-4 gap-1 md:gap-2 bg-[#080C14] border border-[#1E293B] p-1.5 rounded-[16px] w-full md:w-fit mb-4">
+                <Tabs.List className="grid grid-cols-3 gap-1 md:gap-2 bg-[#080C14] border border-[#1E293B] p-1.5 rounded-[16px] w-full md:w-fit mb-4">
                     <Tabs.Tab id="profile" className={tabStyle}>
                         <FiUser size={16} className="shrink-0" />
                         <span>Profile</span>
@@ -35,10 +35,10 @@ const SettingsTabs = () => {
                         <span>Alerts</span>
                     </Tabs.Tab>
 
-                    <Tabs.Tab id="system" className={tabStyle}>
+                    {/* <Tabs.Tab id="system" className={tabStyle}>
                         <FiSettings size={16} className="shrink-0" />
                         <span>System</span>
-                    </Tabs.Tab>
+                    </Tabs.Tab> */}
                 </Tabs.List>
 
                 <div className="mt-2">
@@ -54,9 +54,9 @@ const SettingsTabs = () => {
                         <NotificationsTab />
                     </Tabs.Panel>
                     
-                    <Tabs.Panel id="system" className="outline-none">
+                    {/* <Tabs.Panel id="system" className="outline-none">
                         <SystemTab />
-                    </Tabs.Panel>
+                    </Tabs.Panel> */}
                 </div>
             </Tabs>
         </div>

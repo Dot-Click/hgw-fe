@@ -34,11 +34,11 @@ const CustomTooltip = ({ active, payload, label }: any) => {
             <span className="text-[13px] font-medium text-white outfit">
               {entry.name}: <span className="font-bold">{entry.value}</span>
             </span>
-          </div>
+          </div>         
         ))}
-      </div>
+      </div>       
     )
-  }
+  }              
   return null
 }
 
@@ -101,12 +101,12 @@ const GrowthAnalytics = () => {
               wrapperStyle={{ paddingTop: "30px" }}
               formatter={(value) => (
                 <span className="text-[13px] font-medium text-zinc-400 capitalize outfit ml-1">
-                  {value}
+                  {value}                 
                 </span>  
               )}
             />
             <Line
-              name="Players"
+              name="Players"                              
               type="monotone"
               dataKey="players"
               stroke="#00D4FF"
@@ -114,9 +114,9 @@ const GrowthAnalytics = () => {
               dot={{ fill: "#00D4FF", strokeWidth: 2, r: 4, stroke: "#111A2C" }}
               activeDot={{ r: 6, stroke: "#00D4FF", strokeWidth: 2, fill: "#111A2C" }}
             />
-            <Line
+            <Line    
               name="Subscribers"
-              type="monotone"                 
+              type="monotone"                      
               dataKey="subscribers"
               stroke="#8B5CF6"
               strokeWidth={3}
@@ -126,8 +126,8 @@ const GrowthAnalytics = () => {
           </LineChart>
         </ResponsiveContainer>
         )}
-      </div>
-    </div>
+      </div>     
+    </div>                                                
   )
 }
 

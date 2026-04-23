@@ -1,85 +1,63 @@
 "use client"
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { cn } from '@heroui/react'
-import { FiSearch, FiClock, FiExternalLink, FiMoreHorizontal, FiEye, FiEdit2, FiTrash2 } from 'react-icons/fi'
+import { cn, Spinner } from '@heroui/react'
+import { FiSearch, FiClock, FiExternalLink, FiMoreHorizontal, FiEye, FiEdit2, FiTrash2, FiYoutube, FiMusic } from 'react-icons/fi'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { fetchPodcasts, deletePodcast } from '@/store/actions/podcastActions'
+import DeleteConfirmationModal from '../common/DeleteConfirmationModal'
+import { toast } from '@heroui/react'
 
-const episodes = [
-  {
-    id: 1,
-    title: 'The GOAT Debate: MJ vs LeBron',
-    duration: '1:24:32',
-    platform: 'YouTube',
-    date: '2026-04-01',
-    status: 'published',
-    tags: ['Michael Jordan', 'LeBron James'],
-  },
-  {
-    id: 2,
-    title: "Messi's World Cup Legacy",
-    duration: '58:15',
-    platform: 'Spotify',
-    date: '2026-03-25',
-    status: 'published',
-    tags: ['Lionel Messi'],
-  },
-  {
-    id: 3,
-    title: 'Boxing Legends Through History',
-    duration: '1:12:45',
-    platform: 'YouTube',
-    date: '2026-03-20',
-    status: 'draft',
-    tags: ['Muhammad Ali', 'Mike Tyson'],
-  },
-  {
-    id: 4,
-    title: 'Tennis Big 3 Era Review',
-    duration: '1:05:20',
-    platform: 'Spotify',
-    date: '2026-03-15',
-    status: 'published',
-    tags: ['Roger Federer', 'Rafael Nadal', 'Novak Djokovic'],
-  },
-  {
-    id: 5,
-    title: 'NFL Draft 2026 Breakdown',
-    duration: '1:32:10',
-    platform: 'YouTube',
-    date: '2026-03-10',
-    status: 'published',
-    tags: ['NFL', 'Draft Picks'],
-  },
-  {
-    id: 6,
-    title: 'Cricket World Cup Legends',
-    duration: '47:30',
-    platform: 'Spotify',
-    date: '2026-03-05',
-    status: 'draft',
-    tags: ['Sachin Tendulkar', 'Virat Kohli'],
-  },
-]
 
-const AdminPodcastDetails = () => {
+interface AdminPodcastDetailsProps {
+  onEdit: (podcast: any) => void
+}
+
+const AdminPodcastDetails = ({ onEdit }: AdminPodcastDetailsProps) => {
+  const dispatch = useAppDispatch()
+  const { podcasts, loading } = useAppSelector((state) => state.podcasts)
+  
   const [search, setSearch] = React.useState('')
-  const [openDropdown, setOpenDropdown] = React.useState<number | null>(null)
+  const [openDropdown, setOpenDropdown] = React.useState<string | null>(null)
   const [dropdownPos, setDropdownPos] = React.useState({ top: 0, right: 0 })
   const dropdownRef = React.useRef<HTMLDivElement>(null)
 
-  const filteredEpisodes = React.useMemo(() => {
-    if (!search.trim()) return episodes
-    const q = search.toLowerCase()
-    return episodes.filter((ep) =>
-      ep.title.toLowerCase().includes(q) ||
-      ep.platform.toLowerCase().includes(q) ||
-      ep.status.toLowerCase().includes(q) ||
-      ep.tags.some((t) => t.toLowerCase().includes(q))
-    )
-  }, [search])
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false)
+  const [podcastToDelete, setPodcastToDelete] = React.useState<string | null>(null)
+  const [isDeleting, setIsDeleting] = React.useState(false)
 
-  const handleToggleDropdown = (id: number, e: React.MouseEvent) => {
+  useEffect(() => {
+    dispatch(fetchPodcasts())
+  }, [dispatch])
+
+  const handleConfirmDelete = async () => {
+    if (!podcastToDelete) return
+    setIsDeleting(true)
+    try {
+      await dispatch(deletePodcast(podcastToDelete)).unwrap()
+      toast.success("Podcast deleted successfully")
+      setIsDeleteModalOpen(false)
+      setPodcastToDelete(null)
+    } catch (error: any) {
+      const errorMessage = typeof error === 'string' ? error : (error.message || 'Failed to delete')
+      toast.danger(errorMessage)
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
+  const filteredEpisodes = React.useMemo(() => {
+    if (!search.trim()) return podcasts
+    const q = search.toLowerCase()
+    return podcasts.filter((ep) =>
+      ep.title.toLowerCase().includes(q) ||
+      ep.status.toLowerCase().includes(q) ||
+      ep.players.some((p: any) => p.name.toLowerCase().includes(q))
+    )
+  }, [search, podcasts])
+
+  const handleToggleDropdown = (id: string, e: React.MouseEvent) => {
     if (openDropdown === id) {
       setOpenDropdown(null)
       return
@@ -98,6 +76,15 @@ const AdminPodcastDetails = () => {
     if (openDropdown !== null) document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [openDropdown])
+
+  if (loading && podcasts.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 bg-[#0D1424] border border-[#1E293B] rounded-[24px]">
+        <Spinner size="lg" color="accent" />
+        <p className="mt-4 text-zinc-500 orbitron text-xs font-bold uppercase tracking-widest">Loading episodes...</p>
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -125,13 +112,24 @@ const AdminPodcastDetails = () => {
         {filteredEpisodes.map((episode) => (
           <div
             key={episode.id}
-            className="bg-[#0B1121] border border-[#1E293B] rounded-2xl p-5 md:p-6 hover:border-[#2A3040] transition-all group"
+            className="bg-[#0B1121] border border-[#1E293B] rounded-2xl p-5 md:p-6 hover:border-[#2A3040] transition-all group relative overflow-hidden"
           >
+            {/* Background Thumbnail Blur */}
+            <div 
+              className="absolute top-0 right-0 w-32 h-32 opacity-10 blur-2xl -mr-10 -mt-10 pointer-events-none"
+              style={{ background: `radial-gradient(circle, #00D4FF 0%, transparent 70%)` }}
+            />
+
             {/* Top Row: Title + Status + Menu */}
             <div className="flex items-start justify-between gap-3 mb-3">
-              <h3 className="text-white font-[600] outfit text-sm md:text-base tracking-wide group-hover:text-[#00D4FF] transition-colors line-clamp-1">
-                {episode.title}
-              </h3>
+              <div className="flex flex-col gap-1">
+                <h3 className="text-white font-[600] outfit text-sm md:text-base tracking-wide group-hover:text-[#00D4FF] transition-colors line-clamp-1">
+                  {episode.title}
+                </h3>
+                <span className="text-[10px] text-zinc-500 orbitron uppercase font-bold tracking-widest">
+                  by {episode.createdBy?.name || 'Admin'}
+                </span>
+              </div>
               <div className="flex items-center gap-2 shrink-0">
                 <div className={cn(
                   "inline-flex items-center capitalize outfit text-[10px] md:text-[11px] font-[500] px-2.5 md:px-3 h-6 md:h-7 rounded-full tracking-wider border-none",
@@ -154,27 +152,34 @@ const AdminPodcastDetails = () => {
               </div>
             </div>
 
-            {/* Meta Row: Duration, Platform, Date */}
+            {/* Meta Row: Links, Date */}
             <div className="flex items-center gap-3 md:gap-4 text-zinc-500 outfit text-[11px] md:text-xs mb-4">
+              <div className="flex items-center gap-2">
+                {episode.platformLinks?.spotify && (
+                  <a href={episode.platformLinks.spotify} target="_blank" rel="noopener noreferrer" className="text-[#1DB954] hover:scale-110 transition-transform">
+                    <FiMusic size={14} title="Spotify" />
+                  </a>
+                )}
+                {episode.platformLinks?.youtube && (
+                  <a href={episode.platformLinks.youtube} target="_blank" rel="noopener noreferrer" className="text-[#FF0000] hover:scale-110 transition-transform">
+                    <FiYoutube size={16} title="YouTube" />
+                  </a>
+                )}
+              </div>
               <div className="flex items-center gap-1.5">
                 <FiClock size={13} className="text-zinc-600" />
-                {episode.duration}
+                {new Date(episode.createdAt).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}
               </div>
-              <div className="flex items-center gap-1.5">
-                <FiExternalLink size={13} className="text-zinc-600" />
-                {episode.platform}
-              </div>
-              <span>{episode.date}</span>
             </div>
 
-            {/* Tags */}
+            {/* Featured Players as Tags */}
             <div className="flex flex-wrap gap-2">
-              {episode.tags.map((tag) => (
+              {episode.players?.map((player: any) => (
                 <span
-                  key={tag}
-                  className="px-2.5 py-1 rounded-full border border-[#00D4FF]/20 bg-[#00D4FF]/5 text-[#00D4FF] text-[10px] md:text-[11px] font-medium outfit tracking-wide"
+                  key={player.id}
+                  className="px-2.5 py-1 rounded-full border border-[#1E293B] bg-[#080C14] text-zinc-400 text-[10px] md:text-[11px] font-medium outfit tracking-wide"
                 >
-                  {tag}
+                  {player.name}
                 </span>
               ))}
             </div>
@@ -203,14 +208,22 @@ const AdminPodcastDetails = () => {
             <FiEye size={15} /> View
           </button>
           <button
-            onClick={() => { console.log("Edit", openDropdown); setOpenDropdown(null) }}
+            onClick={() => { 
+              const episode = podcasts.find(p => p.id === openDropdown)
+              if (episode) onEdit(episode)
+              setOpenDropdown(null) 
+            }}
             className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-zinc-300 hover:bg-white/5 hover:text-white transition-colors outfit"
           >
             <FiEdit2 size={15} /> Edit
           </button>
           <div className="mx-3 my-1 border-t border-[#1E293B]" />
           <button
-            onClick={() => { console.log("Delete", openDropdown); setOpenDropdown(null) }}
+            onClick={() => { 
+              setPodcastToDelete(openDropdown)
+              setIsDeleteModalOpen(true)
+              setOpenDropdown(null) 
+            }}
             className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors outfit"
           >
             <FiTrash2 size={15} /> Delete
@@ -218,6 +231,15 @@ const AdminPodcastDetails = () => {
         </div>,
         document.body
       )}
+
+      <DeleteConfirmationModal 
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        isDeleting={isDeleting}
+        title="Delete Podcast"
+        message="Are you sure you want to delete this podcast episode? This action cannot be undone."
+      />
     </div>
   )
 }

@@ -1,13 +1,34 @@
-"use client"
-
-import React, { useState } from 'react'
-import { Button, Switch } from '@heroui/react'
-import { FiMail, FiSmartphone, FiCalendar, FiCheck } from 'react-icons/fi'
+import React, { useEffect } from 'react'
+import { Switch, toast } from '@heroui/react'
+import { FiMail, FiSmartphone, FiCalendar } from 'react-icons/fi'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { updateAlerts } from '@/store/actions/settingsActions'
+import { resetSettingsState } from '@/store/slices/settingsSlice'
+import { SettingsSkeleton } from './SettingsSkeleton'
 
 const NotificationsTab = () => {
-    const [emailNotif, setEmailNotif] = useState(true)
-    const [pushNotif, setPushNotif] = useState(false)
-    const [weeklyDigest, setWeeklyDigest] = useState(true)
+    const dispatch = useAppDispatch()
+    const { user, isInitialLoading } = useAppSelector((state) => state.auth)
+    const { loading, success, error } = useAppSelector((state) => state.settings)
+
+    useEffect(() => {
+        if (success) {
+            toast.success("Alert settings updated")
+            dispatch(resetSettingsState())
+        }
+        if (error) {
+            toast.danger(error)
+            dispatch(resetSettingsState())
+        }
+    }, [success, error, dispatch])
+
+    const handleToggle = (val: boolean) => {
+        dispatch(updateAlerts({ emailAlerts: val }))
+    }
+
+    if (isInitialLoading) {
+        return <SettingsSkeleton />
+    }
 
     return (
         <div className="bg-[#0D1424] border border-[#1E293B] rounded-[20px] p-6 md:p-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -28,25 +49,34 @@ const NotificationsTab = () => {
                     icon={<FiMail size={20} className="text-[#00D4FF]" />}
                     title="Email Alerts"
                     description="Receive important updates and subscriber reports."
-                    isSelected={emailNotif}
-                    onChange={setEmailNotif}
+                    isSelected={user?.emailAlerts || false}
+                    onChange={handleToggle}
+                    isLoading={loading}
                 />
 
+                {/* Browser Push - COMMENTED OUT AS REQUESTED */}
+                {/* 
                 <NotificationCard 
                     icon={<FiSmartphone size={20} className="text-[#00D4FF]" />}
                     title="Browser Push"
                     description="Get real-time notifications while browsing."
-                    isSelected={pushNotif}
-                    onChange={setPushNotif}
+                    isSelected={false}
+                    onChange={() => {}}
+                    disabled
                 />
+                */}
 
+                {/* Analytics Digest - COMMENTED OUT AS REQUESTED */}
+                {/* 
                 <NotificationCard 
                     icon={<FiCalendar size={20} className="text-[#00D4FF]" />}
                     title="Analytics Digest"
                     description="Weekly summary of performance and growth."
-                    isSelected={weeklyDigest}
-                    onChange={setWeeklyDigest}
+                    isSelected={false}
+                    onChange={() => {}}
+                    disabled
                 />
+                */}
             </div>
         </div>
     )
@@ -57,15 +87,19 @@ const NotificationCard = ({
     title, 
     description, 
     isSelected, 
-    onChange 
+    onChange,
+    isLoading,
+    disabled = false
 }: { 
     icon: React.ReactNode; 
     title: string; 
     description: string; 
     isSelected: boolean; 
-    onChange: (val: boolean) => void 
+    onChange: (val: boolean) => void;
+    isLoading?: boolean;
+    disabled?: boolean;
 }) => (
-    <div className="flex items-center justify-between p-4 rounded-xl border border-[#1E293B] bg-[#0B1221] hover:border-[#00D4FF]/40 transition-all group/card">
+    <div className={`flex items-center justify-between p-4 rounded-xl border border-[#1E293B] bg-[#0B1221] hover:border-[#00D4FF]/40 transition-all group/card ${disabled ? 'opacity-50 grayscale' : ''}`}>
 
         {/* Left */}
         <div className="flex items-center gap-4">
@@ -83,16 +117,19 @@ const NotificationCard = ({
             </div>
         </div>
 
-        {/* Switch - Fixed with group-data selectors */}
-        <Switch 
-            isSelected={isSelected} 
-            onChange={onChange}
-            className="group flex items-center cursor-pointer"
-        >
-            <Switch.Control className="w-12 h-6 rounded-full bg-[#05080F] border border-[#1E293B] flex items-center px-[3px] group-data-[selected=true]:bg-[#00D4FF]/20 group-data-[selected=true]:border-[#00D4FF]/40 transition-all">
-                <Switch.Thumb className="w-5 h-5 rounded-full bg-zinc-600 group-data-[selected=true]:bg-[#00D4FF] group-data-[selected=true]:translate-x-[5px] transition-all" />
-            </Switch.Control>
-        </Switch>
+        {/* Switch */}
+        {!disabled && (
+            <Switch 
+                isSelected={isSelected} 
+                onChange={onChange}
+                isDisabled={isLoading}
+                className="group flex items-center cursor-pointer"
+            >
+                <Switch.Control className="w-12 h-6 rounded-full bg-[#05080F] border border-[#1E293B] flex items-center px-[3px] group-data-[selected=true]:bg-[#00D4FF]/20 group-data-[selected=true]:border-[#00D4FF]/40 transition-all">
+                    <Switch.Thumb className="w-5 h-5 rounded-full bg-zinc-600 group-data-[selected=true]:bg-[#00D4FF] group-data-[selected=true]:translate-x-[5px] transition-all" />
+                </Switch.Control>
+            </Switch>
+        )}
     </div>
 )
 

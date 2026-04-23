@@ -7,6 +7,7 @@ import {
     signInSocial,
     logout 
 } from '../actions/authActions';
+import { updateProfile, updateAlerts } from '../actions/settingsActions';
 
 const initialState: AuthState = {
     user: null,
@@ -116,6 +117,18 @@ const authSlice = createSlice({
                 state.isAuthenticated = false;
                 state.isInitialLoading = false;
                 state.loading = false;
+            })
+            // Update Profile from Settings
+            .addCase(updateProfile.fulfilled, (state, action) => {
+                if (action.payload) {
+                    state.user = sanitizeUser(action.payload);
+                }
+            })
+            // Update Alerts from Settings
+            .addCase(updateAlerts.fulfilled, (state, action) => {
+                if (action.payload) {
+                    state.user = sanitizeUser(action.payload);
+                }
             });
     },
 });
