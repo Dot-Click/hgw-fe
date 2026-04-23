@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Button } from '@heroui/react'
-import { FiDatabase, FiServer, FiHardDrive, FiActivity, FiTrash2, FiClock } from 'react-icons/fi'
+import { FiDatabase, FiServer, FiHardDrive, FiActivity, FiTrash2, FiClock, FiSettings } from 'react-icons/fi'
 
 const SystemTab = () => {
     return (
