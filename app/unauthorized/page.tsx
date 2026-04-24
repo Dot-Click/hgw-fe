@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { Button } from "@heroui/react";
 
 export default function UnauthorizedPage() {
     return (
@@ -12,13 +11,12 @@ export default function UnauthorizedPage() {
                     Please contact an administrator if you believe this is an error.
                 </p>
                 <div className="pt-4">
-                    <Button 
-                        as={Link} 
+                    <Link 
                         href="/"
-                        className="bg-[#00CCFF] text-[#0B0B0F] font-bold orbitron px-8 py-2 rounded-lg"
+                        className="bg-[#00CCFF] text-[#0B0B0F] font-bold orbitron px-8 py-3 rounded-lg hover:bg-[#00B8E6] transition-all inline-block"
                     >
                         Back to Safety
-                    </Button>
+                    </Link>
                 </div>
             </div>
         </div>
