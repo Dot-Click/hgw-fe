@@ -15,22 +15,37 @@ interface Session {
 export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
+    // 1. Fetch current session
+    let session: any = null;
+    try {
+        const response = await fetch(new URL("/api/auth/get-session", request.nextUrl.origin), {
+            headers: {
+                cookie: request.headers.get("cookie") || "",
+            },
+        });
+        session = await response.json();
+    } catch (error) {
+        console.error("Auth Proxy Error:", error);
+    }
+
+    // 2. Protect /admin routes
     if (pathname.startsWith("/admin")) {
-        try {
-            const response = await fetch(new URL("/api/auth/get-session", request.nextUrl.origin), {
-                headers: {
-                    cookie: request.headers.get("cookie") || "",
-                },
-            });
+        if (!session || !session.user) {
+            // Not logged in -> Redirect to login
+            return NextResponse.redirect(new URL("/login", request.url));
+        }
 
-            const session = await response.json();
+        if (session.user.role !== "ADMIN") {
+            // Logged in but not admin -> Redirect to unauthorized
+            return NextResponse.redirect(new URL("/unauthorized", request.url));
+        }
+    }
 
-            if (!session || session.user.role !== "ADMIN") {
-                return NextResponse.redirect(new URL("/", request.url));
-            }
-        } catch (error) {
-            // If check fails, default to redirecting for security
-            return NextResponse.redirect(new URL("/", request.url));
+    // 3. Role-Based Redirect after login (if accessing landing page while logged in)
+    // Note: This helps ensure admins are sent to their dashboard
+    if (pathname === "/" && session?.user) {
+        if (session.user.role === "ADMIN") {
+            return NextResponse.redirect(new URL("/admin", request.url));
         }
     }
 
@@ -41,5 +56,5 @@ export async function proxy(request: NextRequest) {
  * Configure which routes this proxy should run on.
  */
 export const config = {
-    matcher: ["/admin/:path*", "/api/categories/:path*"],
+    matcher: ["/", "/admin/:path*", "/api/categories/:path*"],
 };

@@ -51,7 +51,9 @@ const LoginContainer = () => {
         const resultAction = await dispatch(signInWithEmail({ email, password }));
         if (signInWithEmail.fulfilled.match(resultAction)) {
             toast.success('Successfully logged in!');
-            router.push('/');
+            // Dynamic redirect based on role
+            const role = resultAction.payload?.user?.role;
+            router.push(role === 'ADMIN' ? '/admin' : '/');
         } else {
             const message = resultAction.payload as string || 'Login failed';
             toast.danger(message);

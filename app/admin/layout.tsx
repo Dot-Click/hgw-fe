@@ -2,7 +2,7 @@ import * as React from "react"
 import type { Metadata } from "next"
 import Sidebar from "@/components/common/Sidebar"
 import AdminNavbar from "@/components/common/AdminNavbar"
-import { getServerSession } from "@/lib/auth"
+import { getServerSession } from "@/lib/services/auth-service"
 import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {

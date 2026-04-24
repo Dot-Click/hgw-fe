@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from "next/server"; // Refreshed auth imports
 import { prisma } from "@/lib/prisma";
-import { verifyAdminApi } from "../../../lib/auth";
+import { verifyAdminApi } from "@/lib/services/auth-service";
 import { categorySchema } from "@/lib/schemas";
 import { z } from "zod";
 

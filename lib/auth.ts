@@ -12,9 +12,15 @@ export const auth = betterAuth({
             clientId: process.env.GOOGLE_CLIENT_ID || "",
             clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
         },
+        facebook: {
+            clientId: process.env.FACEBOOK_CLIENT_ID || "",
+            clientSecret: process.env.FACEBOOK_CLIENT_SECRET || "",
+        },
     },
     emailAndPassword: {
         enabled: true,
+        // Ensure email verification is not enforced by the framework
+        requireEmailVerification: false,
     },
     user: {
         additionalFields: {
@@ -31,7 +37,7 @@ export const auth = betterAuth({
             agreedTerms: {
                 type: "boolean",
                 required: false,
-                defaultValue: false,
+                defaultValue: true, // Default to true as requested
             }
         }
     },
@@ -46,22 +52,18 @@ export const auth = betterAuth({
     databaseHooks: {
         user: {
             create: {
-                before: async () => {
-                    console.time("⏱️ [DB.createUser]");
+                before: async (user) => {
+                    // Set emailVerified and agreedTerms to true for all signups (Credentials & OAuth)
+                    return {
+                        data: {
+                            ...user,
+                            emailVerified: true,
+                            agreedTerms: true,
+                        }
+                    };
                 },
                 after: async (user) => {
-                    console.timeEnd("⏱️ [DB.createUser]");
-                    console.log(`New signup: ${user.email}`);
-                }
-            }
-        },
-        session: {
-            create: {
-                before: async () => {
-                    console.time("⏱️ [DB.createSession]");
-                },
-                after: async () => {
-                    console.timeEnd("⏱️ [DB.createSession]");
+                    console.log(`🚀 New signup: ${user.email} (Role: ${user.role})`);
                 }
             }
         }
@@ -69,54 +71,9 @@ export const auth = betterAuth({
 });
 
 /**
- * PRODUCTION-GRADE AUTH HELPERS
+ * Server-side session and auth logic is located in:
+ * @/lib/services/auth-service.ts
+ * 
+ * Do not re-export from here to avoid circular dependencies.
  */
-export const getServerSession = async () => {
-    return await auth.api.getSession({
-        headers: await headers(),
-    });
-};
 
-/**
- * SERVER SIDE: Verify if the current user is an admin
- */
-export const isAdmin = async () => {
-    const session = await getServerSession();
-    return session?.user?.role === "ADMIN";
-};
-
-/**
- * SERVER SIDE: Force admin check or redirect/error
- */
-export const requireAdmin = async () => {
-    const session = await getServerSession();
-    
-    if (!session || session.user.role !== "ADMIN") {
-        return false;
-    }
-    
-    return true;
-};
-
-/**
- * API SIDE: Verify admin role and return session or unauthorized response
- */
-export const verifyAdminApi = async () => {
-    const session = await getServerSession();
-    if (!session || session.user.role !== "ADMIN") {
-        return { authorized: false, response: adminErrorResponse() };
-    }
-    return { authorized: true, session };
-};
-
-/**
- * API RESPONSE: Standard 403 error for unauthorized admin actions
- */
-export const adminErrorResponse = () => {
-    return new Response(JSON.stringify({ 
-        error: "Unauthorized: Admin access required" 
-    }), { 
-        status: 403,
-        headers: { "Content-Type": "application/json" }
-    });
-};

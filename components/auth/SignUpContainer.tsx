@@ -64,7 +64,7 @@ const SignUpContainer = () => {
         const resultAction = await dispatch(signUpWithEmail({ email, password, fullName, agreedTerms: agreed }));
         if (signUpWithEmail.fulfilled.match(resultAction)) {
             toast.success('Account created successfully!');
-            window.location.href = '/';
+            router.push('/');
         } else {
             const message = resultAction.payload as string || 'Something went wrong';
             toast.danger(message);

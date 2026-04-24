@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { subscriberSchema } from "@/lib/schemas/subscriber.schema";
 import { SubscriberService } from "@/lib/services/subscriber.service";
-import { verifyAdminApi } from "../../../lib/auth";
+import { verifyAdminApi } from "@/lib/services/auth-service";
 import { sendWelcomeEmail } from "@/lib/mail";
 import { z } from "zod";
 

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { playerSchema } from "@/lib/schemas/player.schema";
 import { PlayerService } from "@/lib/services/player.service";
-import { verifyAdminApi } from "../../../lib/auth";
+import { verifyAdminApi } from "@/lib/services/auth-service";
 import { z } from "zod";
 
 /**
