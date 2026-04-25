@@ -17,9 +17,9 @@ export const fetchSession = createAsyncThunk(
 
 export const signInSocial = createAsyncThunk(
     'auth/signInSocial',
-    async (provider: 'google' | 'facebook', { rejectWithValue }) => {
+    async ({ provider, callbackURL }: { provider: 'google' | 'facebook', callbackURL?: string }, { rejectWithValue }) => {
         try {
-            const { error } = await authApi.signInSocial(provider);
+            const { error } = await authApi.signInSocial(provider, callbackURL);
             if (error) return rejectWithValue(error.message);
             return null;
         } catch (err: any) {

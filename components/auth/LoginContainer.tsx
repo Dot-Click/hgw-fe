@@ -61,7 +61,8 @@ const LoginContainer = () => {
     }
 
     const handleGoogleSignIn = async () => {
-        const resultAction = await dispatch(signInSocial('google'));
+        const callbackURL = loginType === 'admin' ? '/admin' : '/';
+        const resultAction = await dispatch(signInSocial({ provider: 'google', callbackURL }));
         if (signInSocial.rejected.match(resultAction)) {
             const message = resultAction.payload as string || 'Something went wrong';
             toast.danger(message);
@@ -69,7 +70,8 @@ const LoginContainer = () => {
     };
 
     const handleFacebookSignIn = async () => {
-        const resultAction = await dispatch(signInSocial('facebook'));
+        const callbackURL = loginType === 'admin' ? '/admin' : '/';
+        const resultAction = await dispatch(signInSocial({ provider: 'facebook', callbackURL }));
         if (signInSocial.rejected.match(resultAction)) {
              const message = resultAction.payload as string || 'Something went wrong';
              toast.danger(message);

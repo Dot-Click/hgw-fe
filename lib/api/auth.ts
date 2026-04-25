@@ -1,10 +1,10 @@
 import { authClient } from "@/lib/auth-client";
 
 export const authApi = {
-    signInSocial: async (provider: "google" | "facebook") => {
+    signInSocial: async (provider: "google" | "facebook", callbackURL: string = "/") => {
         return await authClient.signIn.social({
             provider,
-            callbackURL: "/",
+            callbackURL,
         });
     },
 
