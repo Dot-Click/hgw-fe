@@ -122,7 +122,7 @@ export class PodcastService {
                 });
             }
 
-            const { playerIds, guestIds, categoryId, ...rest } = data;
+            const { playerIds, guestIds, categoryId, createdById, ...rest } = data;
 
             return await tx.podcast.update({
                 where: { id },
