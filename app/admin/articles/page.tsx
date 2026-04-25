@@ -1,19 +1,22 @@
-import React from 'react'
-import { Metadata } from 'next'
+"use client"
+
+import React, { useState } from 'react'
 import ArticleHeader from '@/components/article/ArticleHeader'
 import ArticleTable from '@/components/article/ArticleTable'
-
-export const metadata: Metadata = {
-  title: 'Articles Management | HGW Admin',
-  description: 'Manage and publish blog posts and articles for the Legend Vault.',
-  keywords: ['Articles Management', 'HGW Blog', 'Publish Articles', 'Legend Vault Content', 'Admin Articles'],
-}
+import { ArticleModal } from '@/components/article/ArticleModal'
 
 const ArticlePage = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
   return (
     <div className="flex flex-col gap-2">
-      <ArticleHeader />
+      <ArticleHeader onAdd={() => setIsModalOpen(true)} />
       <ArticleTable />
+      
+      <ArticleModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
     </div>
   )
 }
