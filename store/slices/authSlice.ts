@@ -99,7 +99,7 @@ const authSlice = createSlice({
             // Social Login
             .addCase(signInSocial.pending, (state, action) => {
                 state.loading = true;
-                state.loadingProvider = action.meta.arg;
+                state.loadingProvider = action.meta.arg.provider;
                 state.error = null;
             })
             .addCase(signInSocial.fulfilled, (state) => {
