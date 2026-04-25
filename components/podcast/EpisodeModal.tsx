@@ -3,74 +3,129 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/store/store'
-import { createPodcast, updatePodcast, deletePodcast } from '@/store/actions/podcastActions'
-import BaseModal from '../common/BaseModal'
-import { Button, Spinner, cn, toast } from '@heroui/react'
-import { FiCamera, FiX, FiPlus, FiMusic, FiYoutube, FiChevronDown, FiCheck, FiUploadCloud, FiSearch, FiTrash2 } from 'react-icons/fi'
-import axios from 'axios'
+import { createPodcast, updatePodcast } from '@/store/actions/podcastActions'
 import { fetchPlayers } from '@/store/actions/playerActions'
+import { fetchCategories } from '@/store/actions/categoryActions'
+import CustomModal from '../common/CustomModal'
+import { cn, toast, Popover } from '@heroui/react'
+import { 
+    FiX, 
+    FiPlus, 
+    FiUploadCloud, 
+    FiTrash2, 
+    FiLink, 
+    FiMusic, 
+    FiYoutube, 
+    FiType, 
+    FiClock, 
+    FiCalendar,
+    FiCheck,
+    FiFileText,
+    FiChevronDown,
+    FiUsers,
+    FiStar,
+    FiAward
+} from 'react-icons/fi'
+
+import axios from 'axios'
 
 interface EpisodeModalProps {
     isOpen: boolean
     onClose: () => void
-    podcast?: any // If provided, we are in Edit mode
+    podcast?: any
 }
 
 export const EpisodeModal = ({ isOpen, onClose, podcast }: EpisodeModalProps) => {
     const dispatch = useDispatch<AppDispatch>()
     const { loading } = useSelector((state: RootState) => state.podcasts)
     const { players } = useSelector((state: RootState) => state.players)
+    const { categories } = useSelector((state: RootState) => state.categories)
 
     const [formData, setFormData] = useState({
         title: '',
         description: '',
-        spotify: '',
-        youtube: '',
-        status: 'draft' as 'draft' | 'published'
+        categoryId: '',
+        status: 'draft' as 'draft' | 'published',
+        featured: false,
+        isPick: false,
+        duration: '',
+        releaseDate: ''
     })
+    
+    const [platforms, setPlatforms] = useState<{ platform: string; url: string }[]>([
+        { platform: 'spotify', url: '' }
+    ])
     
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
     const [previewUrl, setPreviewUrl] = useState<string | null>(null)
-    const [selectedPlayerIds, setSelectedPlayerIds] = useState<Set<string>>(new Set())
+    const [selectedPlayerIds, setSelectedPlayerIds] = useState<string[]>([])
+    
     const [isProcessing, setIsProcessing] = useState(false)
-    const [isDeleting, setIsDeleting] = useState(false)
+    const [isSubmitted, setIsSubmitted] = useState(false)
+    const [showCategoryDropdown, setShowCategoryDropdown] = useState(false)
     const [showPlayerDropdown, setShowPlayerDropdown] = useState(false)
-    const [playerSearch, setPlayerSearch] = useState('')
+    const [showPlatformDropdown, setShowPlatformDropdown] = useState<number | null>(null)
     
     const fileInputRef = useRef<HTMLInputElement>(null)
-    const dropdownRef = useRef<HTMLDivElement>(null)
+    const categoryRef = useRef<HTMLDivElement>(null)
+    const playerRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         if (isOpen) {
             dispatch(fetchPlayers())
+            dispatch(fetchCategories())
+            
             if (podcast) {
                 setFormData({
                     title: podcast.title || '',
                     description: podcast.description || '',
-                    spotify: podcast.platformLinks?.spotify || '',
-                    youtube: podcast.platformLinks?.youtube || '',
-                    status: podcast.status || 'draft'
+                    categoryId: podcast.categoryId || '',
+                    status: podcast.status || 'draft',
+                    featured: podcast.featured || false,
+                    isPick: podcast.isPick || false,
+                    duration: podcast.duration?.toString() || '',
+                    releaseDate: podcast.releaseDate ? new Date(podcast.releaseDate).toISOString().split('T')[0] : ''
                 })
+                setPlatforms(podcast.platforms && podcast.platforms.length > 0 ? podcast.platforms : [{ platform: 'spotify', url: '' }])
                 setPreviewUrl(podcast.imageUrl || null)
-                setSelectedPlayerIds(new Set(podcast.players?.map((p: any) => p.id) || []))
+                setSelectedPlayerIds(podcast.players?.map((p: any) => p.id) || [])
             } else {
-                setFormData({ title: '', description: '', spotify: '', youtube: '', status: 'draft' })
-                setPreviewUrl(null)
-                setSelectedPlayerIds(new Set())
+                resetForm()
             }
+            setIsSubmitted(false)
         }
     }, [isOpen, podcast, dispatch])
 
-    // Close dropdown when clicking outside
+    // Close dropdowns when clicking outside
     useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (categoryRef.current && !categoryRef.current.contains(e.target as Node)) {
+                setShowCategoryDropdown(false)
+            }
+            if (playerRef.current && !playerRef.current.contains(e.target as Node)) {
                 setShowPlayerDropdown(false)
             }
         }
         document.addEventListener('mousedown', handleClickOutside)
         return () => document.removeEventListener('mousedown', handleClickOutside)
     }, [])
+
+    const resetForm = () => {
+        setFormData({
+            title: '',
+            description: '',
+            categoryId: '',
+            status: 'draft',
+            featured: false,
+            isPick: false,
+            duration: '',
+            releaseDate: ''
+        })
+        setPlatforms([{ platform: 'spotify', url: '' }])
+        setPreviewUrl(null)
+        setSelectedFile(null)
+        setSelectedPlayerIds([])
+    }
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
@@ -82,327 +137,430 @@ export const EpisodeModal = ({ isOpen, onClose, podcast }: EpisodeModalProps) =>
         }
     }
 
-    const togglePlayer = (id: string) => {
-        const next = new Set(selectedPlayerIds)
-        if (next.has(id)) {
-            next.delete(id)
-        } else {
-            next.add(id)
-        }
-        setSelectedPlayerIds(next)
+    const handleAddPlatform = () => {
+        setPlatforms([...platforms, { platform: 'spotify', url: '' }])
     }
 
-    const handleClose = () => {
-        setFormData({ title: '', description: '', spotify: '', youtube: '', status: 'draft' })
-        setSelectedFile(null)
-        setPreviewUrl(null)
-        setSelectedPlayerIds(new Set())
-        setShowPlayerDropdown(false)
-        setPlayerSearch('')
-        onClose()
+    const handleRemovePlatform = (index: number) => {
+        if (platforms.length > 1) {
+            setPlatforms(platforms.filter((_, i) => i !== index))
+        }
+    }
+
+    const handlePlatformChange = (index: number, field: 'platform' | 'url', value: string) => {
+        const next = [...platforms]
+        next[index][field] = value
+        setPlatforms(next)
+    }
+
+    const togglePlayer = (playerId: string) => {
+        if (selectedPlayerIds.includes(playerId)) {
+            setSelectedPlayerIds(selectedPlayerIds.filter(id => id !== playerId))
+        } else {
+            setSelectedPlayerIds([...selectedPlayerIds, playerId])
+        }
     }
 
     const handleSubmit = async () => {
-        if (!formData.title) {
-            return toast.danger("Please enter a podcast title")
+        setIsSubmitted(true)
+        if (!formData.title || !formData.description || !formData.categoryId || selectedPlayerIds.length === 0 || !previewUrl) {
+            toast.danger("Please fill in all required fields")
+            return
         }
-        if (!previewUrl) {
-            return toast.danger("Please upload a cover image")
-        }
-        if (selectedPlayerIds.size === 0) {
-            return toast.danger("Select at least one featured player")
+        
+        const validPlatforms = platforms.filter(p => p.platform && p.url.trim())
+        if (validPlatforms.length === 0) {
+            toast.danger("At least one platform link is required")
+            return
         }
 
         setIsProcessing(true)
         try {
             let imageUrl = previewUrl
             
-            // 1. Upload image if a new file was selected
+            // Upload Thumbnail
             if (selectedFile) {
                 const uploadFormData = new FormData()
                 uploadFormData.append('file', selectedFile)
                 uploadFormData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || '')
-
-                const res = await axios.post(
-                    `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
-                    uploadFormData
-                )
+                const res = await axios.post(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, uploadFormData)
                 imageUrl = res.data.secure_url
             }
 
             const payload = {
-                title: formData.title,
-                description: formData.description,
-                status: formData.status,
+                ...formData,
+                duration: parseInt(formData.duration) || 0,
+                releaseDate: formData.releaseDate || new Date().toISOString().split('T')[0],
                 imageUrl,
-                playerIds: Array.from(selectedPlayerIds),
-                platformLinks: {
-                    spotify: formData.spotify,
-                    youtube: formData.youtube
-                }
+                playerIds: selectedPlayerIds,
+                platforms: validPlatforms
             }
 
             if (podcast) {
                 await dispatch(updatePodcast({ id: podcast.id, data: payload })).unwrap()
-                toast.success("Podcast updated successfully")
+                toast.success("Podcast updated")
             } else {
                 await dispatch(createPodcast(payload)).unwrap()
-                toast.success("Podcast created successfully")
+                toast.success("Podcast published")
             }
-            handleClose()
+            onClose()
         } catch (error: any) {
-            // unwrap() throws the string from rejectWithValue
-            const errorMessage = typeof error === 'string' ? error : (error.message || 'Something went wrong')
-            toast.danger(errorMessage)
+            toast.danger(typeof error === 'string' ? error : error.message || 'Error saving podcast')
         } finally {
             setIsProcessing(false)
         }
     }
 
-    const handleDelete = async () => {
-        if (!podcast) return
-        
-        if (!window.confirm("Are you sure you want to delete this podcast?")) return
-
-        setIsDeleting(true)
-        try {
-            await dispatch(deletePodcast(podcast.id)).unwrap()
-            toast.success("Podcast deleted successfully")
-            handleClose()
-        } catch (error: any) {
-            const errorMessage = typeof error === 'string' ? error : (error.message || 'Failed to delete')
-            toast.danger(errorMessage)
-        } finally {
-            setIsDeleting(false)
+    const getPlatformIcon = (platform: string) => {
+        switch(platform) {
+            case 'spotify': return <FiMusic size={14} className="text-[#1DB954]" />
+            case 'youtube': return <FiYoutube size={14} className="text-[#FF0000]" />
+            default: return <FiLink size={14} className="text-gray-500" />
         }
     }
 
-    const filteredPlayers = players.filter(p => 
-        p.name.toLowerCase().includes(playerSearch.toLowerCase())
-    )
+    const selectedCategory = categories.find(c => c.id === formData.categoryId)
+    const selectedPlayersList = players.filter(p => selectedPlayerIds.includes(p.id))
 
     return (
-        <BaseModal isOpen={isOpen} onClose={handleClose} maxWidth="max-w-4xl">
+        <CustomModal isOpen={isOpen} onClose={onClose} maxWidth="max-w-[680px]">
             {/* Header */}
-            <div className="px-8 py-5 border-b border-white/5 bg-white/[0.02]">
-                <h2 className="text-xl font-bold text-white outfit">{podcast ? 'Edit' : 'Add New'} <span className="text-[#00D4FF]">Podcast</span></h2>
-                <p className="text-zinc-400 text-xs mt-0.5 outfit">{podcast ? 'Update the details of this podcast episode.' : 'Fill in the details below to publish your new episode.'}</p>
+            <div className="px-6 py-5 flex items-center justify-between bg-[#0D0D12] border-b border-[#1F1F2A]">
+                <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 border border-blue-500/20">
+                        <FiFileText size={18} />
+                    </div>
+                    <div>
+                        <h2 className="text-lg font-bold text-white tracking-tight">
+                            {podcast ? 'Edit Episode' : 'New Episode'}
+                        </h2>
+                        <p className="text-[11px] text-gray-500 mt-0.5">Episode Configuration</p>
+                    </div>
+                </div>
+                <button 
+                    onClick={onClose} 
+                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#1A1A20] text-gray-400 hover:text-white transition-all"
+                >
+                    <FiX size={16} />
+                </button>
             </div>
 
-            <div className="p-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Content */}
+            <div className="px-6 py-5 max-h-[55vh] overflow-y-auto bg-[#0A0A0F]">
+                <div className="flex flex-col gap-5">
                     
-                    {/* Cover Image Section */}
-                    <div className="lg:col-span-4 flex flex-col gap-5">
-                        <div className="flex flex-col gap-1.5">
-                            <label className="text-xs font-semibold text-zinc-300 outfit px-1 uppercase tracking-wider">Podcast Cover <span className="text-red-500">*</span></label>
-                            <div 
-                                onClick={() => fileInputRef.current?.click()}
-                                className="aspect-square rounded-2xl bg-white/[0.03] border-2 border-dashed border-white/10 hover:border-[#00D4FF]/50 transition-all flex items-center justify-center cursor-pointer group overflow-hidden relative"
-                            >
-                                {previewUrl ? (
-                                    <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
-                                ) : (
-                                    <div className="flex flex-col items-center gap-2 text-zinc-500 group-hover:text-zinc-300">
-                                        <FiUploadCloud size={32} />
-                                        <span className="text-[10px] font-bold uppercase tracking-widest">Upload Artwork</span>
-                                    </div>
-                                )}
-                                <input type="file" ref={fileInputRef} onChange={handleFileSelect} accept="image/*" className="hidden" />
-                            </div>
-                            {previewUrl && (
-                                <button 
-                                    onClick={() => { setPreviewUrl(null); setSelectedFile(null) }}
-                                    className="text-[10px] text-red-400 font-bold hover:text-red-300 transition-colors mt-1.5 self-center uppercase tracking-widest"
-                                >
-                                    Remove Image
-                                </button>
+                    {/* Thumbnail Artwork */}
+                    <div>
+                        <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2 block">Thumbnail Artwork</label>
+                        <div 
+                            onClick={() => fileInputRef.current?.click()}
+                            className={cn(
+                                "w-full aspect-[21/9] rounded-xl bg-[#121218] border-2 border-dashed transition-all flex flex-col items-center justify-center cursor-pointer overflow-hidden",
+                                isSubmitted && !previewUrl ? "border-red-500/60" : "border-[#252530] hover:border-blue-500/50"
                             )}
+                        >
+                            {previewUrl ? (
+                                <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
+                            ) : (
+                                <div className="flex flex-col items-center gap-2">
+                                    <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center">
+                                        <FiUploadCloud size={22} className="text-blue-500" />
+                                    </div>
+                                    <span className="text-xs text-gray-400">Click to upload thumbnail</span>
+                                    <span className="text-[10px] text-gray-600">21:9 ratio recommended</span>
+                                </div>
+                            )}
+                            <input type="file" ref={fileInputRef} onChange={handleFileSelect} accept="image/*" className="hidden" />
+                        </div>
+                    </div>
+
+                    {/* Title */}
+                    <div>
+                        <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">Episode Title <span className="text-red-500">*</span></label>
+                        <div className={cn(
+                            "flex items-center gap-2 bg-[#121218] border rounded-xl px-4 h-11 transition-all",
+                            isSubmitted && !formData.title ? "border-red-500/60" : "border-[#252530] focus-within:border-blue-500/50"
+                        )}>
+                            <FiType size={15} className="text-gray-500" />
+                            <input 
+                                type="text"
+                                placeholder="Enter episode title"
+                                value={formData.title}
+                                onChange={(e) => setFormData(p => ({...p, title: e.target.value}))}
+                                className="flex-1 bg-transparent text-sm text-white placeholder:text-gray-600 outline-none"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Row: Category + Duration */}
+                    <div className="grid grid-cols-2 gap-4">
+                        {/* Category Dropdown */}
+                        <div className="relative">
+                            <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">Category <span className="text-red-500">*</span></label>
+                            <Popover>
+                                <Popover.Trigger>
+                                    <div 
+                                        className={cn(
+                                            "flex items-center justify-between bg-[#121218] border rounded-xl px-4 h-11 cursor-pointer transition-all",
+                                            isSubmitted && !formData.categoryId ? "border-red-500/60" : "border-[#252530] hover:border-gray-600"
+                                        )}
+                                    >
+                                        <span className={cn("text-sm", formData.categoryId ? "text-white" : "text-gray-500")}>
+                                            {selectedCategory?.name || "Select category"}
+                                        </span>
+                                        <FiChevronDown size={14} className="text-gray-500" />
+                                    </div>
+                                </Popover.Trigger>
+                                <Popover.Content placement="bottom start" offset={8} className="bg-[#121218] border border-[#252530] rounded-xl z-[9999] max-h-48 overflow-y-auto shadow-2xl p-1 min-w-[200px]">
+                                    {categories.length > 0 ? (
+                                        <div className="flex flex-col">
+                                            {categories.map(cat => (
+                                                <div
+                                                    key={cat.id}
+                                                    onClick={() => {
+                                                        setFormData(p => ({...p, categoryId: cat.id}))
+                                                    }}
+                                                    className="px-4 py-2.5 text-sm text-gray-300 hover:bg-blue-500/10 hover:text-white cursor-pointer transition-colors rounded-lg"
+                                                >
+                                                    {cat.name}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="px-4 py-2 text-xs text-gray-500">No categories found</div>
+                                    )}
+                                </Popover.Content>
+                            </Popover>
                         </div>
 
-                        <div className="flex flex-col gap-1.5">
-                            <label className="text-xs font-semibold text-zinc-300 outfit px-1 uppercase tracking-wider">Visibility</label>
-                            <div className="flex bg-white/[0.03] p-1 rounded-xl border border-white/5">
-                                <button 
-                                    onClick={() => setFormData(p => ({...p, status: 'draft'}))}
-                                    className={cn(
-                                        "flex-1 py-2 rounded-lg text-[10px] font-bold transition-all uppercase tracking-widest",
-                                        formData.status === 'draft' ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20" : "text-zinc-500 hover:text-zinc-300"
-                                    )}
-                                >
-                                    DRAFT
-                                </button>
-                                <button 
-                                    onClick={() => setFormData(p => ({...p, status: 'published'}))}
-                                    className={cn(
-                                        "flex-1 py-2 rounded-lg text-[10px] font-bold transition-all uppercase tracking-widest",
-                                        formData.status === 'published' ? "bg-green-600 text-white shadow-lg shadow-green-600/20" : "text-zinc-500 hover:text-zinc-300"
-                                    )}
-                                >
-                                    PUBLISHED
-                                </button>
+                        {/* Duration */}
+                        <div className="col-span-2">
+                            <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">Duration (min)</label>
+                            <div className="flex items-center gap-2 bg-[#121218] border border-[#252530] rounded-xl px-4 h-11">
+                                <FiClock size={15} className="text-gray-500" />
+                                <input 
+                                    type="number"
+                                    placeholder="0"
+                                    value={formData.duration}
+                                    onChange={(e) => setFormData(p => ({...p, duration: e.target.value}))}
+                                    className="w-full bg-transparent text-sm text-white placeholder:text-gray-600 outline-none"
+                                />
                             </div>
                         </div>
                     </div>
 
-                    {/* Form Details */}
-                    <div className="lg:col-span-8 flex flex-col gap-5">
-                        <div className="flex flex-col gap-1.5">
-                            <label className="text-xs font-semibold text-zinc-300 outfit px-1 uppercase tracking-wider">Podcast Title <span className="text-red-500">*</span></label>
+                    <div>
+                        <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">Release Date</label>
+                        <div className="flex items-center gap-2 bg-[#121218] border border-[#252530] rounded-xl px-4 h-11 focus-within:border-blue-500/50 transition-all">
+                            <FiCalendar size={15} className="text-gray-500" />
                             <input 
-                                placeholder="e.g. The Future of Gaming Episode #42"
-                                value={formData.title}
-                                onChange={(e) => setFormData(p => ({...p, title: e.target.value}))}
-                                className="w-full h-11 bg-white/[0.03] border border-white/10 rounded-xl px-4 text-sm text-white outfit focus:border-[#00D4FF] outline-none transition-all placeholder:text-zinc-600"
+                                type="date"
+                                value={formData.releaseDate}
+                                onChange={(e) => setFormData(p => ({...p, releaseDate: e.target.value}))}
+                                className="flex-1 bg-transparent text-sm text-white outline-none [color-scheme:dark] cursor-pointer"
                             />
                         </div>
+                    </div>
 
-                        <div className="flex flex-col gap-1.5">
-                            <label className="text-xs font-semibold text-zinc-300 outfit px-1 uppercase tracking-wider">Description</label>
-                            <textarea 
-                                placeholder="What is this episode about?"
-                                rows={3}
-                                value={formData.description}
-                                onChange={(e) => setFormData(p => ({...p, description: e.target.value}))}
-                                className="w-full bg-white/[0.03] border border-white/10 rounded-xl p-4 text-sm text-white outfit focus:border-[#00D4FF] outline-none transition-all placeholder:text-zinc-600 resize-none"
-                            />
-                        </div>
+                    {/* Description */}
+                    <div>
+                        <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">Description <span className="text-red-500">*</span></label>
+                        <textarea 
+                            rows={3}
+                            placeholder="Write episode description..."
+                            value={formData.description}
+                            onChange={(e) => setFormData(p => ({...p, description: e.target.value}))}
+                            className={cn(
+                                "w-full bg-[#121218] border rounded-xl p-3 text-sm text-white outline-none resize-none transition-all placeholder:text-gray-600",
+                                isSubmitted && !formData.description ? "border-red-500/60" : "border-[#252530] focus:border-blue-500/50"
+                            )}
+                        />
+                    </div>
 
-                        {/* Custom Multi-Select for Players */}
-                        <div className="flex flex-col gap-1.5 relative" ref={dropdownRef}>
-                            <label className="text-xs font-semibold text-zinc-300 outfit px-1 uppercase tracking-wider">Featured Players <span className="text-red-500">*</span></label>
-                            <div 
-                                onClick={() => setShowPlayerDropdown(!showPlayerDropdown)}
-                                className="min-h-[3.25rem] bg-white/[0.03] border border-white/10 rounded-xl px-4 py-2 flex items-center justify-between cursor-pointer hover:border-white/20 transition-all"
-                            >
-                                <div className="flex flex-wrap gap-2">
-                                    {selectedPlayerIds.size === 0 ? (
-                                        <span className="text-zinc-600 text-sm">Select players to feature...</span>
-                                    ) : (
-                                        players.filter(p => selectedPlayerIds.has(p.id)).map(player => (
-                                            <div key={player.id} className="flex items-center gap-2 bg-[#00D4FF]/10 border border-[#00D4FF]/20 py-1 pl-1 pr-2 rounded-lg group">
-                                                <img src={player.image || ''} className="w-5 h-5 rounded-md object-cover" />
-                                                <span className="text-[10px] font-bold text-[#00D4FF] uppercase tracking-wider">{player.name}</span>
-                                                <button 
-                                                    onClick={(e) => { e.stopPropagation(); togglePlayer(player.id) }}
-                                                    className="text-[#00D4FF] hover:text-white transition-colors"
-                                                >
-                                                    <FiX size={12} />
-                                                </button>
-                                            </div>
-                                        ))
+                    {/* Featured Legends Dropdown */}
+                    <div className="relative">
+                        <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">Featured Legends <span className="text-red-500">*</span></label>
+                        <Popover>
+                            <Popover.Trigger>
+                                <div 
+                                    className={cn(
+                                        "flex items-center justify-between bg-[#121218] border rounded-xl px-4 min-h-11 py-2 cursor-pointer transition-all",
+                                        isSubmitted && selectedPlayerIds.length === 0 ? "border-red-500/60" : "border-[#252530] hover:border-gray-600"
                                     )}
-                                </div>
-                                <FiChevronDown className={cn("text-zinc-500 transition-transform", showPlayerDropdown && "rotate-180")} />
-                            </div>
-
-                            {showPlayerDropdown && (
-                                <div className="absolute top-full left-0 right-0 mt-2 bg-[#1A1F2E] border border-white/10 rounded-2xl shadow-2xl z-50 p-2 animate-in fade-in slide-in-from-top-2">
-                                    <div className="relative mb-2">
-                                        <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
-                                        <input 
-                                            autoFocus
-                                            placeholder="Search players..."
-                                            value={playerSearch}
-                                            onChange={(e) => setPlayerSearch(e.target.value)}
-                                            className="w-full h-10 bg-black/20 rounded-xl pl-10 pr-4 text-sm text-white outline-none border border-transparent focus:border-[#00D4FF]/30"
-                                        />
-                                    </div>
-                                    <div className="max-h-60 overflow-y-auto custom-scrollbar flex flex-col gap-1">
-                                        {filteredPlayers.length === 0 ? (
-                                            <div className="py-8 text-center text-zinc-600 text-sm">No players found</div>
+                                >
+                                    <div className="flex flex-wrap gap-1.5 flex-1">
+                                        {selectedPlayersList.length === 0 ? (
+                                            <span className="text-sm text-gray-500">Select featured legends...</span>
                                         ) : (
-                                            filteredPlayers.map(player => {
-                                                const isSelected = selectedPlayerIds.has(player.id)
-                                                return (
-                                                    <div 
-                                                        key={player.id}
-                                                        onClick={() => togglePlayer(player.id)}
-                                                        className={cn(
-                                                            "flex items-center justify-between p-2 rounded-xl cursor-pointer transition-all",
-                                                            isSelected ? "bg-[#00D4FF]/10" : "hover:bg-white/5"
-                                                        )}
-                                                    >
-                                                        <div className="flex items-center gap-3">
-                                                            <img src={player.image || ''} className="w-8 h-8 rounded-lg object-cover" />
-                                                            <span className={cn("text-sm font-medium", isSelected ? "text-[#00D4FF]" : "text-zinc-300")}>
-                                                                {player.name}
-                                                            </span>
-                                                        </div>
-                                                        {isSelected && <FiCheck className="text-[#00D4FF]" />}
-                                                    </div>
-                                                )
-                                            })
+                                            selectedPlayersList.map(player => (
+                                                <div key={player.id} className="flex items-center gap-1 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-md text-xs text-blue-400">
+                                                    {player.name}
+                                                    <FiX size={10} className="cursor-pointer hover:text-white" onClick={(e) => { e.stopPropagation(); togglePlayer(player.id); }} />
+                                                </div>
+                                            ))
                                         )}
                                     </div>
+                                    <FiChevronDown size={14} className="text-gray-500 ml-2" />
                                 </div>
-                            )}
-                        </div>
+                            </Popover.Trigger>
+                            <Popover.Content placement="bottom start" offset={8} className="bg-[#121218] border border-[#252530] rounded-xl z-[9999] max-h-48 overflow-y-auto shadow-2xl p-1 min-w-[240px]">
+                                {players.length > 0 ? (
+                                    <div className="flex flex-col">
+                                        {players.map(player => (
+                                            <div
+                                                key={player.id}
+                                                onClick={() => togglePlayer(player.id)}
+                                                className="flex items-center justify-between px-4 py-2.5 text-sm text-gray-300 hover:bg-blue-500/10 hover:text-white cursor-pointer transition-colors rounded-lg"
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    <div className={cn("w-4 h-4 rounded border flex items-center justify-center transition-all", selectedPlayerIds.includes(player.id) ? "bg-blue-500 border-blue-500" : "border-gray-600")}>
+                                                        {selectedPlayerIds.includes(player.id) && <FiCheck size={10} className="text-white" />}
+                                                    </div>
+                                                    <span>{player.name}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="px-4 py-2 text-xs text-gray-500">No players found</div>
+                                )}
+                            </Popover.Content>
+                        </Popover>
+                    </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-semibold text-zinc-300 outfit px-1 uppercase tracking-wider flex items-center gap-2">
-                                    <FiMusic className="text-[#1DB954]" /> Spotify
-                                </label>
-                                <input 
-                                    placeholder="Spotify link..."
-                                    value={formData.spotify}
-                                    onChange={(e) => setFormData(p => ({...p, spotify: e.target.value}))}
-                                    className="w-full h-11 bg-white/[0.03] border border-white/10 rounded-xl px-4 text-sm text-white outfit focus:border-[#00D4FF] outline-none transition-all placeholder:text-zinc-600"
-                                />
+                    {/* Status & Featured Switches */}
+                    <div className="grid grid-cols-2 gap-4 bg-[#121218] border border-[#252530] rounded-xl p-4">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <span className="text-sm font-medium text-white">Status</span>
+                                <p className="text-[10px] text-gray-500">Draft or Published</p>
                             </div>
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-semibold text-zinc-300 outfit px-1 uppercase tracking-wider flex items-center gap-2">
-                                    <FiYoutube className="text-[#FF0000]" /> YouTube
-                                </label>
-                                <input 
-                                    placeholder="YouTube link..."
-                                    value={formData.youtube}
-                                    onChange={(e) => setFormData(p => ({...p, youtube: e.target.value}))}
-                                    className="w-full h-11 bg-white/[0.03] border border-white/10 rounded-xl px-4 text-sm text-white outfit focus:border-[#00D4FF] outline-none transition-all placeholder:text-zinc-600"
-                                />
+                            <div className={cn(
+                                "px-3 py-1 rounded-lg text-xs font-bold",
+                                formData.status === 'published' ? "bg-emerald-500/10 text-emerald-500" : "bg-orange-500/10 text-orange-500"
+                            )}>
+                                {formData.status.toUpperCase()}
                             </div>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                                <input 
+                                    type="checkbox" 
+                                    className="sr-only peer"
+                                    checked={formData.status === 'published'}
+                                    onChange={(e) => setFormData(p => ({...p, status: e.target.checked ? 'published' : 'draft'}))}
+                                />
+                                <div className="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+                            </label>
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <FiStar size={14} className="text-amber-500" />
+                                <span className="text-sm font-medium text-white">Featured</span>
+                            </div>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                                <input 
+                                    type="checkbox" 
+                                    className="sr-only peer"
+                                    checked={formData.featured}
+                                    onChange={(e) => setFormData(p => ({...p, featured: e.target.checked}))}
+                                />
+                                <div className="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                        <div className="col-span-2 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <FiAward size={14} className="text-blue-500" />
+                                <span className="text-sm font-medium text-white">Pick of the Week</span>
+                            </div>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                                <input 
+                                    type="checkbox" 
+                                    className="sr-only peer"
+                                    checked={formData.isPick}
+                                    onChange={(e) => setFormData(p => ({...p, isPick: e.target.checked}))}
+                                />
+                                <div className="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                    </div>
+
+                    {/* Platform Links */}
+                    <div>
+                        <div className="flex items-center justify-between mb-3">
+                            <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Platform Links</label>
+                            <button onClick={handleAddPlatform} className="text-blue-500 hover:text-blue-400 text-xs flex items-center gap-1">
+                                <FiPlus size={12} /> Add
+                            </button>
+                        </div>
+                        <div className="space-y-3">
+                            {platforms.map((p, index) => (
+                                <div key={index} className="flex gap-2 items-center">
+                                    {/* Platform Dropdown */}
+                                    <div className="relative">
+                                        <button
+                                            onClick={() => setShowPlatformDropdown(showPlatformDropdown === index ? null : index)}
+                                            className="w-9 h-9 flex items-center justify-center bg-[#121218] border border-[#252530] rounded-lg hover:border-gray-600 transition-all"
+                                        >
+                                            {getPlatformIcon(p.platform)}
+                                        </button>
+                                        {showPlatformDropdown === index && (
+                                            <div className="absolute top-full left-0 mt-1 bg-[#121218] border border-[#252530] rounded-lg z-50 min-w-[120px] shadow-xl">
+                                                {['spotify', 'youtube', 'apple', 'google', 'other'].map(plat => (
+                                                    <div
+                                                        key={plat}
+                                                        onClick={() => {
+                                                            handlePlatformChange(index, 'platform', plat)
+                                                            setShowPlatformDropdown(null)
+                                                        }}
+                                                        className="px-3 py-2 text-xs text-gray-300 hover:bg-blue-500/10 hover:text-white capitalize cursor-pointer transition-colors"
+                                                    >
+                                                        {plat}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <input 
+                                        type="text"
+                                        placeholder="Episode URL"
+                                        value={p.url}
+                                        onChange={(e) => handlePlatformChange(index, 'url', e.target.value)}
+                                        className="flex-1 h-9 bg-[#121218] border border-[#252530] rounded-lg px-3 text-sm text-white placeholder:text-gray-600 outline-none focus:border-blue-500/50 transition-all"
+                                    />
+                                    {platforms.length > 1 && (
+                                        <button onClick={() => handleRemovePlatform(index)} className="text-gray-500 hover:text-red-500 transition-colors">
+                                            <FiTrash2 size={14} />
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Footer */}
-            <div className="p-6 border-t border-white/5 bg-white/[0.02] flex items-center gap-4">
-                {podcast && (
-                    <button 
-                        onClick={handleDelete}
-                        disabled={isDeleting || isProcessing}
-                        className="flex-none w-12 h-12 rounded-xl bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center outline-none"
-                        title="Delete Podcast"
-                    >
-                        {isDeleting ? <Spinner size="sm" color="current" /> : <FiTrash2 size={20} />}
-                    </button>
-                )}
+            <div className="px-6 py-4 border-t border-[#1F1F2A] bg-[#0D0D12] flex gap-3">
                 <button 
-                    onClick={handleClose}
-                    className="flex-1 h-12 rounded-xl text-zinc-400 font-bold text-xs uppercase tracking-widest hover:text-white hover:bg-white/5 border border-white/10 transition-all outline-none"
+                    onClick={onClose}
+                    className="flex-1 h-10 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
                 >
                     Cancel
                 </button>
                 <button 
                     onClick={handleSubmit}
-                    disabled={isProcessing || loading || isDeleting}
-                    className="flex-1 h-12 bg-[#00D4FF] hover:bg-[#00D4FF]/90 disabled:opacity-50 disabled:cursor-not-allowed text-[#030712] font-bold rounded-xl shadow-lg shadow-[#00D4FF]/20 transition-all flex items-center justify-center gap-2 outline-none active:scale-[0.98] uppercase text-xs tracking-widest"
+                    disabled={isProcessing || loading}
+                    className="flex-[1.5] h-10 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg text-sm shadow-sm transition-all flex items-center justify-center gap-2"
                 >
-                    {isProcessing || loading ? (
-                        <>
-                            <Spinner size="sm" color="current" />
-                            <span>{podcast ? 'UPDATING...' : 'CREATING...'}</span>
-                        </>
+                    {(isProcessing || loading) ? (
+                        <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
                     ) : (
-                        <>
-                            <FiCheck size={18} className="stroke-[3]" />
-                            <span>{podcast ? 'UPDATE PODCAST' : 'CREATE PODCAST'}</span>
-                        </>
+                        podcast ? 'Update Episode' : 'Publish Episode'
                     )}
                 </button>
             </div>
-        </BaseModal>
+        </CustomModal>
     )
 }

@@ -14,10 +14,8 @@ if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
 }
 
-// Ensure the connection is established and handle potential closed connections
-prisma.$connect().catch((err) => {
-  console.error("❌ Prisma connection error:", err.message);
-});
+// Ensure the connection is handled by Prisma Client's lazy loading
+// Remove manual connect to prevent overhead in Next.js dev mode
 
 /**
  * PRODUCTION PERFORMANCE TIP:

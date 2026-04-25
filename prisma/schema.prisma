@@ -83,6 +83,7 @@ model Category {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   players   Player[]
+  podcasts  Podcast[]
 
   @@map("category")
 }
@@ -131,20 +132,46 @@ model Player {
 }
 
 model Podcast {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   title         String
-  imageUrl      String
-  description   String?
-  status        String   @default("draft")
-  platformLinks Json
-  createdAt     DateTime @default(now())
+  description   String
+  imageUrl      String    // Thumbnail image
+  
+  featured      Boolean   @default(false)
+  isPick        Boolean   @default(false)
+  episodeNumber Int       @default(0)
+  
+  duration      Int?      // Duration in minutes
+  releaseDate   DateTime  @default(now())
+  listens       Int       @default(0)
+  rating        Float     @default(4.9) // Default starting rating
 
-  // Creator
+  categoryId    String
+  category      Category  @relation(fields: [categoryId], references: [id])
+
   createdById   String
-  createdBy     User     @relation(fields: [createdById], references: [id])
+  createdBy     User      @relation(fields: [createdById], references: [id])
 
-  // Players relation
-  players       Player[]
+  guests        Guest[]   // many-to-many
+  players       Player[]  // many-to-many (REQUIRED: at least 1)
+
+  platforms     Json      // [{ platform: "spotify", url: "..." }]
+
+  status        String    @default("draft")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("podcast")
+}
+
+model Guest {
+  id        String    @id @default(cuid())
+  name      String
+  avatar    String?
+  bio       String?
+  podcasts  Podcast[]
+
+  @@map("guest")
 }
 
 model Subscriber {

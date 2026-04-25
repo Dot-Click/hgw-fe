@@ -4,21 +4,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import { FiX } from 'react-icons/fi';
 import { IoSend, IoMicOutline } from 'react-icons/io5';
 import { cn } from '@heroui/react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '@/store/store';
+import { addUserMessage, Message } from '@/store/slices/aiSlice';
+import { sendAiMessage } from '@/store/actions/aiActions';
 import Image from 'next/image';
 import AiChart from './../ai/AiChart';
-import { PLAYERS_DATA } from '@/data/players';
-
-interface Message {
-    id: string;
-    text: string;
-    sender: 'user' | 'katy';
-    chart?: {
-        data: any[];
-        title: string;
-        dataKey: string;
-        nameKey: string;
-    }
-}
+import ReactMarkdown from 'react-markdown';
 
 interface AiModalProps {
     isOpen: boolean;
@@ -26,15 +18,9 @@ interface AiModalProps {
 }
 
 const AiModal: React.FC<AiModalProps> = ({ isOpen, onClose }) => {
-    const [messages, setMessages] = useState<Message[]>([
-        {
-            id: '1',
-            sender: 'katy',
-            text: "Hey! I'm Katy. Ask me anything about the HGW Legend Vault or the 10 Pillars! 🏆"
-        }
-    ]);
+    const dispatch = useDispatch<AppDispatch>();
+    const { messages, isTyping } = useSelector((state: RootState) => state.ai);
     const [inputValue, setInputValue] = useState('');
-    const [isTyping, setIsTyping] = useState(false);
     const chatEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
@@ -46,58 +32,19 @@ const AiModal: React.FC<AiModalProps> = ({ isOpen, onClose }) => {
     }, [messages, isOpen]);
 
     const suggestions = [
-        "Top rugby players",
+        "How many players are ranked?",
         "Explain the 10 pillars",
-        "Compare Ronaldo vs Messi"
+        "Top rugby legends",
+        "How many subscribers?"
     ];
 
-    const handleSend = (text: string = inputValue) => {
+    const handleSend = async (text: string = inputValue) => {
         if (!text.trim()) return;
 
-        const userMsg: Message = {
-            id: Date.now().toString(),
-            sender: 'user',
-            text
-        };
-
-        setMessages(prev => [...prev, userMsg]);
+        dispatch(addUserMessage(text));
         setInputValue('');
-        setIsTyping(true);
-
-        // Simulate AI Response
-        setTimeout(() => {
-            let katyResponse: Message = {
-                id: (Date.now() + 1).toString(),
-                sender: 'katy',
-                text: "Checking the vault..."
-            };
-
-            if (text.toLowerCase().includes('rugby') || text.toLowerCase().includes('top')) {
-                const rugbyPlayers = PLAYERS_DATA.filter(p => p.category === 'RUGBY')
-                    .sort((a, b) => b.score - a.score)
-                    .slice(0, 5)
-                    .map(p => ({
-                        name: p.lastName || p.name,
-                        score: p.score
-                    }));
-
-                katyResponse = {
-                    ...katyResponse,
-                    text: "I've compiled the latest scores for the top rugby legends. Richie McCaw and Jonah Lomu are currently leading the rankings.",
-                    chart: {
-                        data: rugbyPlayers,
-                        title: "Top 5 Rugby Legends",
-                        dataKey: "score",
-                        nameKey: "name"
-                    }
-                };
-            } else {
-                katyResponse.text = "I'm still learning more about that! But I can show you rankings for Rugby or Football players if you'd like.";
-            }
-
-            setMessages(prev => [...prev, katyResponse]);
-            setIsTyping(false);
-        }, 1500);
+        
+        dispatch(sendAiMessage(text));
     };
 
     if (!isOpen) return null;
@@ -145,9 +92,24 @@ const AiModal: React.FC<AiModalProps> = ({ isOpen, onClose }) => {
                                         ? "bg-[#1F2128] border border-[#24262E] text-[#D1D9E0] rounded-tl-none" 
                                         : "bg-[#00CCFF] text-[#0B0B0F] rounded-tr-none font-[600]"
                                 )}>
-                                    <p>{msg.text}</p>
+                                    <div className="markdown-content">
+                                        <ReactMarkdown>{msg.text}</ReactMarkdown>
+                                    </div>
+                                    
+                                    {msg.sql && (
+                                        <div className="mt-3 pt-3 border-t border-[#24262E]/50">
+                                            <div className="flex items-center gap-1.5 text-[10px] text-[#4A5567] mb-1.5 uppercase tracking-widest font-[700] orbitron">
+                                                <span className="w-1 h-1 bg-[#00CCFF] rounded-full"></span>
+                                                Database Query
+                                            </div>
+                                            <code className="block p-2.5 bg-[#0E1015] rounded-lg text-[11px] text-[#00CCFF] font-mono overflow-x-auto border border-[#00CCFF10]">
+                                                {msg.sql}
+                                            </code>
+                                        </div>
+                                    )}
+
                                     {msg.chart && (
-                                        <div className="mt-2 text-left">
+                                        <div className="mt-4 text-left">
                                             <AiChart 
                                                 data={msg.chart.data} 
                                                 title={msg.chart.title} 

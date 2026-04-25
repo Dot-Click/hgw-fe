@@ -72,9 +72,22 @@ export class PlayerService {
   static async getAllPlayers() {
     return await prisma.player.findMany({
       orderBy: { finalScore: "desc" },
-      include: {
-        category: true,
-      },
+      select: {
+        id: true,
+        name: true,
+        image: true,
+        finalScore: true,
+        positionRole: true,
+        country: true,
+        era: true,
+        status: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+          }
+        }
+      }
     });
   }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Button } from '@heroui/react';
-import { FiClock, FiCalendar, FiHeadphones, FiExternalLink } from 'react-icons/fi';
+import { FiClock, FiCalendar, FiHeadphones, FiExternalLink, FiYoutube, FiMusic } from 'react-icons/fi';
 import { IoPersonOutline } from 'react-icons/io5';
 import { GoStar } from 'react-icons/go';
 import { FaPlay } from 'react-icons/fa';
@@ -24,44 +24,45 @@ const getCategoryStyles = (category: string) => {
 };
 
 interface PodcastCardProps {
-    episode: string;
-    isPick?: boolean;
-    category: string;
+    id: string;
     title: string;
     description: string;
-    duration: string;
-    date: string;
-    listeners: string;
-    host: string;
-    tags: string[];
-    image: string;
+    imageUrl: string;
+    featured?: boolean;
+    isPick?: boolean;
+    episodeNumber?: number;
+    duration?: number;
+    releaseDate?: string;
+    listens?: number;
+    category: { name: string; color?: string };
+    createdBy: { name: string; image?: string };
+    players: { id: string; name: string }[];
+    guests?: { id: string; name: string }[];
+    platforms: { platform: string; url: string }[];
 }
 
 const PodcastCard: React.FC<PodcastCardProps> = ({
-    episode,
-    isPick,
-    category,
     title,
     description,
+    imageUrl,
+    isPick,
     duration,
-    date,
-    listeners,
-    host,
-    tags,
-    image
+    releaseDate,
+    episodeNumber, // Add episodeNumber here
+    listens,
+    category,
+    createdBy,
+    players,
+    guests,
+    platforms,
+    featured // Add featured to props
 }) => {
-    const platforms = [
-        { id: 1, name: 'Spotify' },
-        { id: 2, name: 'Apple' },
-        { id: 3, name: 'YouTube' }
-    ];
-
     return (
         <div className="bg-[#111217] border border-[#24262E] rounded-[24px] overflow-hidden flex flex-col group transition-all hover:border-[#3D414E]">
             {/* Image Section */}
             <div className="relative aspect-video overflow-hidden">
                 <Image 
-                    src={image} 
+                    src={imageUrl} 
                     alt={title} 
                     fill 
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -74,13 +75,18 @@ const PodcastCard: React.FC<PodcastCardProps> = ({
                 </div>
                 
                 {/* Badges */}
-                <div className="absolute top-4 left-4 flex gap-2">
-                    <div className="bg-[#111217CC] tracking-wider text-[#E7EBEF] px-3 py-1 rounded-full text-[11px] font-[600] orbitron">
-                        {episode}
+                <div className="absolute top-4 left-4 flex items-center gap-2">
+                    <div className="bg-[#0D0E12CC] backdrop-blur-md text-white/90 px-3 py-1.5 rounded-full text-[10px] font-[800] orbitron border border-white/10 tracking-widest shadow-lg">
+                        EP #{episodeNumber || "0"}
                     </div>
                     {isPick && (
-                        <div className="bg-[#FFBF00E5] text-[#0B0B0F] px-3 py-1 rounded-full text-[11px] font-[600] outfit flex items-center gap-1">
-                            <span className="text-[12px]"><GoStar /></span> Pick
+                        <div className="bg-[#FFBF00] text-[#0B0B0F] px-3.5 py-1.5 rounded-full text-[11px] font-[800] orbitron flex items-center gap-1.5 shadow-[0_0_20px_rgba(255,191,0,0.4)] border border-[#FFBF00]">
+                            <GoStar className="text-[14px]" /> PICK
+                        </div>
+                    )}
+                    {featured && (
+                        <div className="bg-[#00CCFF] text-[#0B0B0F] px-4 py-1.5 rounded-full text-[11px] font-[800] orbitron flex items-center gap-1.5 shadow-[0_0_20px_rgba(0,204,255,0.4)] border border-[#00CCFF]">
+                            <span className="text-[12px]"><GoStar className="animate-pulse" /></span> FEATURED
                         </div>
                     )}
                 </div>
@@ -89,12 +95,18 @@ const PodcastCard: React.FC<PodcastCardProps> = ({
             {/* Content Section */}
             <div className="p-5 flex flex-col gap-3 flex-grow">
                 {/* Category */}
-                <div>
+                <div className="flex justify-between items-center">
                     <span 
-                        className={`px-3 py-1 rounded-full text-[11px] font-[600] tracking-wide outfit border ${getCategoryStyles(category)}`}
+                        className={`px-3 py-1 rounded-full text-[11px] font-[600] tracking-wide outfit border ${getCategoryStyles(category.name)}`}
                     >
-                        {category}
+                        {category.name}
                     </span>
+                    {listens !== undefined && (
+                         <div className="flex items-center gap-1.5 text-[#7B899D] text-[12px] outfit">
+                            <FiHeadphones className="" />
+                            <span>{(listens / 1000).toFixed(1)}k</span>   
+                        </div>
+                    )}
                 </div>
 
                 {/* Title & Description */}
@@ -111,44 +123,51 @@ const PodcastCard: React.FC<PodcastCardProps> = ({
                 <div className="flex items-center gap-4 text-[#7B899D] text-[14px] outfit">
                     <div className="flex items-center gap-1.5">
                         <FiClock className="" />
-                        <span>{duration}</span>
+                        <span>{duration || 0} min</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                         <FiCalendar className="" />
-                        <span>{date}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                        <FiHeadphones className="" />
-                        <span>{listeners}</span>   
+                        <span>{releaseDate ? new Date(releaseDate).toLocaleDateString() : 'N/A'}</span>
                     </div>
                 </div>
                
                 {/* Host */}
                 <div className="flex items-center gap-2 text-[#7B899D] text-[12px]  font-[400] tracking-wider outfit">
                     <IoPersonOutline className="text-[#FFBF00] text-sm" />
-                    <span className="truncate">{host}</span>
+                    <span className="truncate">Hosted by {createdBy.name}</span>
                 </div>
    
-                {/* Tags */}
+                {/* Tags (Players & Guests) */}
                 <div className="flex flex-wrap gap-2">
-                    {tags.map((tag, idx) => (
-                        <span key={idx} className="text-[#00CCFF] border border-[#24262E] px-2 py-1 bg-[#1F2128] rounded-[62px] hover:underline cursor-pointer text-[12px] font-[400] outfit">
-                            {tag}
+                    {players.map((player) => (
+                        <span key={player.id} className="text-[#00CCFF] border border-[#24262E] px-2 py-1 bg-[#1F2128] rounded-[62px] hover:underline cursor-pointer text-[10px] font-bold orbitron uppercase tracking-widest">
+                            {player.name}
+                        </span>
+                    ))}
+                    {guests?.map((guest) => (
+                        <span key={guest.id} className="text-purple-400 border border-[#24262E] px-2 py-1 bg-[#1F2128] rounded-[62px] hover:underline cursor-pointer text-[10px] font-bold orbitron uppercase tracking-widest">
+                            {guest.name}
                         </span>
                     ))}
                 </div>
             </div>
 
             {/* Platform Buttons */}
-            <div className=" gap-3 flex justify-start px-5 pt-1 pb-3 items-center">
-                {platforms.map((platform) => (
-                    <Button 
-                        key={platform.id}
-                        className="py-1 px-4 bg-[#1F2128CC] hover:text-white border border-[#24262E80] text-[#7B899D] rounded-[44px] flex items-center justify-center gap-1.5 hover:bg-white/5 transition-all text-[14px] font-[400]"
-                    >
-                        <FiExternalLink /> {platform.name}
-                    </Button>
-                ))}
+            <div className=" gap-3 flex flex-wrap justify-start px-5 pt-1 pb-4 items-center border-t border-white/5 bg-white/[0.02]">
+                {platforms.map((platform, idx) => {
+                    const Icon = platform.platform.toLowerCase() === 'spotify' ? FiMusic : platform.platform.toLowerCase() === 'youtube' ? FiYoutube : FiExternalLink;
+                    return (
+                        <a 
+                            key={idx}
+                            href={platform.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="py-1.5 px-4 bg-[#1F2128CC] hover:text-white border border-[#24262E80] text-[#7B899D] rounded-[44px] flex items-center justify-center gap-1.5 hover:bg-white/5 transition-all text-[12px] font-[400]"
+                        >
+                            <Icon /> <span className="capitalize">{platform.platform}</span>
+                        </a>
+                    );
+                })}
             </div>
         </div>
     );

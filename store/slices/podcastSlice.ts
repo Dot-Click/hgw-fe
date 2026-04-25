@@ -1,8 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchPodcasts, createPodcast, updatePodcast, deletePodcast } from '../actions/podcastActions';
+import { fetchPodcasts, createPodcast, updatePodcast, deletePodcast, fetchPodcastStats } from '../actions/podcastActions';
+
+interface PodcastStats {
+    totalEpisodes: number;
+    totalListens: number;
+    averageRating: number;
+    weeklyReleases: number;
+}
 
 interface PodcastState {
     podcasts: any[];
+    stats: PodcastStats | null;
     loading: boolean;
     error: string | null;
     success: boolean;
@@ -10,6 +18,7 @@ interface PodcastState {
 
 const initialState: PodcastState = {
     podcasts: [],
+    stats: null,
     loading: false,
     error: null,
     success: false,
@@ -36,6 +45,20 @@ const podcastSlice = createSlice({
             state.podcasts = action.payload;
         });
         builder.addCase(fetchPodcasts.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload as string;
+        });
+
+        // Fetch Podcast Stats
+        builder.addCase(fetchPodcastStats.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        });
+        builder.addCase(fetchPodcastStats.fulfilled, (state, action: PayloadAction<PodcastStats>) => {
+            state.loading = false;
+            state.stats = action.payload;
+        });
+        builder.addCase(fetchPodcastStats.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload as string;
         });

@@ -13,6 +13,18 @@ export const fetchPodcasts = createAsyncThunk(
     }
 );
 
+export const fetchPodcastStats = createAsyncThunk(
+    'podcasts/fetchPodcastStats',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axios.get('/api/podcasts/stats');
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.error || 'Failed to fetch podcast stats');
+        }
+    }
+);
+
 export const createPodcast = createAsyncThunk(
     'podcasts/createPodcast',
     async (podcastData: any, { rejectWithValue }) => {

@@ -1,51 +1,43 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-interface Session {
-    user: {
-        role: string;
-    };
-}
-
 /**
  * PRODUCTION-GRADE ROUTE PROTECTION (Proxy Layer)
  * 
- * In this version of Next.js, 'proxy.ts' is used for edge-level security.
+ * OPTIMIZED: Direct cookie check instead of slow network fetch.
  */
 export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
-    // 1. Fetch current session
-    let session: any = null;
-    try {
-        const response = await fetch(new URL("/api/auth/get-session", request.nextUrl.origin), {
-            headers: {
-                cookie: request.headers.get("cookie") || "",
-            },
-        });
-        session = await response.json();
-    } catch (error) {
-        console.error("Auth Proxy Error:", error);
+    // Skip session check for home page to ensure lightning fast load
+    if (pathname === "/") {
+        return NextResponse.next();
     }
+
+    // 1. Quick Cookie Check (Saves 20 seconds)
+    const sessionCookie = request.cookies.get("better-auth.session_token") || 
+                         request.cookies.get("__better-auth.session_token");
 
     // 2. Protect /admin routes
     if (pathname.startsWith("/admin")) {
-        if (!session || !session.user) {
-            // Not logged in -> Redirect to login
+        if (!sessionCookie) {
             return NextResponse.redirect(new URL("/login", request.url));
         }
 
-        if (session.user.role !== "ADMIN") {
-            // Logged in but not admin -> Redirect to unauthorized
-            return NextResponse.redirect(new URL("/unauthorized", request.url));
-        }
-    }
+        // Only do heavy fetch for actual admin navigation
+        try {
+            const response = await fetch(new URL("/api/auth/get-session", request.nextUrl.origin), {
+                headers: {
+                    cookie: request.headers.get("cookie") || "",
+                },
+            });
+            const session = await response.json();
 
-    // 3. Role-Based Redirect after login (if accessing landing page while logged in)
-    // Note: This helps ensure admins are sent to their dashboard
-    if (pathname === "/" && session?.user) {
-        if (session.user.role === "ADMIN") {
-            return NextResponse.redirect(new URL("/admin", request.url));
+            if (!session || !session.user || session.user.role !== "ADMIN") {
+                return NextResponse.redirect(new URL("/unauthorized", request.url));
+            }
+        } catch (error) {
+            return NextResponse.redirect(new URL("/login", request.url));
         }
     }
 
@@ -54,7 +46,8 @@ export async function proxy(request: NextRequest) {
 
 /**
  * Configure which routes this proxy should run on.
+ * OPTIMIZED: Home page removed from matcher for speed.
  */
 export const config = {
-    matcher: ["/", "/admin/:path*", "/api/categories/:path*"],
+    matcher: ["/admin/:path*", "/api/categories/:path*"],
 };

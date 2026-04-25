@@ -1,36 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "@/lib/services/auth-service";
-import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { verifyAdminApi } from "@/lib/services/auth-service";
+import { PodcastService } from "@/lib/services/podcast.service";
 
 const podcastSchema = z.object({
     title: z.string().min(1, "Title is required"),
-    imageUrl: z.string().url("Image is required"),
-    description: z.string().optional(),
+    description: z.string().min(1, "Description is required"),
+    imageUrl: z.string().url("Image URL is required"),
+    categoryId: z.string().min(1, "Category is required"),
     playerIds: z.array(z.string()).min(1, "At least one player is required"),
-    platformLinks: z.object({
-        spotify: z.string().url().optional().or(z.literal("")),
-        youtube: z.string().url().optional().or(z.literal("")),
-    }).refine((data) => data.spotify || data.youtube, {
-        message: "At least one platform link (Spotify or YouTube) is required",
-        path: ["spotify"],
-    }),
+    guestIds: z.array(z.string()).optional(),
+    platforms: z.array(z.object({
+        platform: z.string(),
+        url: z.string().url()
+    })).min(1, "At least one platform is required"),
+    featured: z.boolean().optional(),
+    isPick: z.boolean().optional(),
+    duration: z.number().optional(),
     status: z.enum(["draft", "published"]).default("draft"),
 });
 
 export async function GET() {
     try {
-        const podcasts = await prisma.podcast.findMany({
-            include: {
-                createdBy: {
-                    select: { name: true, email: true }
-                },
-                players: {
-                    select: { id: true, name: true, image: true }
-                }
-            },
-            orderBy: { createdAt: 'desc' }
-        });
+        const podcasts = await PodcastService.getAllPodcasts();
         return NextResponse.json(podcasts);
     } catch (error) {
         console.error("Fetch podcasts error:", error);
@@ -39,44 +31,24 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-    const session = await getServerSession();
-
-    if (!session || session.user.role !== "ADMIN") {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const { authorized, response, session } = await verifyAdminApi();
+    if (!authorized || !session) return response;
 
     try {
         const body = await req.json();
         const validatedData = podcastSchema.parse(body);
 
-        const podcast = await prisma.podcast.create({
-            data: {
-                title: validatedData.title,
-                imageUrl: validatedData.imageUrl,
-                description: validatedData.description,
-                status: validatedData.status,
-                platformLinks: validatedData.platformLinks,
-                createdById: session.user.id,
-                players: {
-                    connect: validatedData.playerIds.map(id => ({ id }))
-                }
-            },
-            include: {
-                createdBy: {
-                    select: { name: true, email: true }
-                },
-                players: {
-                    select: { id: true, name: true, image: true }
-                }
-            }
+        const podcast = await PodcastService.createPodcast({
+            ...validatedData,
+            createdById: session.user.id
         });
 
-        return NextResponse.json(podcast);
-    } catch (error) {
+        return NextResponse.json(podcast, { status: 201 });
+    } catch (error: any) {
         if (error instanceof z.ZodError) {
             return NextResponse.json({ error: error.issues[0].message }, { status: 400 });
         }
         console.error("Create podcast error:", error);
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+        return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 });
     }
 }

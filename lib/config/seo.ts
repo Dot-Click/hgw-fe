@@ -3,21 +3,22 @@
  * Centralized settings for metadata, OpenGraph, and Twitter.
  */
 export const SEO_CONFIG = {
-  defaultTitle: "HGW Legend Vault | The Definitive Legend Archive",
-  titleTemplate: "%s | HGW Legend Vault",
-  description: "The definitive archive ranking and managing the greatest legends across sports, culture, and beyond.",
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://hgw-legend-vault.vercel.app",
+  defaultTitle: "How Good Was | The Ultimate Legend Ranking System",
+  titleTemplate: "%s | How Good Was",
+  description: "Discover the HGW Score: The definitive archive for grading and ranking the greatest legends in sport and culture. Analyze stats, dominance, and legacies in one place.",
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://howgoodwas.com",
   keywords: [
-    "HGW", 
-    "Legend Vault", 
-    "SaaS", 
-    "Admin Dashboard", 
-    "Sports Archive", 
-    "Legend Management", 
-    "Production Grade App"
+    "How Good Was", 
+    "HGW Score", 
+    "Sport Rankings", 
+    "Legend Archive", 
+    "Player Comparison", 
+    "All Time Greats", 
+    "Sports Analytics",
+    "Legendary Athletes"
   ],
-  author: "DotClick LLC",
-  themeColor: "#0B0F19",
-  twitterHandle: "@hgw_vault",
-  ogImage: "/og-image.png",
+  author: "How Good Was Team",
+  themeColor: "#00CCFF",
+  twitterHandle: "@howgoodwas",
+  ogImage: "/assets/og-image.png",
 };

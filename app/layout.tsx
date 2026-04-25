@@ -86,7 +86,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${outfit.variable} ${orbitron.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${outfit.variable} ${orbitron.variable} h-full antialiased dark`}
       suppressHydrationWarning
     >
       <body className="min-h-screen flex flex-col bg-white text-black dark:bg-[#0D0E12] dark:text-white">

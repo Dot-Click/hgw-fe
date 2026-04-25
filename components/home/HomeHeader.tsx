@@ -6,12 +6,10 @@ import { useState } from "react";
 import { FiSearch, FiZap, FiTarget, FiGlobe } from "react-icons/fi";
 import { LuBrain, LuSwords, LuTrophy, LuUsers } from "react-icons/lu";
 import { Button, InputGroup } from "@heroui/react";
-import AiModal from "../common/AiModal";
 import { IoIosGitCompare } from "react-icons/io";
 
 const HomeHeader = () => {
   const router = useRouter();
-  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
 
   return (
     <header className="min-h-[85vh] pt-24 md:pt-40 flex flex-col items-center justify-center relative w-full overflow-hidden">
@@ -100,27 +98,6 @@ const HomeHeader = () => {
 
       </div>
 
-      {/* Robot Mascot Buddy */}
-      <div 
-        onClick={() => setIsAiModalOpen(true)}
-        className="absolute bottom-0 right-4 md:bottom-0 md:right-[12%] z-20 group cursor-pointer" role="complementary" aria-label="HGW Buddy Assistant"
-      >
-        <div className="relative">
-          <Image
-            src="/assets/robot.png"
-            alt="HGW Interactive Buddy"
-            width={80}
-            height={80}
-            className="w-16 h-16 md:w-20 md:h-20 drop-shadow-[0_0_15px_rgba(0,204,255,0.4)] animate-bounce"
-            style={{ animationDuration: '3s' }}
-          />
-          <div className="absolute -top-12 right-0 bg-[#1F2128] border border-[#24262E] text-white px-4 py-2 rounded-2xl text-[12px] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap outfit pointer-events-none">
-            Need help ranking someone?
-          </div>
-        </div>
-      </div>
-
-      <AiModal isOpen={isAiModalOpen} onClose={() => setIsAiModalOpen(false)} />
     </header>
   );
 };

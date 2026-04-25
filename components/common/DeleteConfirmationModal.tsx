@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react'
-import BaseModal from './BaseModal'
+import CustomModal from './CustomModal'
 import { Button, Spinner } from '@heroui/react'
 import { FiTrash2, FiAlertTriangle } from 'react-icons/fi'
 
@@ -23,45 +23,45 @@ const DeleteConfirmationModal = ({
     isDeleting = false
 }: DeleteConfirmationModalProps) => {
     return (
-        <BaseModal isOpen={isOpen} onClose={onClose} maxWidth="max-w-md">
-            <div className="flex flex-col items-center text-center p-8">
+        <CustomModal isOpen={isOpen} onClose={onClose} maxWidth="max-w-[400px]">
+            <div className="flex flex-col items-center text-center p-8 bg-[#111217]">
                 {/* Icon Circle */}
-                <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-6 border border-red-500/20">
-                    <FiAlertTriangle className="text-red-500" size={32} />
+                <div className="w-20 h-20 rounded-3xl bg-red-500/10 flex items-center justify-center mb-6 border border-red-500/20 shadow-[0_0_30px_rgba(239,68,68,0.1)] rotate-3">
+                    <FiAlertTriangle className="text-red-500" size={36} />
                 </div>
 
-                <h3 className="text-xl font-bold text-white outfit mb-2 tracking-wide">
+                <h3 className="text-[20px] font-bold text-white orbitron mb-3 tracking-tight uppercase">
                     {title}
                 </h3>
-                <p className="text-zinc-400 text-sm outfit leading-relaxed mb-8 max-w-[280px]">
+                <p className="text-[#7B899D] text-[14px] outfit leading-relaxed mb-10 max-w-[300px]">
                     {message}
                 </p>
 
                 <div className="flex items-center gap-3 w-full">
-                    <button 
-                        onClick={onClose}
-                        disabled={isDeleting}
-                        className="flex-1 h-12 rounded-xl text-zinc-400 font-bold text-xs uppercase tracking-widest hover:text-white hover:bg-white/5 border border-white/10 transition-all outline-none disabled:opacity-50"
+                    <Button 
+                        onPress={onClose}
+                        isDisabled={isDeleting}
+                        className="flex-1 h-12 rounded-[20px] bg-transparent border border-[#24262E] text-[#7B899D] font-bold text-[14px] outfit hover:bg-white/5 transition-all"
                     >
                         Cancel
-                    </button>
-                    <button 
-                        onClick={onConfirm}
-                        disabled={isDeleting}
-                        className="flex-1 h-12 bg-red-500 hover:bg-red-600 disabled:bg-red-500/50 text-white font-bold rounded-xl shadow-lg shadow-red-500/20 transition-all flex items-center justify-center gap-2 outline-none active:scale-[0.98] uppercase text-xs tracking-widest"
+                    </Button>
+                    <Button 
+                        onPress={onConfirm}
+                        isDisabled={isDeleting}
+                        className="flex-1 h-12 bg-red-500 hover:bg-red-600 text-white font-bold rounded-[20px] shadow-[0_0_20px_rgba(239,68,68,0.3)] text-[14px] orbitron transition-all active:scale-95"
                     >
                         {isDeleting ? (
                             <Spinner size="sm" color="current" />
                         ) : (
-                            <>
-                                <FiTrash2 size={16} />
-                                <span>Delete</span>
-                            </>
+                            <div className="flex items-center gap-2">
+                                <FiTrash2 size={18} />
+                                <span>DELETE</span>
+                            </div>
                         )}
-                    </button>
+                    </Button>
                 </div>
             </div>
-        </BaseModal>
+        </CustomModal>
     )
 }
 

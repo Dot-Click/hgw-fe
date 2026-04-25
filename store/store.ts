@@ -5,6 +5,8 @@ import playerReducer from './reducers/playerReducer';
 import subscriberReducer from './reducers/subscriberReducer';
 import settingsReducer from './slices/settingsSlice';
 import podcastReducer from './slices/podcastSlice';
+import guestReducer from './slices/guestSlice';
+import aiReducer from './slices/aiSlice';
 
 export const store = configureStore({
     reducer: {
@@ -14,6 +16,8 @@ export const store = configureStore({
         subscribers: subscriberReducer,
         settings: settingsReducer,
         podcasts: podcastReducer,
+        guests: guestReducer,
+        ai: aiReducer,
     },
 });
 

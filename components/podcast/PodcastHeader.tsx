@@ -1,10 +1,29 @@
 import { Button } from '@heroui/react'
 import Image from 'next/image'
 import { FaPlay } from 'react-icons/fa'
-import { FiCalendar, FiClock, FiExternalLink, FiHeadphones } from 'react-icons/fi'
+import { FiCalendar, FiClock, FiExternalLink, FiHeadphones, FiYoutube, FiMusic } from 'react-icons/fi'
 import { IoMicOutline, IoPersonOutline, IoStarOutline } from 'react-icons/io5'
 
-const PodcastHeader = () => {
+interface PodcastHeaderProps {
+    featuredPodcast?: any;
+}
+
+const PodcastHeader = ({ featuredPodcast }: PodcastHeaderProps) => {
+    // If no featured podcast is provided, we can show a placeholder or hide.
+    // For now, let's keep the design and make it dynamic if data exists.
+    
+    const title = featuredPodcast?.title || "HGW Legend Deep Dives";
+    const description = featuredPodcast?.description || "Explore the careers of history's greatest icons through the 10 Pillars of Domination.";
+    const imageUrl = featuredPodcast?.imageUrl || "/assets/pdimg.svg";
+    const duration = featuredPodcast?.duration || 0;
+    const releaseDate = featuredPodcast?.releaseDate || featuredPodcast?.createdAt;
+    const listens = featuredPodcast?.listens || 0;
+    const categoryName = featuredPodcast?.category?.name || "Analytics";
+    const hostName = featuredPodcast?.createdBy?.name || "HGW Team";
+    const players = featuredPodcast?.players || [];
+    const guests = featuredPodcast?.guests || [];
+    const platforms = featuredPodcast?.platforms || [];
+
     return (
         <div className="w-full relative">
             {/* BACKGROUND IMAGE WITH OVERLAY */}
@@ -34,8 +53,8 @@ const PodcastHeader = () => {
                     <div className="lg:col-span-6 xl:col-span-6 relative">
                         <div className="relative h-[220px] md:h-[400px] lg:h-[400px]  xl:h-[360px] w-full rounded-[23px] overflow-hidden border border-[#747A9499] shadow-[0_0_40px_rgba(0,0,0,0.5)] group">
                             <Image
-                                src="/assets/pdimg.svg"
-                                alt="Podcast Featured Episode"
+                                src={imageUrl}
+                                alt={title}
                                 fill
                                 className="object-cover lg:object-right xl:object-center h-full transition-transform duration-700"
                                 priority
@@ -44,8 +63,8 @@ const PodcastHeader = () => {
                             <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent" />
 
                             {/* Featured Badge */}
-                            <div className="absolute top-3 left-3 bg-[#FFBF00] text-[#0B0B0F] px-3 py-1.5 rounded-full text-[8px] md:text-[10px]  font-[600] orbitron tracking-wider">
-                                FEATURED EP #12
+                            <div className="absolute top-3 left-3 bg-[#FFBF00] text-[#0B0B0F] px-3 py-1.5 rounded-full text-[8px] md:text-[10px]  font-[800] orbitron tracking-wider shadow-[0_0_20px_rgba(255,191,0,0.4)]">
+                                FEATURED EPISODE #{featuredPodcast?.episodeNumber || "0"}
                             </div>
 
                             {/* Play Button Overlay */}
@@ -63,66 +82,77 @@ const PodcastHeader = () => {
                         {/* Category Tag */}
                         <div>
                             <span className="px-3 py-1.5 rounded-full bg-[#00CCFF33] border border-[#00CCFF4D] text-[#00CCFF] text-[12px] tracking-wider font-[600] outfit">
-                                Football
+                                {categoryName}
                             </span>
                         </div>
 
                         {/* Title */}
-                        <h1 className="text-[17px] md:text-[24px] lg:text-[30px] orbitron font-[900] leading-tight text-[#FFFFFF]">
-                            Why Messi is the GOAT – A Statistical Breakdown
+                        <h1 className="text-[17px] md:text-[24px] lg:text-[30px] orbitron font-[900] leading-tight text-[#FFFFFF] uppercase tracking-wider">
+                            {title}
                         </h1>
 
                         {/* Description */}
-                        <p className="text-[#7B899D] text-[15px] md:text-[16px] font-[400] outfit leading-relaxed max-w-xl">
-                            We break down Lionel Messi's career using the 10 Pillars of Domination. From longevity to clutch factor, every metric is dissected.
+                        <p className="text-[#7B899D] text-[14px] md:text-[16px] font-[400] outfit leading-relaxed max-w-xl line-clamp-3">
+                            {description}
                         </p>
 
                         {/* Stats Row */}
                         <div className="flex flex-wrap items-center gap-6 text-[#7B899D] font-[400] text-[14px] md:text-[16px] outfit">
                             <div className="flex items-center gap-2">
                                 <FiClock className="text-[#00CCFF]" />
-                                <span>45 min</span>
+                                <span>{duration} min</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <FiCalendar className="text-[#00CCFF]" />
-                                <span>2024-12-01</span>
+                                <span>{releaseDate ? new Date(releaseDate).toLocaleDateString() : 'Recent'}</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <FiHeadphones className="text-[#00CCFF]" />
-                                <span>48,200 listens</span>
+                                <span>{listens.toLocaleString()} listens</span>
                             </div>
                         </div>
 
                         {/* Details List */}
                         <div className="flex flex-col gap-3">
-                            <div className="flex items-center gap-3">
-                                <IoPersonOutline className="text-[#FFBF00] text-lg" />
-                                <span className="text-[#7B899D] text-[14px] font-[400] md:text-[15px] outfit">
-                                    Guests: <span className="text-[#E7EBEF]">Dr. Alex Torres, HGW Analytics Team</span>
-                                </span>
-                            </div>
+                            {guests.length > 0 && (
+                                <div className="flex items-center gap-3">
+                                    <IoPersonOutline className="text-[#FFBF00] text-lg" />
+                                    <span className="text-[#7B899D] text-[14px] font-[400] md:text-[15px] outfit">
+                                        Guests: <span className="text-[#E7EBEF]">{guests.map((g: any) => g.name).join(", ")}</span>
+                                    </span>
+                                </div>
+                            )}
                             <div className="flex items-center gap-3">
                                 <IoStarOutline className="text-[#FFBF00] text-lg" />
                                 <span className="text-[#7B899D] text-[14px] font-[400] md:text-[15px] outfit">
-                                    Legends: <span className="text-[#00CCFF] font-medium cursor-pointer hover:underline">Lionel Messi</span> <span className="text-[#00CCFF] font-medium cursor-pointer hover:underline ml-2">Cristiano Ronaldo</span>
+                                    Legends: {players.map((p: any, idx: number) => (
+                                        <span key={p.id} className="text-[#00CCFF] font-medium cursor-pointer hover:underline mr-2">
+                                            {p.name}{idx < players.length - 1 ? "," : ""}
+                                        </span>
+                                    ))}
                                 </span>
                             </div>
                         </div>
 
                         {/* Platform Action Buttons */}
                         <div className="flex flex-wrap items-center gap-3 mt-4">
-                            <Button className="py-2 px-3 bg-[#1F2128CC] border border-[#24262E80] text-[#7B899D] rounded-[23px] flex items-center gap-2 hover:bg-white/5 transition-all text-[11px] md:text-[13px] font-[400]">
-                                <FiExternalLink className="" />
-                                Spotify
-                            </Button>
-                            <Button className="py-2 px-3 bg-[#1F2128CC] border border-[#24262E80] text-[#7B899D] rounded-[23px] flex items-center gap-2 hover:bg-white/5 transition-all text-[11px] md:text-[13px] font-[400]">
-                                <FiExternalLink className="" />
-                                Apple Podcasts
-                            </Button>
-                            <Button className="py-2 px-3 bg-[#1F2128CC] border border-[#24262E80] text-[#7B899D] rounded-[23px] flex items-center gap-2 hover:bg-white/5 transition-all text-[11px] md:text-[13px] font-[400]">
-                                <FiExternalLink className="" />
-                                YouTube
-                            </Button>
+                            {platforms.length > 0 ? platforms.map((p: any, idx: number) => {
+                                const Icon = p.platform.toLowerCase() === 'spotify' ? FiMusic : p.platform.toLowerCase() === 'youtube' ? FiYoutube : FiExternalLink;
+                                return (
+                                    <a 
+                                        key={idx} 
+                                        href={p.url} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="py-2 px-4 bg-[#1F2128CC] border border-[#24262E80] text-[#7B899D] rounded-[23px] flex items-center gap-2 hover:bg-white/5 transition-all text-[11px] md:text-[13px] font-[400] h-10 no-underline"
+                                    >
+                                        <Icon className="text-[#00CCFF]" />
+                                        <span className="capitalize">{p.platform}</span>
+                                    </a>
+                                );
+                            }) : (
+                                <p className="text-[#7B899D] text-xs orbitron italic">Listen on your favorite platforms soon.</p>
+                            )}
                         </div>
 
                     </div>

@@ -2,6 +2,7 @@ import React from "react";
 import { Metadata } from "next";
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
+import HgwBuddy from "@/components/common/HgwBuddy";
 
 export const metadata: Metadata = {
   title: {
@@ -42,6 +43,7 @@ export default function MainLayout({
           {children}
         </main>
         <Footer />
+        <HgwBuddy />
       </div>
     </div>
   );
