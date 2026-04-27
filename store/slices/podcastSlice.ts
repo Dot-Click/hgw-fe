@@ -115,8 +115,8 @@ const podcastSlice = createSlice({
         });
 
         // Increment Listens
-        builder.addCase(incrementPodcastListens.fulfilled, (state, action: PayloadAction<any>) => {
-            const index = state.podcasts.findIndex(p => p.id === action.payload.id || p.id === action.meta.arg);
+        builder.addCase(incrementPodcastListens.fulfilled, (state, action: any) => {
+            const index = state.podcasts.findIndex(p => p.id === action.payload.id);
             if (index !== -1) {
                 state.podcasts[index].listens = action.payload.listens;
             }
