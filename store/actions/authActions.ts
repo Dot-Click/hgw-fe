@@ -66,3 +66,41 @@ export const logout = createAsyncThunk(
         }
     }
 );
+
+export const forgotPassword = createAsyncThunk(
+    'auth/forgotPassword',
+    async (email: string, { rejectWithValue }) => {
+        try {
+            const { error } = await authApi.forgetPassword({
+                email,
+                redirectTo: `${window.location.origin}/change-password`,
+            });
+            if (error) {
+                // Custom requirement: show "Invalid credentials" if email doesn't exist
+                if (error.status === 404 || error.message.toLowerCase().includes('not found')) {
+                    return rejectWithValue('Invalid credentials');
+                }
+                return rejectWithValue(error.message);
+            }
+            return true;
+        } catch (err: any) {
+            return rejectWithValue(err.message || 'Failed to send reset link');
+        }
+    }
+);
+
+export const resetPassword = createAsyncThunk(
+    'auth/resetPassword',
+    async ({ newPassword, token }: { newPassword: string, token: string }, { rejectWithValue }) => {
+        try {
+            const { error } = await authApi.resetPassword({
+                newPassword,
+                token
+            });
+            if (error) return rejectWithValue(error.message);
+            return true;
+        } catch (err: any) {
+            return rejectWithValue(err.message || 'Failed to reset password');
+        }
+    }
+);

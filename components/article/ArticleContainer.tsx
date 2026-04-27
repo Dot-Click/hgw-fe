@@ -1,83 +1,79 @@
 "use client";
 
-import { useState } from 'react'
-import { Card, Button } from "@heroui/react"
+import { useState, useEffect, useMemo } from 'react'
+import { Card, Button, Skeleton } from "@heroui/react"
 import { FiCalendar, FiClock, FiArrowRight, FiUser, FiFileText } from "react-icons/fi"
 import ArticleCard from "@/components/article/ArticleCard"
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '@/store/store'
+import { fetchArticles } from '@/store/actions/articleActions'
 
 const ArticleContainer = () => {
+    const dispatch = useDispatch<AppDispatch>()
+    const { articles, loading } = useSelector((state: RootState) => state.articles)
     const [selectedCategory, setSelectedCategory] = useState("All Articles");
 
-    const categories = ["All Articles", "Analysis", "Ranking", "Database", "Debates"];
+    useEffect(() => {
+        dispatch(fetchArticles())
+    }, [dispatch])
 
-    const articles = [
-        {
-            id: 1,
-            title: "Are Era-Adjusted Scores Fairer Than Raw Stats?",
-            description: "Comparing players across decades remains notoriously difficult. Here's how we handle those who perfected...",
-            image: "/assets/art1.png",
-            category: "Analysis",
-            date: "Dec 1, 2024",
-            readTime: "8 min read"
-        },
-        {
-            id: 2,
-            title: "The Greatest Clutch Performers in History",
-            description: "When the pressure is highest, these legends deliver. A breakdown of our Clutch Factor pillar.",
-            image: "/assets/art2.png",
-            category: "Rankings",
-            date: "Nov 20, 2024",
-            readTime: "12 min read"
-        },
-        {
-            id: 3,
-            title: "Messi vs Ronaldo: The Definitive HGW Breakdown",
-            description: "An exhaustive statistical analysis across 10 pillars for the greatest rivalry in modern sports history.",
-            image: "/assets/art3.png",
-            category: "Debates",
-            date: "Nov 15, 2024",
-            readTime: "15 min read"
-        },
-        {
-            id: 4,
-            title: "How Cultural Legacy Shapes a Legend's Score",
-            description: "Icons are more than just raw stats. Here's how we quantify cultural impact toward the final vault rating.",
-            image: "/assets/art4.png",
-            category: "Analysis",
-            date: "Oct 25, 2024",
-            readTime: "10 min read"
-        },
-        {
-            id: 5,
-            title: "Top 10 Legends Who Peaked the Hardest",
-            description: "Peak dominance is about short bursts of absolute brilliance. These five had the highest peaks ever recorded.",
-            image: "/assets/art5.png",
-            category: "Rankings",
-            date: "Oct 12, 2024",
-            readTime: "15 min read"
+    const categories = useMemo(() => {
+        const cats = ["All Articles"];
+        const publishedArticles = articles.filter(art => art.status === 'PUBLISHED');
+        publishedArticles.forEach(art => {
+            if (art.category?.name && !cats.includes(art.category.name)) {
+                cats.push(art.category.name);
+            }
+        });
+        return cats;
+    }, [articles]);
+
+    const featuredArticle = useMemo(() => {
+        return articles.find(art => art.featured && art.status === 'PUBLISHED');
+    }, [articles]);
+
+    const latestArticles = useMemo(() => {
+        let filtered = articles.filter(art => !art.featured && art.status === 'PUBLISHED');
+
+        
+        if (selectedCategory !== "All Articles") {
+            filtered = filtered.filter(art => art.category?.name === selectedCategory);
         }
-    ];
+        
+        return filtered;
+    }, [articles, selectedCategory]);
 
-    const heroArticle = {
-        title: "The Science Behind the 10 Pillars of Domination",
-        description: "How we built a scoring system that fairly compares legends across different sports and eras. A deep dive into our methodology and the data-driven framework behind every HGW rating.",
-        image: "/assets/articleImg.png",
-        category: "Methodology",
-        author: "HGW Research Team",
-        date: "Dec 15, 2024",
-        readTime: "15 min read"
-    };
+    if (loading && articles.length === 0) {
+        return (
+            <section className="min-h-screen pt-36 pb-20 relative flex flex-col items-center">
+                <div className="w-full max-w-[1400px] px-6 md:px-12 lg:px-20 flex flex-col">
+                    <div className="max-w-6xl w-full flex flex-col gap-10">
+                        <div className="flex flex-col gap-4">
+                            <Skeleton className="w-32 h-6 rounded-lg bg-[#1E293B]" />
+                            <Skeleton className="w-64 h-12 rounded-xl bg-[#1E293B]" />
+                            <Skeleton className="w-full max-w-xl h-6 rounded-lg bg-[#1E293B]" />
+                        </div>
+                        <Skeleton className="w-full aspect-[21/9] rounded-[32px] bg-[#1E293B]" />
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {[1, 2, 3].map(i => (
+                                <Skeleton key={i} className="w-full h-[400px] rounded-[22px] bg-[#1E293B]" />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+    }
 
     return (
-        <section className="min-h-screen  pt-36 pb-20 relative flex flex-col items-center">
-            {/* Centered outer container to "stuck" the content's horizontal position */}
+        <section className="min-h-screen pt-36 pb-20 relative flex flex-col items-center">
             <div className="w-full max-w-[1400px] px-6 md:px-12 lg:px-20 flex flex-col">
                 <div className="max-w-6xl w-full flex flex-col gap-10">
 
                     {/* Header Section */}
                     <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-2 text-[#00CCFF] tracking-[0.2rem]  font-[600]">
-                            <span className="text-[16px]   md:text-[17px] text-[#00CCFF]"> <FiFileText /></span>
+                        <div className="flex items-center gap-2 text-[#00CCFF] tracking-[0.2rem] font-[600]">
+                            <span className="text-[16px] md:text-[17px] text-[#00CCFF]"> <FiFileText /></span>
                             <span className='text-[10px] md:text-[14px] uppercase'>HGW Editorial</span>
                         </div>
                         <div className="text-[32px] md:text-[56px] flex flex-wrap items-center gap-x-6 gap-y-2 orbitron font-bold leading-tight">
@@ -94,7 +90,7 @@ const ArticleContainer = () => {
                             <Button
                                 key={cat}
                                 onClick={() => setSelectedCategory(cat)}
-                                className={`px-[16px] py-[8px] rounded-[12px] text-center outfit text-[12px] md:text-[16px] font-[600]  transition-all duration-300 border ${selectedCategory === cat
+                                className={`px-[16px] py-[8px] rounded-[12px] text-center outfit text-[12px] md:text-[16px] font-[600] transition-all duration-300 border ${selectedCategory === cat
                                     ? "bg-[#00CCFF] text-[#0B0B0F] border-[#00CCFF] shadow-[0_0_20px_rgba(0,204,255,0.3)]"
                                     : "bg-[#1F2128] text-[#7B899D] border-[#24262E] hover:text-white hover:bg-[#24262E]"
                                     }`}
@@ -104,105 +100,105 @@ const ArticleContainer = () => {
                         ))}
                     </div>
 
-                    {/* Hero Featured Article Card */}
-                    <Card className="bg-[#0D0E12] w-full max-w-[950px] mx-auto h-fit border p-0 border-[#747A94CC] rounded-[24px] md:rounded-[32px] overflow-hidden shadow-none group">
-                        <div className="relative z-10 flex flex-col">
-                            {/* IMAGE SECTION */}
-                            <div className="relative w-full h-[280px] md:h-[600px] overflow-hidden">
-                                {/* ASSET GRADIENT (BEFORE IMG) */}
-                                <img
-                                    src="/assets/gradient.png"
-                                    className="absolute inset-x-0 top-0 w-full h-[150px] md:h-[300px] object-cover pointer-events-none z-10 rotate-180"
-                                    alt="Top Gradient Overlay"
-                                />
-
-                                <img
-                                    src="/assets/articleImg.png"
-                                    alt={heroArticle.title}
-                                    className="w-full h-full object-cover opacity-90"
-                                />
-
-                                {/* ASSET GRADIENT */}
-                                <img
-                                    src="/assets/gradient.png"
-                                    className="absolute inset-x-0 bottom-0 w-full h-[150px] md:h-[300px] object-cover pointer-events-none"
-                                    alt="Gradient Overlay"
-                                />
-
-                                {/* TOP LEFT "FEATURED" BADGE */}
-                                <div className="absolute top-4 md:top-8 left-4 md:left-8 bg-[#00CCFFE5] text-[#0B0B0F] px-4 py-1 rounded-[9999px] text-[10px] md:text-[13px] outfit tracking-[2px] md:tracking-[3px] font-bold z-20">
-                                    FEATURED
-                                </div>
-                            </div>
-
-                            {/* CONTENT SECTION */}
-                            <div className="px-5 md:px-12 pb-8 -mt-24 md:-mt-56 relative z-20">
-                                {/* CATEGORY BADGE */}
-                                <div className="mb-4 md:mb-6">
-                                    <span className="px-3 md:px-4 py-1 md:py-1.5 rounded-full border border-[#00CCFF4D] text-[#00CCFF] text-[8px] md:text-[11px] font-medium tracking-[2.5px] md:tracking-[3.5px] uppercase">
-                                        {heroArticle.category}
-                                    </span>
+                    {/* Featured Article */}
+                    {featuredArticle && (
+                        <Card className="bg-[#0D0E12] w-full max-w-[950px] mx-auto h-fit border p-0 border-[#747A94CC] rounded-[24px] md:rounded-[32px] overflow-hidden shadow-none group">
+                            <div className="relative z-10 flex flex-col">
+                                <div className="relative w-full h-[280px] md:h-[600px] overflow-hidden">
+                                    <img
+                                        src="/assets/gradient.png"
+                                        className="absolute inset-x-0 top-0 w-full h-[150px] md:h-[300px] object-cover pointer-events-none z-10 rotate-180"
+                                        alt="Top Gradient Overlay"
+                                    />
+                                    <img
+                                        src={featuredArticle.imageUrl}
+                                        alt={featuredArticle.title}
+                                        className="w-full h-full object-cover opacity-90"
+                                    />
+                                    <img
+                                        src="/assets/gradient.png"
+                                        className="absolute inset-x-0 bottom-0 w-full h-[150px] md:h-[300px] object-cover pointer-events-none"
+                                        alt="Gradient Overlay"
+                                    />
+                                    <div className="absolute top-4 md:top-8 left-4 md:left-8 bg-[#00CCFFE5] text-[#0B0B0F] px-4 py-1 rounded-[9999px] text-[10px] md:text-[13px] outfit tracking-[2px] md:tracking-[3px] font-bold z-20">
+                                        FEATURED
+                                    </div>
                                 </div>
 
-                                {/* TITLE */}
-                                <h2 className="text-[#E7EBEF] text-[18px] md:text-[28px] lg:text-[32px] xl:text-[40px] orbitron font-semibold leading-[1.2] mb-3 tracking-wide drop-shadow-sm">
-                                    {heroArticle.title}
-                                </h2>
-   
-                                {/* DESCRIPTION */}
-                                <p className="text-[#7B899D] text-[14px] md:text-[19px] outfit leading-relaxed line-clamp-2 md:line-clamp-none opacity-80 max-w-3xl">
-                                    {heroArticle.description}
-                                </p>
-      
-                                {/* META INFO & BUTTON ROW */}
-                                <div className="flex flex-col gap-6 mt-6">
-                                    {/* ICONS / META */}
-                                    <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-[#7B899D] text-[13px] md:text-[16px] outfit">
-                                        <div className="flex items-center gap-2 group/meta">
-                                            <FiUser className="text-[#00CCFF] text-sm md:text-lg" />
-                                            <span className="transition-colors group-hover/meta:text-white">{heroArticle.author}</span>
-                                        </div>
-
-                                        <div className="flex items-center gap-2 group/meta">
-                                            <FiCalendar className="text-[#00CCFF] text-sm md:text-lg" />
-                                            <span className="transition-colors group-hover/meta:text-white">{heroArticle.date}</span>
-                                        </div>
-
-                                        <div className="flex items-center gap-2 group/meta">
-                                            <FiClock className="text-[#00CCFF] text-sm md:text-lg" />
-                                            <span className="transition-colors group-hover/meta:text-white">{heroArticle.readTime}</span>
-                                        </div>
+                                <div className="px-5 md:px-12 pb-8 -mt-24 md:-mt-56 relative z-20">
+                                    <div className="mb-4 md:mb-6">
+                                        <span className="px-3 md:px-4 py-1 md:py-1.5 rounded-full border border-[#00CCFF4D] text-[#00CCFF] text-[8px] md:text-[11px] font-medium tracking-[2.5px] md:tracking-[3.5px] uppercase">
+                                            {featuredArticle.category?.name}
+                                        </span>
                                     </div>
 
-                                    {/* ACTION BUTTON SECTION */}
-                                    <div className="flex items-center justify-start">
-                                        <Button className="bg-[#00CCFF] hover:bg-[#00B8E6] text-[#0B0B0F] font-[600] py-6 px-8 rounded-[12px] md:rounded-[14px] flex items-center justify-center gap-3 group/btn outfit text-[15px] md:text-[16px] w-full md:w-fit shadow-[0_0_20px_rgba(0,204,255,0.2)]">
-                                            Read Article
-                                            <FiArrowRight className="text-xl transition-transform group-hover/btn:translate-x-1.5" />
-                                        </Button>
+                                    <h2 className="text-[#E7EBEF] text-[18px] md:text-[28px] lg:text-[32px] xl:text-[40px] orbitron font-semibold leading-[1.2] mb-3 tracking-wide drop-shadow-sm">
+                                        {featuredArticle.title}
+                                    </h2>
+    
+                                    <p className="text-[#7B899D] text-[14px] md:text-[19px] outfit leading-relaxed line-clamp-2 md:line-clamp-3 opacity-80 max-w-3xl">
+                                        {featuredArticle.description}
+                                    </p>
+        
+                                    <div className="flex flex-col gap-6 mt-6">
+                                        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-[#7B899D] text-[13px] md:text-[16px] outfit">
+                                            <div className="flex items-center gap-2 group/meta">
+                                                <FiUser className="text-[#00CCFF] text-sm md:text-lg" />
+                                                <span className="transition-colors group-hover/meta:text-white">{featuredArticle.authorName}</span>
+                                            </div>
+
+                                            <div className="flex items-center gap-2 group/meta">
+                                                <FiCalendar className="text-[#00CCFF] text-sm md:text-lg" />
+                                                <span className="transition-colors group-hover/meta:text-white">
+                                                    {new Date(featuredArticle.createdAt).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}
+                                                </span>
+                                            </div>
+
+                                            <div className="flex items-center gap-2 group/meta">
+                                                <FiClock className="text-[#00CCFF] text-sm md:text-lg" />
+                                                <span className="transition-colors group-hover/meta:text-white">{featuredArticle.readTime} min read</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center justify-start">
+                                            <Button className="bg-[#00CCFF] hover:bg-[#00B8E6] text-[#0B0B0F] font-[600] py-6 px-8 rounded-[12px] md:rounded-[14px] flex items-center justify-center gap-3 group/btn outfit text-[15px] md:text-[16px] w-full md:w-fit shadow-[0_0_20px_rgba(0,204,255,0.2)]">
+                                                Read Article
+                                                <FiArrowRight className="text-xl transition-transform group-hover/btn:translate-x-1.5" />
+                                            </Button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </Card>
+                        </Card>
+                    )}
 
                     {/* Latest Articles Heading */}
-                    <div className='flex flex-col gap-4 mt-4 items-start'>
-
+                    <div className='flex flex-col gap-4 mt-4 items-start w-full'>
                         <div className="flex flex-col gap-2 ">
                             <h3 className="orbitron text-[#7B899D] text-[12px] md:text-[15px] font-[700] tracking-[0.2em] uppercase">Latest Articles</h3>
                         </div>
 
                         {/* Articles Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {articles.map((article) => (
-                                <ArticleCard key={article.id} {...article} />
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
+                            {latestArticles.map((article) => (
+                                <ArticleCard 
+                                    key={article.id} 
+                                    title={article.title}
+                                    description={article.description}
+                                    image={article.imageUrl}
+                                    category={article.category?.name}
+                                    date={new Date(article.createdAt).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}
+                                    readTime={`${article.readTime} min read`}
+                                />
                             ))}
                         </div>
 
+                        {!loading && latestArticles.length === 0 && (
+                            <div className="w-full text-center py-20 bg-[#11121740] rounded-3xl border border-[#24262E]">
+                                <p className="text-[#7B899D] outfit">No articles found in this category.</p>
+                            </div>
+                        )}
                     </div>
-
-
                 </div>
             </div>
         </section>

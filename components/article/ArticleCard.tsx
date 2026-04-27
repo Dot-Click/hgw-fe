@@ -29,7 +29,7 @@ const ArticleCard = ({ title, description, image, category, date, readTime }: Ar
                 <Card.Title className="orbitron text-[#E7EBEF] text-[15px] font-[700] tracking-wider">
                     {title}
                 </Card.Title>
-                <Card.Description className="text-[#7B899D] outfit text-[14px]">
+                <Card.Description className="text-[#7B899D] outfit text-[14px] line-clamp-3">
                     {description}
                 </Card.Description>
             </Card.Content>

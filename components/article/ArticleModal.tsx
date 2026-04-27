@@ -4,8 +4,9 @@ import React, { useState, useRef, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/store/store'
 import { fetchCategories } from '@/store/actions/categoryActions'
+import { createArticle, updateArticle } from '@/store/actions/articleActions'
 import CustomModal from '../common/CustomModal'
-import { cn, Popover } from '@heroui/react'
+import { cn, Popover, Spinner } from '@heroui/react'
 import { 
     FiX, 
     FiUploadCloud, 
@@ -14,8 +15,11 @@ import {
     FiChevronDown,
     FiUser,
     FiStar,
-    FiFileText
+    FiFileText,
+    FiAlignLeft,
+    FiCheck
 } from 'react-icons/fi'
+import axios from 'axios'
 
 interface ArticleModalProps {
     isOpen: boolean
@@ -26,17 +30,22 @@ interface ArticleModalProps {
 export const ArticleModal = ({ isOpen, onClose, article }: ArticleModalProps) => {
     const dispatch = useDispatch<AppDispatch>()
     const { categories } = useSelector((state: RootState) => state.categories)
+    const { loading } = useSelector((state: RootState) => state.articles)
 
     const [formData, setFormData] = useState({
         title: '',
+        description: '',
         authorName: '',
         categoryId: '',
         readTime: '',
-        featured: false
+        featured: false,
+        status: 'DRAFT' as 'PUBLISHED' | 'DRAFT'
     })
     
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
     const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+    const [imageUrl, setImageUrl] = useState<string | null>(null)
+    const [isUploading, setIsUploading] = useState(false)
     const [isSubmitted, setIsSubmitted] = useState(false)
     
     const fileInputRef = useRef<HTMLInputElement>(null)
@@ -48,12 +57,15 @@ export const ArticleModal = ({ isOpen, onClose, article }: ArticleModalProps) =>
             if (article) {
                 setFormData({
                     title: article.title || '',
-                    authorName: article.author || '',
+                    description: article.description || '',
+                    authorName: article.authorName || '',
                     categoryId: article.categoryId || '',
                     readTime: article.readTime?.toString() || '',
-                    featured: article.featured || false
+                    featured: article.featured || false,
+                    status: article.status || 'DRAFT'
                 })
                 setPreviewUrl(article.imageUrl || null)
+                setImageUrl(article.imageUrl || null)
             } else {
                 resetForm()
             }
@@ -64,12 +76,15 @@ export const ArticleModal = ({ isOpen, onClose, article }: ArticleModalProps) =>
     const resetForm = () => {
         setFormData({
             title: '',
+            description: '',
             authorName: '',
             categoryId: '',
             readTime: '',
-            featured: false
+            featured: false,
+            status: 'DRAFT'
         })
         setPreviewUrl(null)
+        setImageUrl(null)
         setSelectedFile(null)
     }
 
@@ -80,23 +95,52 @@ export const ArticleModal = ({ isOpen, onClose, article }: ArticleModalProps) =>
             const reader = new FileReader()
             reader.onloadend = () => setPreviewUrl(reader.result as string)
             reader.readAsDataURL(file)
+            setImageUrl(null) // reset finalized url
         }
     }
 
     const handleSubmit = async () => {
         setIsSubmitted(true)
-        if (!formData.title || !formData.categoryId || !formData.authorName || !previewUrl) {
-            // In a real scenario we might show a toast here
+        if (!formData.title || !formData.description || !formData.categoryId || !formData.authorName || (!selectedFile && !previewUrl && !imageUrl)) {
             return
         }
+
+        let finalImageUrl = imageUrl || previewUrl;
+
+        if (selectedFile) {
+            setIsUploading(true);
+            const uploadData = new FormData();
+            uploadData.append('file', selectedFile);
+            uploadData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "hgw_players");
+
+            try {
+                const res = await axios.post(
+                    `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+                    uploadData
+                );
+                finalImageUrl = res.data.secure_url;
+                setImageUrl(finalImageUrl);
+            } catch (error) {
+                console.error("Upload error:", error);
+                setIsUploading(false);
+                return; // Stop if upload fails
+            }
+            setIsUploading(false);
+        }
         
-        console.log("Article Data:", {
+        if (!finalImageUrl) return;
+
+        const payload = {
             ...formData,
-            imageUrl: previewUrl,
-            file: selectedFile
-        })
+            imageUrl: finalImageUrl,
+        }
+
+        if (article) {
+            await dispatch(updateArticle({ id: article.id, data: payload }))
+        } else {
+            await dispatch(createArticle(payload))
+        }
         
-        // Basic behavior as requested: Modal should close properly
         onClose()
     }
 
@@ -126,7 +170,7 @@ export const ArticleModal = ({ isOpen, onClose, article }: ArticleModalProps) =>
             </div>
 
             {/* Content */}
-            <div className="px-6 py-5 max-h-[55vh] overflow-y-auto bg-[#0A0A0F]">
+            <div className="px-6 py-5 max-h-[70vh] overflow-y-auto bg-[#0A0A0F]">
                 <div className="flex flex-col gap-5">
                     
                     {/* Thumbnail Artwork */}
@@ -150,8 +194,16 @@ export const ArticleModal = ({ isOpen, onClose, article }: ArticleModalProps) =>
                                     <span className="text-[10px] text-gray-600">21:9 ratio recommended</span>
                                 </div>
                             )}
-                            <input type="file" ref={fileInputRef} onChange={handleFileSelect} accept="image/*" className="hidden" />
                         </div>
+                        <div className="flex gap-2 w-full mt-2">
+                            <button 
+                                onClick={() => fileInputRef.current?.click()}
+                                className="w-full bg-[#1A1A20] hover:bg-[#252530] text-gray-300 py-2 rounded-lg text-xs font-medium transition-colors"
+                            >
+                                {selectedFile || previewUrl ? 'Change Image' : 'Select Image'}
+                            </button>
+                        </div>
+                        <input type="file" ref={fileInputRef} onChange={handleFileSelect} accept="image/*" className="hidden" />
                     </div>
 
                     {/* Title */}
@@ -168,6 +220,23 @@ export const ArticleModal = ({ isOpen, onClose, article }: ArticleModalProps) =>
                                 value={formData.title}
                                 onChange={(e) => setFormData(p => ({...p, title: e.target.value}))}
                                 className="flex-1 bg-transparent text-sm text-white placeholder:text-gray-600 outline-none"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Description */}
+                    <div>
+                        <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">Description <span className="text-red-500">*</span></label>
+                        <div className={cn(
+                            "flex gap-2 bg-[#121218] border rounded-xl px-4 py-3 min-h-[120px] transition-all",
+                            isSubmitted && !formData.description ? "border-red-500/60" : "border-[#252530] focus-within:border-blue-500/50"
+                        )}>
+                            <FiAlignLeft size={15} className="text-gray-500 mt-1" />
+                            <textarea 
+                                placeholder="Enter article description (long text)..."
+                                value={formData.description}
+                                onChange={(e) => setFormData(p => ({...p, description: e.target.value}))}
+                                className="flex-1 bg-transparent text-sm text-white placeholder:text-gray-600 outline-none resize-none"
                             />
                         </div>
                     </div>
@@ -247,12 +316,41 @@ export const ArticleModal = ({ isOpen, onClose, article }: ArticleModalProps) =>
                         </div>
                     </div>
 
-                    {/* Featured Switch */}
-                    <div className="bg-[#121218] border border-[#252530] rounded-xl p-4">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <FiStar size={14} className="text-amber-500" />
-                                <span className="text-sm font-medium text-white">Featured</span>
+                    {/* Status & Featured Row */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {/* Status Switch */}
+                        <div className="bg-[#121218] border border-[#252530] rounded-xl p-4 flex items-center justify-between">
+                            <div className="flex flex-col">
+                                <span className="text-sm font-bold text-white">Status</span>
+                                <span className="text-[10px] text-gray-500">Draft or Published</span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <span className={cn(
+                                    "px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest",
+                                    formData.status === 'PUBLISHED' ? "bg-green-500/10 text-green-500 border border-green-500/20" : "bg-orange-500/10 text-orange-500 border border-orange-500/20"
+                                )}>
+                                    {formData.status}
+                                </span>
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                    <input 
+                                        type="checkbox" 
+                                        className="sr-only peer"
+                                        checked={formData.status === 'PUBLISHED'}
+                                        onChange={(e) => setFormData(p => ({...p, status: e.target.checked ? 'PUBLISHED' : 'DRAFT'}))}
+                                    />
+                                    <div className="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                            </div>
+                        </div>
+
+                        {/* Featured Switch */}
+                        <div className="bg-[#121218] border border-[#252530] rounded-xl p-4 flex items-center justify-between">
+                            <div className="flex flex-col">
+                                <div className="flex items-center gap-2">
+                                    <FiStar size={14} className={formData.featured ? "text-amber-500" : "text-gray-500"} />
+                                    <span className="text-sm font-bold text-white">Featured</span>
+                                </div>
+                                <span className="text-[10px] text-gray-500">Highlight article</span>
                             </div>
                             <label className="relative inline-flex items-center cursor-pointer">
                                 <input 
@@ -261,7 +359,7 @@ export const ArticleModal = ({ isOpen, onClose, article }: ArticleModalProps) =>
                                     checked={formData.featured}
                                     onChange={(e) => setFormData(p => ({...p, featured: e.target.checked}))}
                                 />
-                                <div className="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                                <div className="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
                             </label>
                         </div>
                     </div>
@@ -272,15 +370,17 @@ export const ArticleModal = ({ isOpen, onClose, article }: ArticleModalProps) =>
             <div className="px-6 py-4 border-t border-[#1F1F2A] bg-[#0D0D12] flex gap-3">
                 <button 
                     onClick={onClose}
-                    className="flex-1 h-10 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+                    disabled={loading || isUploading}
+                    className="flex-1 h-10 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors disabled:opacity-50"
                 >
                     Cancel
                 </button>
                 <button 
                     onClick={handleSubmit}
-                    className="flex-[1.5] h-10 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg text-sm shadow-sm transition-all flex items-center justify-center gap-2"
+                    disabled={loading || isUploading}
+                    className="flex-[2] h-10 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg text-sm shadow-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                    {article ? 'Update Article' : 'Publish Article'}
+                    {isUploading ? <><Spinner size="sm" color="current" /> Uploading...</> : loading ? <Spinner size="sm" color="current" /> : (article ? 'Update Article' : 'Save Article')}
                 </button>
             </div>
         </CustomModal>

@@ -19,4 +19,6 @@ export interface AuthState {
     loadingProvider: string | null; // 'google', 'facebook', 'email', etc.
     isInitialLoading: boolean;
     error: string | null;
+    forgotPasswordSuccess: boolean;
+    resetPasswordSuccess: boolean;
 }

@@ -1,51 +1,48 @@
-"use client"
-
+import { 
+  Table, 
+  TableContent, 
+  TableHeader, 
+  TableColumn, 
+  TableBody, 
+  TableRow, 
+  TableCell, 
+  cn,
+  Skeleton
+} from '@heroui/react'
+import { FiSearch, FiUser, FiCalendar, FiMoreVertical, FiEye, FiEdit2, FiTrash2, FiStar } from 'react-icons/fi'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '@/store/store'
+import { fetchArticles, deleteArticle } from '@/store/actions/articleActions'
 import React from 'react'
 import { createPortal } from 'react-dom'
-import {
-  Table,
-  TableContent,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  Button,
-  cn
-} from '@heroui/react'
-import { FiSearch, FiUser, FiCalendar, FiMoreVertical, FiEye, FiEdit2, FiTrash2 } from 'react-icons/fi'
 
 const columns = [
   { name: "Title", id: "title" },
   { name: "Author", id: "author" },
   { name: "Date", id: "date" },
-  { name: "Views", id: "views" },
+  { name: "Category", id: "category" },
   { name: "Status", id: "status" },
   { name: "Actions", id: "actions" },
 ]
 
-const articles = [
-  { id: 1, title: 'The Greatest of All Time Debate', author: 'Admin', date: '2026-04-01', views: '12,450', status: 'published' },
-  { id: 2, title: 'Michael Jordan vs LeBron James', author: 'Editor', date: '2026-03-28', views: '8,320', status: 'published' },
-  { id: 3, title: 'Top 10 Football Legends', author: 'Admin', date: '2026-03-25', views: '0', status: 'draft' },
-  { id: 4, title: 'Tennis GOATs Through the Ages', author: 'Editor', date: '2026-03-20', views: '5,640', status: 'published' },
-  { id: 5, title: 'The Rise of Modern Athletes', author: 'Admin', date: '2026-03-15', views: '0', status: 'draft' },
-  { id: 6, title: 'Cricket Legends: Sachin vs Kohli', author: 'Editor', date: '2026-03-10', views: '9,210', status: 'published' },
-  { id: 7, title: 'Boxing Hall of Fame: Who Deserves It?', author: 'Admin', date: '2026-03-05', views: '3,870', status: 'published' },
-  { id: 8, title: 'F1 Racing: The Untold Stories', author: 'Editor', date: '2026-02-28', views: '0', status: 'draft' },
-  { id: 9, title: 'Olympic Gold Medalists Ranked', author: 'Admin', date: '2026-02-22', views: '15,300', status: 'published' },
-  { id: 10, title: 'NBA Draft 2026 Predictions', author: 'Editor', date: '2026-02-18', views: '7,150', status: 'published' },
-  { id: 11, title: 'Swimming Records That Shocked the World', author: 'Admin', date: '2026-02-12', views: '0', status: 'draft' },
-  { id: 12, title: 'Esports vs Traditional Sports', author: 'Editor', date: '2026-02-05', views: '11,820', status: 'published' },
-]
+interface ArticleTableProps {
+  onEdit: (article: any) => void
+}
 
-const ArticleTable = () => {
+const ArticleTable = ({ onEdit }: ArticleTableProps) => {
+  const dispatch = useDispatch<AppDispatch>()
+  const { articles, loading } = useSelector((state: RootState) => state.articles)
+  
   const [search, setSearch] = React.useState('')
-  const [openDropdown, setOpenDropdown] = React.useState<number | null>(null)
+  const [openDropdown, setOpenDropdown] = React.useState<string | null>(null)
   const [dropdownPos, setDropdownPos] = React.useState({ top: 0, right: 0 })
   const dropdownRef = React.useRef<HTMLDivElement>(null)
 
-  const handleToggleDropdown = (articleId: number, e: React.MouseEvent) => {
+  React.useEffect(() => {
+    dispatch(fetchArticles())
+  }, [dispatch])
+
+  const handleToggleDropdown = (articleId: string, e: React.MouseEvent) => {
     if (openDropdown === articleId) {
       setOpenDropdown(null)
       return
@@ -70,54 +67,78 @@ const ArticleTable = () => {
     const q = search.toLowerCase()
     return articles.filter((a) =>
       a.title.toLowerCase().includes(q) ||
-      a.author.toLowerCase().includes(q) ||
-      a.status.toLowerCase().includes(q)
+      a.authorName.toLowerCase().includes(q) ||
+      (a.category?.name || "").toLowerCase().includes(q)
     )
-  }, [search])
+  }, [search, articles])
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm("Are you sure you want to delete this article?")) {
+      await dispatch(deleteArticle(id))
+      setOpenDropdown(null)
+    }
+  }
 
   const renderCell = React.useCallback((article: any, columnKey: React.Key) => {
     switch (columnKey) {
       case "title":
         return (
-          <span className="text-white font-[600] outfit text-sm md:text-base tracking-wide group-hover:text-[#00D4FF] transition-colors whitespace-nowrap">
-            {article.title}
-          </span>
+          <div className="flex flex-col gap-1">
+             <div className="flex items-center gap-2">
+                <span className="text-white font-[600] outfit text-sm md:text-base tracking-wide group-hover:text-[#00D4FF] transition-colors whitespace-nowrap">
+                    {article.title}
+                </span>
+                {article.featured && (
+                    <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-500 text-[10px] font-bold uppercase tracking-wider border border-amber-500/20">
+                        <FiStar size={10} />
+                        Featured
+                    </div>
+                )}
+             </div>
+             <span className="text-[10px] text-zinc-500 outfit line-clamp-1 max-w-[250px]">{article.description}</span>
+          </div>
         )
       case "author":
         return (
           <div className="flex items-center gap-2 text-zinc-400 outfit text-xs md:text-sm whitespace-nowrap">
             <FiUser size={14} className="text-zinc-600" />
-            {article.author}
+            {article.authorName}
           </div>
         )
       case "date":
         return (
           <div className="flex items-center gap-2 text-zinc-400 outfit text-xs md:text-sm whitespace-nowrap">
             <FiCalendar size={14} className="text-zinc-600" />
-            {article.date}
+            {new Date(article.createdAt).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}
           </div>
         )
-      case "views":
+      case "category":
         return (
-          <span className="text-zinc-400 outfit text-xs md:text-sm whitespace-nowrap">
-            {article.views}
-          </span>
+          <div 
+            className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-[11px] font-semibold outfit"
+            style={{ 
+                backgroundColor: `${article.category?.color}15`, 
+                color: article.category?.color,
+                border: `1px solid ${article.category?.color}30`
+            }}
+          >
+            {article.category?.name}
+          </div>
         )
       case "status":
+        const isPublished = article.status === 'PUBLISHED'
         return (
           <div className={cn(
             "inline-flex items-center capitalize outfit text-[11px] font-[500] px-3 h-7 rounded-full tracking-wider border-none",
-            article.status === 'published'
-              ? "bg-[#10B981]/10 text-[#10B981]"
-              : "bg-[#F59E0B]/10 text-[#F59E0B]"
+            isPublished ? "bg-[#10B981]/10 text-[#10B981]" : "bg-orange-500/10 text-orange-500"
           )}>
             <div
               className={cn(
                 "w-1.5 h-1.5 rounded-full mr-1.5 shadow-[0_0_8px]",
-                article.status === 'published' ? "bg-[#10B981] shadow-[#10B981]" : "bg-[#F59E0B] shadow-[#F59E0B]"
+                isPublished ? "bg-[#10B981] shadow-[#10B981]" : "bg-orange-500 shadow-orange-500"
               )}
             />
-            {article.status}
+            {article.status || 'DRAFT'}
           </div>
         )
       case "actions":
@@ -134,7 +155,7 @@ const ArticleTable = () => {
       default:
         return article[columnKey as keyof typeof article]
     }
-  }, [])
+  }, [handleToggleDropdown])
 
   return (
     <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -158,7 +179,7 @@ const ArticleTable = () => {
       </div>
 
       {/* Table Container */}
-      <div className="rounded-2xl border border-[#1E293B] bg-[#0B1121] shadow-2xl overflow-hidden">
+      <div className="rounded-2xl border border-[#1E293B] bg-[#0B1121] shadow-2xl overflow-hidden min-h-[400px]">
         <div className="overflow-x-auto scrollbar-hide">
           <Table className="bg-[#0B1121] border-none w-full min-w-[900px] shadow-none! [&_th:after]:hidden [&_th:before]:hidden">
             <TableContent aria-label="Articles management table" className="bg-transparent border-none">
@@ -177,22 +198,49 @@ const ArticleTable = () => {
                   </TableColumn>
                 )}
               </TableHeader>
-              <TableBody items={filteredArticles}>
-                {(item) => (
-                  <TableRow
-                    key={item.id}
-                    className="group hover:bg-[#1A2333]/40 bg-[#0B1121] transition-colors border-b border-[#1E293B]/50 last:border-none"
-                  >
-                    {columns.map((column) => (
-                      <TableCell key={column.id} className="py-3 md:py-5 bg-[#0B1121] px-4 md:px-8 outline-none">
-                        {renderCell(item, column.id)}
-                      </TableCell>
-                    ))}
-                  </TableRow>
+              <TableBody items={loading ? [] : filteredArticles}>
+                {loading ? (
+                    // This is handled by the emptyContent and a custom overlay if needed, 
+                    // but usually better to have fixed number of skeleton rows
+                    [] as any
+                ) : (
+                    (item: any) => (
+                      <TableRow
+                        key={item.id}
+                        className="group hover:bg-[#1A2333]/40 bg-[#0B1121] transition-colors border-b border-[#1E293B]/50 last:border-none"
+                      >
+                        {columns.map((column) => (
+                          <TableCell key={column.id} className="py-3 md:py-5 bg-[#0B1121] px-4 md:px-8 outline-none">
+                            {renderCell(item, column.id)}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    )
                 )}
               </TableBody>
             </TableContent>
           </Table>
+          
+          {!loading && filteredArticles.length === 0 && (
+            <div className="w-full py-10 text-center text-zinc-500 outfit">
+              No articles found
+            </div>
+          )}
+          
+          {loading && (
+            <div className="flex flex-col">
+                {[1,2,3,4,5].map(i => (
+                    <div key={i} className="flex items-center gap-4 px-8 py-5 border-b border-[#1E293B]/50">
+                        <Skeleton className="w-[30%] h-6 rounded-lg bg-[#1E293B]" />
+                        <Skeleton className="w-[15%] h-6 rounded-lg bg-[#1E293B]" />
+                        <Skeleton className="w-[15%] h-6 rounded-lg bg-[#1E293B]" />
+                        <Skeleton className="w-[15%] h-6 rounded-lg bg-[#1E293B]" />
+                        <Skeleton className="w-[15%] h-6 rounded-lg bg-[#1E293B]" />
+                        <Skeleton className="w-8 h-8 rounded-lg bg-[#1E293B] ml-auto" />
+                    </div>
+                ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -204,23 +252,21 @@ const ArticleTable = () => {
           style={{ top: dropdownPos.top, right: dropdownPos.right }}
         >
           <button
-            onClick={() => { console.log("View", openDropdown); setOpenDropdown(null) }}
+            onClick={() => { 
+                const art = articles.find(a => a.id === openDropdown)
+                if (art) onEdit(art)
+                setOpenDropdown(null) 
+            }}
             className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-zinc-300 hover:bg-white/5 hover:text-white transition-colors outfit"
           >
-            <FiEye size={15} /> View
-          </button>
-          <button
-            onClick={() => { console.log("Edit", openDropdown); setOpenDropdown(null) }}
-            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-zinc-300 hover:bg-white/5 hover:text-white transition-colors outfit"
-          >
-            <FiEdit2 size={15} /> Edit
+            <FiEdit2 size={15} /> Edit Article
           </button>
           <div className="mx-3 my-1 border-t border-[#1E293B]" />
           <button
-            onClick={() => { console.log("Delete", openDropdown); setOpenDropdown(null) }}
+            onClick={() => handleDelete(openDropdown)}
             className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors outfit"
           >
-            <FiTrash2 size={15} /> Delete
+            <FiTrash2 size={15} /> Delete Article
           </button>
         </div>,
         document.body

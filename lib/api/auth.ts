@@ -34,4 +34,18 @@ export const authApi = {
     signOut: async () => {
         return await authClient.signOut();
     },
+
+    forgetPassword: async ({ email, redirectTo }: { email: string, redirectTo: string }) => {
+        return await authClient.requestPasswordReset({
+            email,
+            redirectTo,
+        });
+    },
+
+    resetPassword: async ({ newPassword, token }: { newPassword: string, token: string }) => {
+        return await authClient.resetPassword({
+            newPassword,
+            token,
+        });
+    },
 };

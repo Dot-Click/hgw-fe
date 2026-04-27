@@ -28,6 +28,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   podcasts      Podcast[]
+  articles      Article[]
 
   @@map("user")
 }
@@ -84,6 +85,7 @@ model Category {
   updatedAt DateTime @updatedAt
   players   Player[]
   podcasts  Podcast[]
+  articles  Article[]
 
   @@map("category")
 }
@@ -182,4 +184,32 @@ model Subscriber {
   updatedAt DateTime @updatedAt
 
   @@map("subscriber")
+}
+
+enum ArticleStatus {
+  PUBLISHED
+  DRAFT
+}
+
+
+model Article {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @db.Text
+  authorName  String
+  readTime    Int?
+  featured    Boolean  @default(false)
+  status      ArticleStatus @default(DRAFT)
+  imageUrl    String
+
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+
+  createdById   String
+  createdBy     User      @relation(fields: [createdById], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("article")
 }

@@ -7,6 +7,7 @@ import settingsReducer from './slices/settingsSlice';
 import podcastReducer from './slices/podcastSlice';
 import guestReducer from './slices/guestSlice';
 import aiReducer from './slices/aiSlice';
+import articleReducer from './slices/articleSlice';
 
 export const store = configureStore({
     reducer: {
@@ -18,6 +19,7 @@ export const store = configureStore({
         podcasts: podcastReducer,
         guests: guestReducer,
         ai: aiReducer,
+        articles: articleReducer,
     },
 });
 

@@ -5,7 +5,9 @@ import {
     signUpWithEmail, 
     signInWithEmail,
     signInSocial,
-    logout 
+    logout,
+    forgotPassword,
+    resetPassword 
 } from '../actions/authActions';
 import { updateProfile, updateAlerts } from '../actions/settingsActions';
 
@@ -16,6 +18,8 @@ const initialState: AuthState = {
     loadingProvider: null,
     isInitialLoading: true,
     error: null,
+    forgotPasswordSuccess: false,
+    resetPasswordSuccess: false,
 };
 
 const sanitizeUser = (user: any): User => {
@@ -35,6 +39,11 @@ const authSlice = createSlice({
         clearError: (state) => {
             state.error = null;
         },
+        resetAuthStatus: (state) => {
+            state.error = null;
+            state.forgotPasswordSuccess = false;
+            state.resetPasswordSuccess = false;
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -129,9 +138,39 @@ const authSlice = createSlice({
                 if (action.payload) {
                     state.user = sanitizeUser(action.payload);
                 }
+            })
+            // Forgot Password
+            .addCase(forgotPassword.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.forgotPasswordSuccess = false;
+            })
+            .addCase(forgotPassword.fulfilled, (state) => {
+                state.loading = false;
+                state.forgotPasswordSuccess = true;
+            })
+            .addCase(forgotPassword.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+                state.forgotPasswordSuccess = false;
+            })
+            // Reset Password
+            .addCase(resetPassword.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.resetPasswordSuccess = false;
+            })
+            .addCase(resetPassword.fulfilled, (state) => {
+                state.loading = false;
+                state.resetPasswordSuccess = true;
+            })
+            .addCase(resetPassword.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+                state.resetPasswordSuccess = false;
             });
     },
 });
 
-export const { clearError } = authSlice.actions;
+export const { clearError, resetAuthStatus } = authSlice.actions;
 export default authSlice.reducer;
