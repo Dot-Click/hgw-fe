@@ -57,7 +57,7 @@ const DatabaseFilters = () => {
                             className="bg-transparent outline-none w-full font-[400] text-white outfit text-[18px] md:text-[18px] placeholder:text-[#7B899D]"
                             aria-label="Search input"
                         />
-                    </InputGroup>
+                    </InputGroup>    
                 </div>
                 <Button 
                     className="h-14 md:h-16 bg-[#00CCFF] text-[#0B0B0F] rounded-[14px] px-6 font-[500]  text-[14px] md:text-[20px] shadow-[0_0_20px_rgba(0,204,255,0.3)] hover:bg-[#00B8E6] transition-all flex items-center gap-3"
