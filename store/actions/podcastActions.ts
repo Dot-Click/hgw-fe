@@ -59,3 +59,15 @@ export const deletePodcast = createAsyncThunk(
         }
     }
 );
+
+export const incrementPodcastListens = createAsyncThunk(
+    'podcasts/incrementListens',
+    async (id: string, { rejectWithValue }) => {
+        try {
+            const response = await axios.post(`/api/podcasts/${id}/listen`);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.error || 'Failed to increment listens');
+        }
+    }
+);

@@ -1,3 +1,4 @@
+"use client";
 import { Button } from '@heroui/react'
 import Image from 'next/image'
 import { FaPlay } from 'react-icons/fa'
@@ -6,9 +7,11 @@ import { IoMicOutline, IoPersonOutline, IoStarOutline } from 'react-icons/io5'
 
 interface PodcastHeaderProps {
     featuredPodcast?: any;
+    onPlay?: () => void;
+    onExternalClick?: () => void;
 }
 
-const PodcastHeader = ({ featuredPodcast }: PodcastHeaderProps) => {
+const PodcastHeader = ({ featuredPodcast, onPlay, onExternalClick }: PodcastHeaderProps) => {
     // If no featured podcast is provided, we can show a placeholder or hide.
     // For now, let's keep the design and make it dynamic if data exists.
     
@@ -51,12 +54,15 @@ const PodcastHeader = ({ featuredPodcast }: PodcastHeaderProps) => {
 
                     {/* Left Column: Featured Image Card */}
                     <div className="lg:col-span-6 xl:col-span-6 relative">
-                        <div className="relative h-[220px] md:h-[400px] lg:h-[400px]  xl:h-[360px] w-full rounded-[23px] overflow-hidden border border-[#747A9499] shadow-[0_0_40px_rgba(0,0,0,0.5)] group">
+                        <div 
+                            onClick={onPlay}
+                            className="relative h-[220px] md:h-[400px] lg:h-[400px]  xl:h-[360px] w-full rounded-[23px] overflow-hidden border border-[#747A9499] shadow-[0_0_40px_rgba(0,0,0,0.5)] group cursor-pointer"
+                        >
                             <Image
                                 src={imageUrl}
                                 alt={title}
                                 fill
-                                className="object-cover lg:object-right xl:object-center h-full transition-transform duration-700"
+                                className="object-cover lg:object-right xl:object-center h-full transition-transform duration-700 group-hover:scale-105"
                                 priority
                             />
                             {/* Overlay Gradient */}
@@ -69,7 +75,10 @@ const PodcastHeader = ({ featuredPodcast }: PodcastHeaderProps) => {
 
                             {/* Play Button Overlay */}
                             <div className="absolute inset-0 flex items-center justify-center">
-                                <Button className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#00CCFF] text-[#0B0B0F] min-w-0 p-0 shadow-[0_0_30_rgba(0,204,255,0.4)] hover:bg-[#0aabd3]">
+                                <Button 
+                                    onPress={onPlay}
+                                    className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#00CCFF] text-[#0B0B0F] min-w-0 p-0 shadow-[0_0_30_rgba(0,204,255,0.4)] hover:bg-[#0aabd3] transition-transform group-hover:scale-110"
+                                >
                                     <FaPlay className="text-xl md:text-3xl text-white ml-1" />
                                 </Button>
                             </div>
@@ -144,6 +153,7 @@ const PodcastHeader = ({ featuredPodcast }: PodcastHeaderProps) => {
                                         href={p.url} 
                                         target="_blank" 
                                         rel="noopener noreferrer"
+                                        onClick={onExternalClick}
                                         className="py-2 px-4 bg-[#1F2128CC] border border-[#24262E80] text-[#7B899D] rounded-[23px] flex items-center gap-2 hover:bg-white/5 transition-all text-[11px] md:text-[13px] font-[400] h-10 no-underline"
                                     >
                                         <Icon className="text-[#00CCFF]" />

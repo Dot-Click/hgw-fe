@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchPodcasts, createPodcast, updatePodcast, deletePodcast, fetchPodcastStats } from '../actions/podcastActions';
+import { fetchPodcasts, createPodcast, updatePodcast, deletePodcast, fetchPodcastStats, incrementPodcastListens } from '../actions/podcastActions';
 
 interface PodcastStats {
     totalEpisodes: number;
@@ -112,6 +112,14 @@ const podcastSlice = createSlice({
         builder.addCase(deletePodcast.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload as string;
+        });
+
+        // Increment Listens
+        builder.addCase(incrementPodcastListens.fulfilled, (state, action: PayloadAction<any>) => {
+            const index = state.podcasts.findIndex(p => p.id === action.payload.id || p.id === action.meta.arg);
+            if (index !== -1) {
+                state.podcasts[index].listens = action.payload.listens;
+            }
         });
     },
 });

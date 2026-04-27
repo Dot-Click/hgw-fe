@@ -39,26 +39,6 @@ const DatabaseFilters = () => {
             label: "Location",
             placeholder: "All Locations",
             options: dynamicLocations
-        },
-        {
-            label: "Era",
-            placeholder: "All",
-            options: [
-                { id: "all", name: "All" },
-                { id: "modern", name: "Modern Era" },
-                { id: "golden", name: "Golden Era" },
-                { id: "vintage", name: "Vintage Era" },
-            ]
-        },
-        {
-            label: "Sort by",
-            placeholder: "Highest Rated",
-            options: [
-                { id: "highest", name: "Highest Rated" },
-                { id: "lowest", name: "Lowest Rated" },
-                { id: "alphabetical", name: "Alphabetical" },
-                { id: "newest", name: "Newest Added" },
-            ]
         }
     ];
 
@@ -89,7 +69,7 @@ const DatabaseFilters = () => {
 
 
             {/* Dropdowns Row (Filters Container) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-4 bg-[#111217] border border-[#24262E] rounded-[18px]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 p-4 bg-[#111217] border border-[#24262E] rounded-[18px]">
                 {FILTER_CONFIG.map((filter, index) => (
                     <div key={index} className="flex flex-col gap-2.5">
                         <span className="text-[#7B899DCC] text-[14px] font-[400] tracking-wider  ml-1">

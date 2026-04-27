@@ -10,7 +10,7 @@ import { PodcastGridSkeleton } from './PodcastSkeleton';
 import { Button, cn } from '@heroui/react';
 import { FiFilter, FiSearch } from 'react-icons/fi';
 
-const PodcasCards = ({ featuredPodcastId }: { featuredPodcastId?: string }) => {
+const PodcasCards = ({ featuredPodcastId, onPlay, onExternalClick }: { featuredPodcastId?: string, onPlay?: (podcast: any) => void, onExternalClick?: (podcast: any) => void }) => {
     const dispatch = useDispatch<AppDispatch>();
     const { podcasts, loading } = useSelector((state: RootState) => state.podcasts);
     const { categories } = useSelector((state: RootState) => state.categories);
@@ -146,6 +146,8 @@ const PodcasCards = ({ featuredPodcastId }: { featuredPodcastId?: string }) => {
                         <PodcastCard
                             key={podcast.id}
                             {...podcast}
+                            onPlay={() => onPlay?.(podcast)}
+                            onExternalClick={() => onExternalClick?.(podcast)}
                         />
                     ))}
                 </div>

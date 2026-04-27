@@ -142,6 +142,17 @@ export class PodcastService {
         });
     }
 
+    static async incrementListens(id: string) {
+        return await prisma.podcast.update({
+            where: { id },
+            data: {
+                listens: {
+                    increment: 1
+                }
+            }
+        });
+    }
+
     static async deletePodcast(id: string) {
         return await prisma.podcast.delete({
             where: { id }

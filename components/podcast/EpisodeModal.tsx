@@ -149,7 +149,7 @@ export const EpisodeModal = ({ isOpen, onClose, podcast }: EpisodeModalProps) =>
 
     const handlePlatformChange = (index: number, field: 'platform' | 'url', value: string) => {
         const next = [...platforms]
-        next[index][field] = value
+        next[index] = { ...next[index], [field]: value }
         setPlatforms(next)
     }
 

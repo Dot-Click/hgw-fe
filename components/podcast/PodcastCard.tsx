@@ -39,6 +39,8 @@ interface PodcastCardProps {
     players: { id: string; name: string }[];
     guests?: { id: string; name: string }[];
     platforms: { platform: string; url: string }[];
+    onPlay?: () => void;
+    onExternalClick?: () => void;
 }
 
 const PodcastCard: React.FC<PodcastCardProps> = ({
@@ -55,21 +57,29 @@ const PodcastCard: React.FC<PodcastCardProps> = ({
     players,
     guests,
     platforms,
-    featured // Add featured to props
+    featured, // Add featured to props
+    onPlay,
+    onExternalClick
 }) => {
     return (
         <div className="bg-[#111217] border border-[#24262E] rounded-[24px] overflow-hidden flex flex-col group transition-all hover:border-[#3D414E]">
             {/* Image Section */}
-            <div className="relative aspect-video overflow-hidden">
+            <div 
+                onClick={onPlay}
+                className="relative aspect-video overflow-hidden cursor-pointer"
+            >
                 <Image 
                     src={imageUrl} 
                     alt={title} 
                     fill 
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover transition-transform duration-700"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-100 transition-opacity">
-                    <Button className="w-12 h-12 rounded-full bg-[#00CCFFE5] hover:bg-[#0aabd3] text-[#0B0B0F] min-w-0 p-0 shadow-[0_0_20px_rgba(0,204,255,0.4)] ">
+                    <Button 
+                        onPress={onPlay}
+                        className="w-12 h-12 rounded-full bg-[#00CCFFE5] hover:bg-[#0aabd3] text-[#0B0B0F] min-w-0 p-0 shadow-[0_0_20px_rgba(0,204,255,0.4)] transition-transform group-hover:scale-110"
+                    >
                         <FaPlay  className="text-xl ml-0.5 text-white" />
                     </Button>
                 </div>
@@ -104,7 +114,7 @@ const PodcastCard: React.FC<PodcastCardProps> = ({
                     {listens !== undefined && (
                          <div className="flex items-center gap-1.5 text-[#7B899D] text-[12px] outfit">
                             <FiHeadphones className="" />
-                            <span>{(listens / 1000).toFixed(1)}k</span>   
+                            <span>{listens >= 1000 ? `${(listens / 1000).toFixed(1)}k` : listens}</span>   
                         </div>
                     )}
                 </div>
@@ -162,6 +172,7 @@ const PodcastCard: React.FC<PodcastCardProps> = ({
                             href={platform.url}
                             target="_blank"
                             rel="noopener noreferrer"
+                            onClick={onExternalClick}
                             className="py-1.5 px-4 bg-[#1F2128CC] hover:text-white border border-[#24262E80] text-[#7B899D] rounded-[44px] flex items-center justify-center gap-1.5 hover:bg-white/5 transition-all text-[12px] font-[400]"
                         >
                             <Icon /> <span className="capitalize">{platform.platform}</span>
