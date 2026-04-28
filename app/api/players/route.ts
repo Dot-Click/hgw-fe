@@ -11,7 +11,7 @@ import { z } from "zod";
 export async function GET() {
   try {
     const players = await PlayerService.getAllPlayers();
-    return NextResponse.json(players);
+    return Response.json(players);
   } catch (error) {
     console.error("Fetch players error:", error);
     return NextResponse.json(

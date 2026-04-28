@@ -21,10 +21,10 @@ export async function GET() {
         },
       },
     });
-    return NextResponse.json(categories);
+    return Response.json(categories);
   } catch (error) {
     console.error("Fetch categories error:", error);
-    return NextResponse.json(
+    return Response.json(
       { error: "Failed to fetch categories" }, 
       { status: 500 }
     );
@@ -49,7 +49,7 @@ export async function POST(req: Request) {
     });
 
     if (existingCategory) {
-      return NextResponse.json(
+      return Response.json(
         { error: "Category name already exists" }, 
         { status: 400 }
       );
@@ -59,16 +59,16 @@ export async function POST(req: Request) {
       data: validatedData,
     });
 
-    return NextResponse.json(category, { status: 201 });
+    return Response.json(category, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
+      return Response.json(
         { error: error.issues[0].message }, 
         { status: 400 }
       );
     }
     console.error("Create category error:", error);
-    return NextResponse.json(
+    return Response.json(
       { error: "Internal Server Error" }, 
       { status: 500 }
     );

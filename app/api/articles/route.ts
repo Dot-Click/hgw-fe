@@ -18,10 +18,10 @@ export async function GET() {
                 createdAt: 'desc'
             }
         });
-        return NextResponse.json(articles);
+        return Response.json(articles);
     } catch (error) {
         console.error("Error fetching articles:", error);
-        return NextResponse.json({ error: "Failed to fetch articles" }, { status: 500 });
+        return Response.json({ error: "Failed to fetch articles" }, { status: 500 });
     }
 }
 
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
         const { title, description, authorName, readTime, featured, imageUrl, categoryId, status } = data;
 
         if (!title || !description || !authorName || !imageUrl || !categoryId) {
-            return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+            return Response.json({ error: "Missing required fields" }, { status: 400 });
         }
 
         // Handle featured logic: Only one article can be featured at a time
@@ -68,9 +68,9 @@ export async function POST(req: Request) {
             }
         });
 
-        return NextResponse.json(article);
+        return Response.json(article);
     } catch (error) {
         console.error("Error creating article:", error);
-        return NextResponse.json({ error: "Failed to create article" }, { status: 500 });
+        return Response.json({ error: "Failed to create article" }, { status: 500 });
     }
 }

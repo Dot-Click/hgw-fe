@@ -6,7 +6,7 @@ import type { NextRequest } from "next/server";
  * 
  * OPTIMIZED: Direct cookie check instead of slow network fetch.
  */
-export async function proxy(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
     // Skip session check for home page to ensure lightning fast load

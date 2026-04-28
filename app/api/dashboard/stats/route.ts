@@ -11,13 +11,17 @@ import { verifyAdminApi } from "@/lib/services/auth-service";
  * - Articles published per day (last 7 days)
  * - Growth analytics (players & subscribers per day, last 7 days)
  */
-export async function GET() {
+export async function GET(req: Request) {
     try {
         const { authorized, response } = await verifyAdminApi();
         if (!authorized) return response;
 
+        const { searchParams } = new URL(req.url);
+        const daysParam = searchParams.get("days");
+        const days = daysParam ? parseInt(daysParam) : 7;
+
         const now = new Date();
-        const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const startDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
         const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
         // ─── Stats Cards ───────────────────────────────────────────
@@ -44,7 +48,7 @@ export async function GET() {
         // Calculate percentage changes (avoid division by zero)
         const calcChange = (total: number, recent: number) => {
             const previous = total - recent;
-            if (previous === 0) return recent > 0 ? "+100%" : "0%";
+            if (previous <= 0) return recent > 0 ? "+100%" : "0%";
             const pct = Math.round((recent / previous) * 100);
             return pct >= 0 ? `+${pct}%` : `${pct}%`;
         };
@@ -74,16 +78,16 @@ export async function GET() {
             },
         });
 
-        // ─── Articles Published Per Day (last 7 days) ──────────────
+        // ─── Articles Published Per Day (dynamic days) ─────────────
         const articlesRaw = await prisma.article.findMany({
-            where: { createdAt: { gte: sevenDaysAgo } },
+            where: { createdAt: { gte: startDate } },
             select: { createdAt: true },
             orderBy: { createdAt: "asc" },
         });
 
         // Group articles by day
         const articlesByDay: Record<string, number> = {};
-        for (let i = 6; i >= 0; i--) {
+        for (let i = days - 1; i >= 0; i--) {
             const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
             const key = d.toLocaleDateString("en-US", { month: "short", day: "2-digit" });
             articlesByDay[key] = 0;
@@ -95,22 +99,22 @@ export async function GET() {
 
         const articlesChart = Object.entries(articlesByDay).map(([name, count]) => ({ name, count }));
 
-        // ─── Growth Analytics (players & subscribers per day, last 7 days) ─
+        // ─── Growth Analytics (players & subscribers per day, dynamic days) ─
         const [playersGrowthRaw, subscribersGrowthRaw] = await Promise.all([
             prisma.player.findMany({
-                where: { createdAt: { gte: sevenDaysAgo } },
+                where: { createdAt: { gte: startDate } },
                 select: { createdAt: true },
                 orderBy: { createdAt: "asc" },
             }),
             prisma.subscriber.findMany({
-                where: { createdAt: { gte: sevenDaysAgo } },
+                where: { createdAt: { gte: startDate } },
                 select: { createdAt: true },
                 orderBy: { createdAt: "asc" },
             }),
         ]);
 
         const growthByDay: Record<string, { players: number; subscribers: number }> = {};
-        for (let i = 6; i >= 0; i--) {
+        for (let i = days - 1; i >= 0; i--) {
             const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
             const key = d.toLocaleDateString("en-US", { month: "short", day: "2-digit" });
             growthByDay[key] = { players: 0, subscribers: 0 };
