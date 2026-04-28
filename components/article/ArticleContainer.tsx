@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Card, Button, Skeleton } from "@heroui/react"
 import { FiCalendar, FiClock, FiArrowRight, FiUser, FiFileText } from "react-icons/fi"
+import Link from "next/link"
 import ArticleCard from "@/components/article/ArticleCard"
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/store/store'
@@ -12,10 +13,13 @@ const ArticleContainer = () => {
     const dispatch = useDispatch<AppDispatch>()
     const { articles, loading } = useSelector((state: RootState) => state.articles)
     const [selectedCategory, setSelectedCategory] = useState("All Articles");
+    const [isInitialMount, setIsInitialMount] = useState(true);
 
     useEffect(() => {
-        dispatch(fetchArticles())
-    }, [dispatch])
+        dispatch(fetchArticles()).finally(() => {
+            setIsInitialMount(false);
+        });
+    }, [dispatch]);
 
     const categories = useMemo(() => {
         const cats = ["All Articles"];
@@ -34,7 +38,6 @@ const ArticleContainer = () => {
 
     const latestArticles = useMemo(() => {
         let filtered = articles.filter(art => !art.featured && art.status === 'PUBLISHED');
-
         
         if (selectedCategory !== "All Articles") {
             filtered = filtered.filter(art => art.category?.name === selectedCategory);
@@ -43,7 +46,7 @@ const ArticleContainer = () => {
         return filtered;
     }, [articles, selectedCategory]);
 
-    if (loading && articles.length === 0) {
+    if ((loading || isInitialMount) && articles.length === 0) {
         return (
             <section className="min-h-screen pt-36 pb-20 relative flex flex-col items-center">
                 <div className="w-full max-w-[1400px] px-6 md:px-12 lg:px-20 flex flex-col">
@@ -161,10 +164,12 @@ const ArticleContainer = () => {
                                         </div>
 
                                         <div className="flex items-center justify-start">
-                                            <Button className="bg-[#00CCFF] hover:bg-[#00B8E6] text-[#0B0B0F] font-[600] py-6 px-8 rounded-[12px] md:rounded-[14px] flex items-center justify-center gap-3 group/btn outfit text-[15px] md:text-[16px] w-full md:w-fit shadow-[0_0_20px_rgba(0,204,255,0.2)]">
-                                                Read Article
-                                                <FiArrowRight className="text-xl transition-transform group-hover/btn:translate-x-1.5" />
-                                            </Button>
+                                            <Link href={`/articles/${featuredArticle.id}`} className="w-full md:w-fit">
+                                                <Button className="bg-[#00CCFF] hover:bg-[#00B8E6] text-[#0B0B0F] font-[600] py-6 px-8 rounded-[12px] md:rounded-[14px] flex items-center justify-center gap-3 group/btn outfit text-[15px] md:text-[16px] w-full md:w-fit shadow-[0_0_20px_rgba(0,204,255,0.2)]">
+                                                    Read Article
+                                                    <FiArrowRight className="text-xl transition-transform group-hover/btn:translate-x-1.5" />
+                                                </Button>
+                                            </Link>
                                         </div>
                                     </div>
                                 </div>
@@ -183,6 +188,7 @@ const ArticleContainer = () => {
                             {latestArticles.map((article) => (
                                 <ArticleCard 
                                     key={article.id} 
+                                    id={article.id}
                                     title={article.title}
                                     description={article.description}
                                     image={article.imageUrl}
@@ -193,7 +199,7 @@ const ArticleContainer = () => {
                             ))}
                         </div>
 
-                        {!loading && latestArticles.length === 0 && (
+                        {!loading && !isInitialMount && latestArticles.length === 0 && (
                             <div className="w-full text-center py-20 bg-[#11121740] rounded-3xl border border-[#24262E]">
                                 <p className="text-[#7B899D] outfit">No articles found in this category.</p>
                             </div>

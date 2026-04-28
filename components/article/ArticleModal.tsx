@@ -20,6 +20,10 @@ import {
     FiCheck
 } from 'react-icons/fi'
 import axios from 'axios'
+import dynamic from 'next/dynamic'
+
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false })
+import 'react-quill-new/dist/quill.snow.css'
 
 interface ArticleModalProps {
     isOpen: boolean
@@ -39,7 +43,8 @@ export const ArticleModal = ({ isOpen, onClose, article }: ArticleModalProps) =>
         categoryId: '',
         readTime: '',
         featured: false,
-        status: 'DRAFT' as 'PUBLISHED' | 'DRAFT'
+        status: 'DRAFT' as 'PUBLISHED' | 'DRAFT',
+        content: ''
     })
     
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -62,7 +67,8 @@ export const ArticleModal = ({ isOpen, onClose, article }: ArticleModalProps) =>
                     categoryId: article.categoryId || '',
                     readTime: article.readTime?.toString() || '',
                     featured: article.featured || false,
-                    status: article.status || 'DRAFT'
+                    status: article.status || 'DRAFT',
+                    content: article.content || ''
                 })
                 setPreviewUrl(article.imageUrl || null)
                 setImageUrl(article.imageUrl || null)
@@ -70,6 +76,9 @@ export const ArticleModal = ({ isOpen, onClose, article }: ArticleModalProps) =>
                 resetForm()
             }
             setIsSubmitted(false)
+        } else {
+            // Explicitly reset when closing to be extra safe
+            resetForm()
         }
     }, [isOpen, article, dispatch])
 
@@ -81,7 +90,8 @@ export const ArticleModal = ({ isOpen, onClose, article }: ArticleModalProps) =>
             categoryId: '',
             readTime: '',
             featured: false,
-            status: 'DRAFT'
+            status: 'DRAFT',
+            content: ''
         })
         setPreviewUrl(null)
         setImageUrl(null)
@@ -101,7 +111,7 @@ export const ArticleModal = ({ isOpen, onClose, article }: ArticleModalProps) =>
 
     const handleSubmit = async () => {
         setIsSubmitted(true)
-        if (!formData.title || !formData.description || !formData.categoryId || !formData.authorName || (!selectedFile && !previewUrl && !imageUrl)) {
+        if (!formData.title || !formData.description || !formData.content || !formData.categoryId || !formData.authorName || (!selectedFile && !previewUrl && !imageUrl)) {
             return
         }
 
@@ -239,6 +249,68 @@ export const ArticleModal = ({ isOpen, onClose, article }: ArticleModalProps) =>
                                 className="flex-1 bg-transparent text-sm text-white placeholder:text-gray-600 outline-none resize-none"
                             />
                         </div>
+                    </div>
+
+                    {/* Full Article Content (Rich Text) */}
+                    <div>
+                        <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">Full Article Content <span className="text-red-500">*</span></label>
+                        <div className={cn(
+                            "bg-[#121218] border rounded-xl overflow-hidden transition-all",
+                            isSubmitted && !formData.content ? "border-red-500/60" : "border-[#252530]"
+                        )}>
+                            {isOpen && (
+                                <ReactQuill 
+                                    key={article?.id || 'new'}
+                                    theme="snow"
+                                    value={formData.content}
+                                    onChange={(value) => setFormData(p => ({...p, content: value}))}
+                                    modules={{
+                                        toolbar: [
+                                            [{ 'header': [1, 2, 3, false] }],
+                                            ['bold', 'italic', 'underline', 'strike'],
+                                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                            [{ 'align': [] }],
+                                            ['link', 'clean']
+                                        ],
+                                    }}
+                                    className="quill-editor"
+                                />
+                            )}
+                        </div>
+                        <style jsx global>{`
+                            .quill-editor .ql-toolbar {
+                                background: #1A1A20;
+                                border: none !important;
+                                border-bottom: 1px solid #252530 !important;
+                            }
+                            .quill-editor .ql-container {
+                                border: none !important;
+                                min-height: 250px;
+                                font-family: 'Outfit', sans-serif;
+                                font-size: 14px;
+                                color: white;
+                                background: #121218;
+                            }
+                            .quill-editor .ql-stroke {
+                                stroke: #7B899D !important;
+                            }
+                            .quill-editor .ql-fill {
+                                fill: #7B899D !important;
+                            }
+                            .quill-editor .ql-picker {
+                                color: #7B899D !important;
+                            }
+                            .quill-editor .ql-picker-options {
+                                background-color: #1A1A20 !important;
+                                border: 1px solid #252530 !important;
+                            }
+                            .quill-editor .ql-active .ql-stroke {
+                                stroke: #00CCFF !important;
+                            }
+                            .quill-editor .ql-active .ql-fill {
+                                fill: #00CCFF !important;
+                            }
+                        `}</style>
                     </div>
 
                     {/* Row: Category + Read Time */}

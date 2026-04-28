@@ -64,7 +64,7 @@ const RecentPlayers = () => {
                 <div className="flex flex-col gap-1.5">
                   <Skeleton className="w-28 h-4 rounded-md bg-[#1A2333]" />
                   <Skeleton className="w-16 h-3 rounded-md bg-[#1A2333]" />
-                </div>
+                </div>                                   
               </div>
               <div className="flex items-center gap-6 pl-14 sm:pl-0">
                 <div className="flex flex-col items-end gap-1">
@@ -73,11 +73,11 @@ const RecentPlayers = () => {
                 </div>
                 <Skeleton className="w-16 h-6 rounded-full bg-[#1A2333]" />
               </div>
-            </div>
+            </div>                                                 
           ))
         ) : (
           recentPlayers.map((player, index) => (
-            <div
+            <div                         
               key={player.id}
               className={cn(
                 "flex flex-col gap-4 p-4 rounded-xl transition-all duration-200 hover:bg-[#1A2333]/50 group",

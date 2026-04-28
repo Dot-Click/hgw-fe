@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "../node_modules/@prisma/client-custom"
 }
 
 datasource db {
@@ -200,6 +201,7 @@ model Article {
   readTime    Int?
   featured    Boolean  @default(false)
   status      ArticleStatus @default(DRAFT)
+  content     String?  @db.Text
   imageUrl    String
 
   categoryId  String

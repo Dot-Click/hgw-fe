@@ -31,7 +31,7 @@ export async function POST(req: Request) {
         if (!authorized) return response;
 
         const data = await req.json();
-        const { title, description, authorName, readTime, featured, imageUrl, categoryId, status } = data;
+        const { title, description, content, authorName, readTime, featured, imageUrl, categoryId, status } = data;
 
         if (!title || !description || !authorName || !imageUrl || !categoryId) {
             return Response.json({ error: "Missing required fields" }, { status: 400 });
@@ -49,6 +49,7 @@ export async function POST(req: Request) {
             data: {
                 title,
                 description,
+                content,
                 authorName,
                 readTime: readTime ? parseInt(readTime) : undefined,
                 featured: !!featured,

@@ -4,7 +4,6 @@ import LegendOfDay from "@/components/home/LegendOfDay";
 import GlobalLeaderboard from "@/components/home/GlobalLeaderboard";
 import PlayerCards from "@/components/home/PlayerCards";
 import NewsLetter from "@/components/home/NewsLetter";
-import FeaturedArticle from "@/components/home/FeaturedArticle";
 
 export const metadata: Metadata = {
     title: "How Good Was | The Ultimate Legend Ranking System",
@@ -16,7 +15,6 @@ export default function Home() {
   return (
     <div className="flex flex-col pb-10 items-center w-full">
       <HomeHeader />
-      <FeaturedArticle />
       <LegendOfDay />
       <GlobalLeaderboard />
       <PlayerCards />

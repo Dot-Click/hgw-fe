@@ -13,7 +13,7 @@ export async function PATCH(
         const { id } = await params;
         const data = await req.json();
         
-        const { title, description, authorName, readTime, featured, imageUrl, categoryId, status } = data;
+        const { title, description, content, authorName, readTime, featured, imageUrl, categoryId, status } = data;
 
         // Handle featured logic: Only one article can be featured at a time
         if (featured) {
@@ -31,6 +31,7 @@ export async function PATCH(
             data: {
                 title,
                 description,
+                content,
                 authorName,
                 readTime: readTime ? parseInt(readTime) : undefined,
                 featured: !!featured,
