@@ -2,11 +2,14 @@
 
 import React from "react"
 import { FiPlus } from "react-icons/fi"
-import { Button } from "@heroui/react"
+import { Button, Skeleton } from "@heroui/react"
 import { useRouter } from "next/navigation"
+import { useAppSelector } from "@/store/hooks"
 
 const DashboardHeader = () => {
   const router = useRouter()
+  const { user } = useAppSelector((state) => state.auth)
+
   return (
     <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
       <div>
@@ -14,7 +17,7 @@ const DashboardHeader = () => {
           Dashboard
         </h1>
         <p className="mt-1 text-sm text-zinc-400 outfit tracking-wide">
-          Welcome back, Admin. Here's your analytics overview.
+          Welcome back, {user?.name?.split(" ")[0] || "Admin"}. Here's your analytics overview.
         </p>
       </div>
         <Button

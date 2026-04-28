@@ -27,9 +27,10 @@ const Navbar = () => {
   const { user, isAuthenticated, isInitialLoading, loading: isLoading } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(fetchSession());
-  }, [dispatch]);
-  console.log(user);
+    if (isInitialLoading) {
+      dispatch(fetchSession());
+    }
+  }, [dispatch, isInitialLoading]);
 
   const navLinks = [
     { id: "home", name: "Home", path: "/", icon: <FiHome /> },

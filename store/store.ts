@@ -8,6 +8,7 @@ import podcastReducer from './slices/podcastSlice';
 import guestReducer from './slices/guestSlice';
 import aiReducer from './slices/aiSlice';
 import articleReducer from './slices/articleSlice';
+import dashboardReducer from './slices/dashboardSlice';
 
 export const store = configureStore({
     reducer: {
@@ -20,6 +21,7 @@ export const store = configureStore({
         guests: guestReducer,
         ai: aiReducer,
         articles: articleReducer,
+        dashboard: dashboardReducer,
     },
 });
 

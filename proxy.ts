@@ -24,21 +24,11 @@ export async function proxy(request: NextRequest) {
             return NextResponse.redirect(new URL("/login", request.url));
         }
 
-        // Only do heavy fetch for actual admin navigation
-        try {
-            const response = await fetch(new URL("/api/auth/get-session", request.nextUrl.origin), {
-                headers: {
-                    cookie: request.headers.get("cookie") || "",
-                },
-            });
-            const session = await response.json();
+        // Only basic cookie check in middleware to stay lightning fast.
+        // The actual role validation (user.role === 'ADMIN') and heavy DB lookup
+        // is safely handled by the Server Component in app/admin/layout.tsx.
 
-            if (!session || !session.user || session.user.role !== "ADMIN") {
-                return NextResponse.redirect(new URL("/unauthorized", request.url));
-            }
-        } catch (error) {
-            return NextResponse.redirect(new URL("/login", request.url));
-        }
+
     }
 
     return NextResponse.next();
