@@ -6,7 +6,7 @@ export const fetchSession = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const { data, error } = await authApi.getSession();
-            if (error) return rejectWithValue(error.message);
+            if (error) return rejectWithValue(error.message || 'Failed to fetch session');
             if (!data) return null;
             return JSON.parse(JSON.stringify(data));
         } catch (err: any) {
@@ -20,7 +20,7 @@ export const signInSocial = createAsyncThunk(
     async ({ provider, callbackURL }: { provider: 'google' | 'facebook', callbackURL?: string }, { rejectWithValue }) => {
         try {
             const { error } = await authApi.signInSocial(provider, callbackURL);
-            if (error) return rejectWithValue(error.message);
+            if (error) return rejectWithValue(error.message || `${provider} login failed`);
             return null;
         } catch (err: any) {
             return rejectWithValue(err.message || `${provider} login failed`);
@@ -33,7 +33,7 @@ export const signUpWithEmail = createAsyncThunk(
     async (formData: any, { rejectWithValue }) => {
         try {
             const { data, error } = await authApi.signUpEmail(formData);
-            if (error) return rejectWithValue(error.message);
+            if (error) return rejectWithValue(error.message || 'Signup failed');
             return JSON.parse(JSON.stringify(data));
         } catch (err: any) {
             return rejectWithValue(err.message || 'Signup failed');
@@ -46,7 +46,7 @@ export const signInWithEmail = createAsyncThunk(
     async (formData: any, { rejectWithValue }) => {
         try {
             const { data, error } = await authApi.signInEmail(formData);
-            if (error) return rejectWithValue(error.message);
+            if (error) return rejectWithValue(error.message || 'Login failed');
             return JSON.parse(JSON.stringify(data));
         } catch (err: any) {
             return rejectWithValue(err.message || 'Login failed');
@@ -59,7 +59,7 @@ export const logout = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const { error } = await authApi.signOut();
-            if (error) return rejectWithValue(error.message);
+            if (error) return rejectWithValue(error.message || 'Logout failed');
             return null;
         } catch (err: any) {
             return rejectWithValue(err.message || 'Logout failed');
@@ -77,10 +77,10 @@ export const forgotPassword = createAsyncThunk(
             });
             if (error) {
                 // Custom requirement: show "Invalid credentials" if email doesn't exist
-                if (error.status === 404 || error.message.toLowerCase().includes('not found')) {
+                if (error.status === 404 || error.message?.toLowerCase().includes('not found')) {
                     return rejectWithValue('Invalid credentials');
                 }
-                return rejectWithValue(error.message);
+                return rejectWithValue(error.message || 'Failed to send reset link');
             }
             return true;
         } catch (err: any) {
@@ -97,7 +97,7 @@ export const resetPassword = createAsyncThunk(
                 newPassword,
                 token
             });
-            if (error) return rejectWithValue(error.message);
+            if (error) return rejectWithValue(error.message || 'Failed to reset password');
             return true;
         } catch (err: any) {
             return rejectWithValue(err.message || 'Failed to reset password');
