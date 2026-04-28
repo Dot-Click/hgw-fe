@@ -8,9 +8,14 @@ import { headers } from "next/headers";
  */
 
 export const getServerSession = async () => {
-    return await auth.api.getSession({
+    const session = await auth.api.getSession({
         headers: await headers(),
     });
+    
+    console.log(`📡 [auth-service] getServerSession: ${session ? "✅ Session Found" : "❌ No Session"}`);
+    if (session) console.log(`👤 [auth-service] User: ${session.user.email} (Role: ${session.user.role})`);
+    
+    return session;
 };
 
 /**
@@ -40,6 +45,7 @@ export const requireAdmin = async () => {
 export const verifyAdminApi = async () => {
     const session = await getServerSession();
     if (!session || session.user.role !== "ADMIN") {
+        console.warn(`⛔ [auth-service] verifyAdminApi: Unauthorized. Reason: ${!session ? "No session" : "Not an ADMIN"}`);
         return { authorized: false, response: adminErrorResponse() };
     }
     return { authorized: true, session };

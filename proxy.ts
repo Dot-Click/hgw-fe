@@ -15,8 +15,16 @@ export default async function proxy(request: NextRequest) {
     }
 
     // 1. Quick Cookie Check (Saves 20 seconds)
+    const allCookies = request.cookies.getAll();
+    console.log(`🔍 [Proxy] Request Path: ${pathname}`);
+    console.log(`🍪 [Proxy] Available Cookies:`, allCookies.map(c => c.name));
+
     const sessionCookie = request.cookies.get("better-auth.session_token") || 
-                         request.cookies.get("__better-auth.session_token");
+                         request.cookies.get("__better-auth.session_token") ||
+                         request.cookies.get("__Host-better-auth.session_token") ||
+                         request.cookies.get("__Secure-better-auth.session_token");
+
+    console.log(`🔑 [Proxy] Session Cookie Found: ${!!sessionCookie}`);
 
     // 2. Protect /admin routes
     if (pathname.startsWith("/admin")) {

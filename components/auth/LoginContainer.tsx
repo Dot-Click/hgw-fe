@@ -48,14 +48,22 @@ const LoginContainer = () => {
 
         if (!email || !password) return;
 
+        console.log("🚀 [Login] Attempting sign-in for:", email);
         const resultAction = await dispatch(signInWithEmail({ email, password }));
+        
         if (signInWithEmail.fulfilled.match(resultAction)) {
+            console.log("✅ [Login] Success! Payload:", resultAction.payload);
             toast.success('Successfully logged in!');
+            
             // Dynamic redirect based on role
             const role = resultAction.payload?.user?.role;
-            router.push(role === 'ADMIN' ? '/admin' : '/');
+            const redirectPath = role === 'ADMIN' ? '/admin' : '/';
+            
+            console.log(`🔀 [Login] Redirecting to: ${redirectPath} (Role: ${role})`);
+            router.push(redirectPath);
         } else {
             const message = resultAction.payload as string || 'Login failed';
+            console.error("❌ [Login] Failed:", message);
             toast.danger(message);
         }
     }
