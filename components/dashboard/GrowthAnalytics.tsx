@@ -103,7 +103,7 @@ const GrowthAnalytics = () => {
           </div>
         </div>
 
-        {/* CUSTOM DROPDOWN - FIXED POSITIONING */}
+        {/* CUSTOM DROPDOWN - FIXED POSITIONING */}       
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
