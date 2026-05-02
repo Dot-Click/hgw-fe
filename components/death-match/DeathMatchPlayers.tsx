@@ -1,94 +1,38 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import DeathMatchCard from "./DeathMatchCard";
 import { motion } from "framer-motion";
-
+import { Skeleton } from "@heroui/react";
 import { PlayerSelection } from "./DeathMatchContainer";
 
 interface DeathMatchPlayersProps {
   onSelect: (player: PlayerSelection) => void;
-  player1Id?: number;
-  player2Id?: number;
+  player1Id?: string;
+  player2Id?: string;
   activeSlot: 1 | 2;
 }
 
-const players = [
-  {
-    id: 1,
-    rank: 1,
-    name: "Lionel Messi",
-    category: "Football",
-    country: "Argentina",
-    rating: 98.5,
-    image: "/assets/img3.png",
-  },
-  {
-    id: 2,
-    rank: 2,
-    name: "Pelé",
-    category: "Football",
-    country: "Brazil",
-    rating: 97.8,
-    image: "/assets/img5.png",
-  },
-  {
-    id: 3,
-    rank: 3,
-    name: "Cristiano Ronaldo",
-    category: "Football",
-    country: "Portugal",
-    rating: 97.1,
-    image: "/assets/img2.png",
-  },
-  {
-    id: 4,
-    rank: 4,
-    name: "Diego Maradona",
-    category: "Football",
-    country: "Argentina",
-    rating: 96.2,
-    image: "/assets/img4.png",
-  },
-  {
-    id: 5,
-    rank: 5,
-    name: "Zinedine Zidane",
-    category: "Football",
-    country: "France",
-    rating: 95.3,
-    image: "/assets/img5.png",  
-  },
-  {
-    id: 6,
-    rank: 6,
-    name: "Bob Marley",
-    category: "Music",
-    country: "Jamaica",
-    rating: 94.6,
-    image: "/assets/img6.png",
-  },
-  {
-    id: 7,
-    rank: 7,
-    name: "Richie McCaw",
-    category: "Rugby",
-    country: "New Zealand",
-    rating: 93.7,
-    image: "/assets/img7.png",
-  },
-  {
-    id: 8,
-    rank: 8,
-    name: "Jonah Lomu",
-    category: "Rugby",
-    country: "New Zealand",
-    rating: 91.4,
-    image: "/assets/img1.png",
-  },
-];
-
 const DeathMatchPlayers = ({ onSelect, player1Id, player2Id, activeSlot }: DeathMatchPlayersProps) => {
+  const [players, setPlayers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPlayers = async () => {
+      try {
+        const res = await fetch("/api/players");
+        const data = await res.json();
+        setPlayers(data);
+      } catch (error) {
+        console.error("Failed to fetch players:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlayers();
+  }, []);
+
   return (
     <section className="w-full max-w-6xl mx-auto px-6 py-16 flex flex-col items-center">
       {/* Headers */}
@@ -108,33 +52,55 @@ const DeathMatchPlayers = ({ onSelect, player1Id, player2Id, activeSlot }: Death
 
       {/* Grid */}
       <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-        {players.map((player, index) => {
-          const isSelected = player1Id === player.id || player2Id === player.id;
-          const isCurrentlySelecting = (activeSlot === 1 && player1Id === player.id) || (activeSlot === 2 && player2Id === player.id);
-          
-          return (
-            <motion.div
-              key={player.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-              viewport={{ once: true }}            
-            >
-              <DeathMatchCard
-                {...player}
-                isSelected={isCurrentlySelecting}
-                onSelect={() => {
-                  if (isSelected && !isCurrentlySelecting) return; // Prevent selecting already selected player in other slot
-                  onSelect(player);
-                }}
-              />
-            </motion.div>
-          );
-        })}
+        {loading ? (
+          Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="h-[200px] w-full bg-[#111A2C]/50 rounded-2xl border border-[#1E293B] animate-pulse" />
+          ))
+        ) : players.length > 0 ? (
+          players.map((player, index) => {
+            const isSelected = player1Id === player.id || player2Id === player.id;
+            const isCurrentlySelecting = (activeSlot === 1 && player1Id === player.id) || (activeSlot === 2 && player2Id === player.id);
+            
+            return (
+              <motion.div
+                key={player.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+                viewport={{ once: true }}            
+              >
+                <DeathMatchCard
+                  id={player.id}
+                  rank={index + 1}
+                  name={player.name}
+                  category={player.category?.name || "Legend"}
+                  country={player.country}
+                  rating={player.finalScore || 0}
+                  image={player.image || "/assets/img1.png"}
+                  isSelected={isCurrentlySelecting}
+                  onSelect={() => {
+                    if (isSelected && !isCurrentlySelecting) return; 
+                    onSelect({
+                      id: player.id,
+                      name: player.name,
+                      image: player.image || "/assets/img1.png",
+                      rating: player.finalScore || 0,
+                      category: player.category?.name,
+                      country: player.country
+                    });
+                  }}
+                />
+              </motion.div>
+            );
+          })
+        ) : (
+          <div className="col-span-full text-center text-[#7B899D] py-10">
+            No players found.
+          </div>
+        )}
       </div>
     </section>
   );
 };
 
 export default DeathMatchPlayers;
-

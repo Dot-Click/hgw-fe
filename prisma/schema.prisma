@@ -1,12 +1,11 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../node_modules/@prisma/client-custom"
+
 }
 
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
 }
 
 enum Role {
@@ -126,12 +125,38 @@ model Player {
   image            String?
   status           PlayerStatus @default(DRAFT)
   finalScore       Float        @default(0)
+  
+  // Death Match & Leaderboard Stats
+  totalMatches     Int          @default(0)
+  wins             Int          @default(0)
+  losses           Int          @default(0)
+  draws            Int          @default(0)
+  averageHGWScore  Float        @default(0)
+
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
   
   podcasts         Podcast[]
+  matchesAsPlayer1 Match[]      @relation("Player1Matches")
+  matchesAsPlayer2 Match[]      @relation("Player2Matches")
 
   @@map("player")
+}
+
+model Match {
+  id           String   @id @default(cuid())
+  player1Id    String
+  player2Id    String
+  player1      Player   @relation("Player1Matches", fields: [player1Id], references: [id])
+  player2      Player   @relation("Player2Matches", fields: [player2Id], references: [id])
+  
+  score1       Float
+  score2       Float
+  winnerId     String?  // Null if draw
+  
+  createdAt    DateTime @default(now())
+
+  @@map("match")
 }
 
 model Podcast {

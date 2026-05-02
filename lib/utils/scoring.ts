@@ -43,8 +43,8 @@ export const calculateHgwScore = (metrics: HgwMetrics): number => {
     legacy,
   } = metrics;
 
-  // Step 1: Sum all metrics
-  const sum = 
+  // Step 1: Sum all metrics (Raw Total: 0-1000 if each is 0-100)
+  const rawTotal = 
     dominance + 
     longevity + 
     peakPerformance + 
@@ -56,12 +56,9 @@ export const calculateHgwScore = (metrics: HgwMetrics): number => {
     rivalry + 
     legacy;
 
-  // Step 2: Calculate average
-  const average = sum / 10;
+  // Step 2: Final HGW Score (0-100 scale)
+  const finalScore = rawTotal;
 
-  // Step 3: Final Score (0-100 scale)
-  const finalScore = average * 10;
-
-  // Ensure precision (optional, but good for clean DB records)
+  // Ensure precision
   return Math.round(finalScore * 100) / 100;
 };

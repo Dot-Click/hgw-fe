@@ -77,7 +77,7 @@ const legends = [
         position: "Forward",
         category: "Football",
         trophies: 25,
-        score: "97.8",
+        score: "97.80",
         image: "/assets/img5.png",
     },
     {
@@ -87,7 +87,7 @@ const legends = [
         position: "Forward",
         category: "Football",
         trophies: 44,
-        score: "98.5",
+        score: "98.50",
         image: "/assets/img3.png",
     },
     {
@@ -97,7 +97,7 @@ const legends = [
         position: "Forward",
         category: "Football",
         trophies: 35,
-        score: "97.1",
+        score: "97.10",
         image: "/assets/img2.png",
     }
 ];
@@ -142,20 +142,20 @@ const TopLegends = () => {
                                         sizes="(max-width: 768px) 100vw, 600px"
                                     />
                                 </div>
-
+                                                 
                                 {/* Top Badges */}
                                 <div className="relative z-20 flex justify-between items-center w-full">
-                                    <span className={`${theme.badgeBg} ${theme.badgeText} text-[10px] md:text-[11px] font-[700] px-3  orbitron py-1 rounded-full uppercase tracking-wider`}>
+                                    <span className={`${theme.badgeBg} ${theme.badgeText} text-[10px] md:text-[11px] font-bold px-3  orbitron py-1 rounded-full uppercase tracking-wider`}>
                                         {legend.rankLabel}
                                     </span>
-                                    <span className={`${theme.badgeBg} ${theme.badgeText} text-[10px] md:text-[11px] font-[700] px-3  orbitron py-1 rounded-full`}>
+                                    <span className={`${theme.badgeBg} ${theme.badgeText} text-[10px] md:text-[11px] font-bold px-3  orbitron py-1 rounded-full`}>
                                         {legend.score}
                                     </span>
                                 </div>
 
                                 {/* Bottom Content */}
                                 <div className="relative z-20 flex flex-col gap-1 w-full mt-auto">
-                                    <h3 className="text-white text-[20px] md:text-[16px] font-[700] orbitron leading-tight">
+                                    <h3 className="text-white text-[20px] md:text-[16px] font-bold orbitron leading-tight">
                                         {legend.name}
                                     </h3>
                                     <p className="text-[#7B899D] text-[13px] font-[500] md:text-[12px] outfit mb-2">
@@ -170,7 +170,7 @@ const TopLegends = () => {
                                             <BsTrophy className="text-[12px]" />
                                             <span className="text-[12px]  tracking-wide outfit md:text-[11px] font-[500]">{legend.trophies}</span>
                                         </div>
-                                    </div>
+                                    </div>   
                                     
                                     {/* Progress Bar line */}
                                     <div className={`w-full h-[7px] rounded-full ${theme.barColor}`}></div>

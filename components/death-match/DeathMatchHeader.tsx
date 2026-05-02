@@ -81,7 +81,7 @@ const DeathMatchHeader = ({
 
             {/* Circular Image Container (Scaled to 200px height) */}
             <div className="w-[68px] h-[68px] rounded-full border border-white/10 overflow-hidden mb-2 flex-shrink-0">     
-              <Image     
+              <Image                     
                 src={player.image}                 
                 alt={player.name}                                      
                 width={68}        
@@ -106,10 +106,9 @@ const DeathMatchHeader = ({
               </div>
             </div>          
    
-            {/* Score */}
             <div className={`orbitron text-[24px] font-[900] leading-none tracking-wide drop-shadow-[0_0_10px_rgba(0,204,255,0.4)] ${slot === 1 ? "text-[#00CCFF]" : "text-[#FFBF00]"
               }`}>
-              {player.rating?.toFixed(1)}
+              {(player.rating ?? 0).toFixed(2)}
             </div>
           </div>
         ) : (

@@ -39,7 +39,7 @@ const LeaderBoardHeader = () => {
                             <BiSortAlt2 className="text-[16px] " />
                             Highest HGW Score
                             <FiChevronDown className="text-[16px]" />
-                        </Button>
+                        </Button>                   
                         
                         <Button
                             className="px-[16px] py-[8px] rounded-[12px] bg-[#1F2128] text-[#7B899D] border border-[#24262E] hover:text-white hover:bg-[#24262E] outfit text-[12px] md:text-[15px] font-[400] transition-all duration-300 h-auto min-h-0"

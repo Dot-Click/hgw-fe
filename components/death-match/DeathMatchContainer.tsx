@@ -6,7 +6,7 @@ import DeathMatchPlayers from "./DeathMatchPlayers";
 import DeathMatchResults from "./DeathMatchResults";
 
 export interface PlayerSelection {
-  id: number;
+  id: string;
   name: string;
   image: string;
   role?: string;

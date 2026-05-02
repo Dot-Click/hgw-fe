@@ -194,7 +194,7 @@ export const NewPlayerForm = () => {
             isDisabled={loading}
           >
             {loading ? <Spinner size="sm" color="current" /> : <FiPlus size={18} strokeWidth={3} />}
-            Save & Publish
+            Save & Publish   
           </Button>
         </div>
       </div>
@@ -339,7 +339,7 @@ export const NewPlayerForm = () => {
             <div className="text-center mb-8 pb-8 border-b border-zinc-800/50">
               <p className="text-[#00D4FF] orbitron text-[10px] font-bold tracking-[0.3em] uppercase mb-2">Projected Score</p>
               <div className="text-6xl font-black text-white orbitron tracking-tighter">
-                {finalScore.toFixed(1)}
+                {finalScore.toFixed(2)}
               </div>
               <p className="text-zinc-500 mt-2 outfit uppercase text-xs tracking-widest font-bold">HGW Domination Index</p>
             </div>
@@ -358,7 +358,7 @@ export const NewPlayerForm = () => {
                           style={{ width: `${(scores[metric.id as keyof HgwMetrics] || 0) * 10}%` }}
                         />
                       </div>
-                    </div>
+                    </div> 
                     <input 
                       type="number"
                       min="0"

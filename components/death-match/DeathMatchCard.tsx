@@ -3,8 +3,8 @@ import Image from 'next/image';
 import { FiMapPin } from 'react-icons/fi';
 
 export interface DeathMatchCardProps {
-  id: number;
-  rank: number;
+  id: string;
+  rank?: number;
   name: string;
   category: string;
   country: string;
@@ -31,7 +31,8 @@ const DeathMatchCard = ({
   id, rank, name, category, country, rating, image, isSelected, onSelect
 }: DeathMatchCardProps) => {
 
-  const rankColor = rank <= 3 
+  const isHighRank = rank !== undefined && rank <= 3;
+  const rankColor = isHighRank
     ? 'text-[#FFBF00] border-[#FFBF0066] bg-[#FFBF0033] drop-shadow-[0px_0px_8px_0px_#FFBF004D]' 
     : 'text-[#7B899D99] border-[#24262E] bg-[#1B1C22CC]';
 
@@ -50,9 +51,11 @@ const DeathMatchCard = ({
       )}
 
       {/* Rank Badge */}                
-      <div className={`absolute top-4 right-4 w-[28px] h-[28px] rounded-full border flex items-center justify-center z-30 text-[12px] orbitron font-[700]  ${rankColor}`}>
-        {rank}
-      </div>
+      {rank !== undefined && (
+        <div className={`absolute top-4 right-4 w-[28px] h-[28px] rounded-full border flex items-center justify-center z-30 text-[12px] orbitron font-[700]  ${rankColor}`}>
+          {rank}
+        </div>
+      )}
         
       {/* Image Container */}
       <div className="w-full h-[60%] relative flex-shrink-0 bg-[#0B0F19]">
@@ -63,7 +66,7 @@ const DeathMatchCard = ({
           fill
           className="object-cover object-top"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-          priority={rank <= 4}
+          priority={rank !== undefined && rank <= 4}
         />
       </div>
 
@@ -83,7 +86,7 @@ const DeathMatchCard = ({
 
         <div className="flex items-center border-t border-[#24262E66] justify-between mt-auto pt-1 sm:pt-2">
           <span className="text-[#7B899D] text-[10px] sm:text-[12px] orbitron tracking-widest uppercase font-[400]">HGW</span>
-          <span className="text-[#FFBF00] orbitron font-[900] text-[16px] sm:text-[20px] tracking-wide">{rating.toFixed(1)}</span>
+          <span className="text-[#FFBF00] orbitron font-[900] text-[16px] sm:text-[20px] tracking-wide">{(rating ?? 0).toFixed(2)}</span>
         </div>
       </div>
     </div>
